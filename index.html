@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generador de WOD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500;700&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0c0b0a;
+    --black-2:#161412;
+    --black-3:#211d19;
+    --orange:#ff5a1f;
+    --orange-2:#ff7a3d;
+    --orange-dim:#7a2e10;
+    --paper:#f3ede0;
+    --paper-dim:#c9c0ac;
+    --line:#3a332c;
+    --green:#7fae52;
+    --amber:#e0a537;
+    --red:#c9482f;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--black);
+    background-image:
+      repeating-linear-gradient(135deg, rgba(255,90,31,0.035) 0px, rgba(255,90,31,0.035) 2px, transparent 2px, transparent 26px);
+    color:var(--paper);
+    font-family:'Archivo', sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:28px 18px 80px;
+  }
+
+  /* ---------- header ---------- */
+  header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    border-bottom:3px solid var(--orange);
+    padding-bottom:14px;
+    margin-bottom:26px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .brand-mark{
+    width:38px;height:38px;
+    flex:none;
+  }
+  h1{
+    font-family:'Anton', sans-serif;
+    font-weight:400;
+    font-size:clamp(28px, 7vw, 40px);
+    letter-spacing:1px;
+    margin:0;
+    line-height:0.9;
+    color:var(--paper);
+    text-transform:uppercase;
+  }
+  h1 span{color:var(--orange);}
+  .tagline{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--orange-2);
+    margin-top:2px;
+  }
+  .count-badge{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--paper-dim);
+    text-align:right;
+    letter-spacing:0.5px;
+    white-space:nowrap;
+  }
+  .count-badge b{color:var(--orange-2); font-size:16px;}
+
+  /* ---------- filters ---------- */
+  .panel{
+    background:var(--black-2);
+    border:1px solid var(--line);
+    padding:18px;
+    margin-bottom:20px;
+  }
+  .panel-title{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--paper-dim);
+    margin:0 0 14px 0;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .panel-title::before{
+    content:'';
+    width:8px;height:8px;
+    background:var(--orange);
+    display:inline-block;
+  }
+  .field{
+    margin-bottom:16px;
+  }
+  .field:last-child{margin-bottom:0;}
+  .field label{
+    display:block;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--paper-dim);
+    margin-bottom:8px;
+  }
+  .chip-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .chip{
+    appearance:none;
+    background:var(--black-3);
+    border:1px solid var(--line);
+    color:var(--paper);
+    font-family:'Archivo', sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    padding:9px 14px;
+    cursor:pointer;
+    transition:all .12s ease;
+    text-transform:uppercase;
+    letter-spacing:0.3px;
+  }
+  .chip:hover{border-color:var(--orange-2);}
+  .chip.active{
+    background:var(--orange);
+    border-color:var(--orange);
+    color:var(--black);
+  }
+  .chip.dif-facil.active{background:var(--green); border-color:var(--green); color:var(--black);}
+  .chip.dif-moderado.active{background:var(--amber); border-color:var(--amber); color:var(--black);}
+  .chip.dif-dificil.active{background:var(--red); border-color:var(--red); color:var(--paper);}
+
+  /* ---------- action button ---------- */
+  .roll-btn{
+    width:100%;
+    background:var(--orange);
+    color:var(--black);
+    border:none;
+    font-family:'Anton', sans-serif;
+    font-size:22px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    padding:18px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    transition:transform .08s ease, background .12s ease;
+    position:relative;
+    overflow:hidden;
+  }
+  .roll-btn:hover{background:var(--orange-2);}
+  .roll-btn:active{transform:scale(0.985);}
+  .roll-btn svg{width:22px;height:22px;flex:none;}
+  .roll-btn.rolling svg{animation:spin .5s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* ---------- result card ---------- */
+  #result{margin-top:24px;}
+  .empty-state{
+    border:1px dashed var(--line);
+    padding:40px 20px;
+    text-align:center;
+    color:var(--paper-dim);
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+  }
+  .no-match{
+    border:1px solid var(--red);
+    background:rgba(201,72,47,0.08);
+    padding:20px;
+    text-align:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px;
+    color:var(--paper);
+    letter-spacing:0.5px;
+  }
+  .card{
+    background:var(--black-2);
+    border:1px solid var(--line);
+    border-top:5px solid var(--orange);
+    padding:26px 24px 22px;
+    animation:reveal .3s ease;
+  }
+  @keyframes reveal{
+    from{opacity:0; transform:translateY(8px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+    margin-bottom:6px;
+  }
+  .wod-num{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--paper-dim);
+    letter-spacing:1px;
+  }
+  .diff-tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    padding:4px 9px;
+    font-weight:700;
+    color:var(--black);
+    flex:none;
+  }
+  .diff-facil{background:var(--green);}
+  .diff-moderado{background:var(--amber);}
+  .diff-dificil{background:var(--red); color:var(--paper);}
+
+  .wod-name{
+    font-family:'Anton', sans-serif;
+    font-size:clamp(26px, 6vw, 34px);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    margin:2px 0 14px 0;
+    line-height:1;
+    color:var(--paper);
+  }
+  .scheme-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+    flex-wrap:wrap;
+  }
+  .scheme-badge{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:700;
+    font-size:14px;
+    background:var(--orange);
+    color:var(--black);
+    padding:6px 12px;
+    letter-spacing:0.5px;
+  }
+  .scheme-time{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    color:var(--orange-2);
+    border:1px solid var(--orange-dim);
+    padding:5px 11px;
+  }
+  .movements{
+    list-style:none;
+    margin:0 0 16px 0;
+    padding:0;
+    border-top:1px solid var(--line);
+  }
+  .movements li{
+    padding:10px 0;
+    border-bottom:1px solid var(--line);
+    font-size:15.5px;
+    font-weight:500;
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+  .movements li::before{
+    content:'';
+    width:6px;height:6px;
+    background:var(--orange);
+    flex:none;
+    transform:translateY(-2px);
+  }
+  .movements li .sub{
+    color:var(--paper-dim);
+    font-size:12.5px;
+    font-family:'JetBrains Mono', monospace;
+    display:block;
+    margin-top:2px;
+  }
+  .movements li.line-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--orange-2);
+    text-transform:uppercase;
+    letter-spacing:1px;
+    padding-top:14px;
+  }
+  .movements li.line-label::before{display:none;}
+  .notes{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px;
+    color:var(--paper-dim);
+    line-height:1.6;
+    border-left:2px solid var(--orange-dim);
+    padding-left:12px;
+  }
+  .notes b{color:var(--orange-2);}
+
+  footer{
+    margin-top:40px;
+    text-align:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--line);
+  }
+
+  @media (max-width:480px){
+    .panel{padding:14px;}
+    .card{padding:20px 16px 18px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 48 48" fill="none">
+        <rect x="4" y="20" width="6" height="8" fill="#ff5a1f"/>
+        <rect x="12" y="14" width="6" height="20" fill="#ff5a1f"/>
+        <rect x="20" y="21" width="8" height="6" fill="#f3ede0"/>
+        <rect x="30" y="14" width="6" height="20" fill="#ff5a1f"/>
+        <rect x="38" y="20" width="6" height="8" fill="#ff5a1f"/>
+      </svg>
+      <div>
+        <h1>WOD<span>/</span>RANDOM</h1>
+        <div class="tagline">generador de circuitos</div>
+      </div>
+    </div>
+    <div class="count-badge" id="countBadge">
+      <b id="totalCount">0</b><br>wods cargados
+    </div>
+  </header>
+
+  <div class="panel">
+    <p class="panel-title">Formato</p>
+    <div class="field">
+      <div class="chip-row" id="formatoRow"></div>
+    </div>
+
+    <p class="panel-title" style="margin-top:20px;">Tiempo de trabajo</p>
+    <div class="field">
+      <div class="chip-row" id="tiempoRow"></div>
+    </div>
+
+    <p class="panel-title" style="margin-top:20px;">Dificultad</p>
+    <div class="field">
+      <div class="chip-row" id="dificultadRow"></div>
+    </div>
+  </div>
+
+  <button class="roll-btn" id="rollBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="3" y="3" width="18" height="18" rx="2"/>
+      <circle cx="8" cy="8" r="1.2" fill="currentColor" stroke="none"/>
+      <circle cx="16" cy="8" r="1.2" fill="currentColor" stroke="none"/>
+      <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/>
+      <circle cx="8" cy="16" r="1.2" fill="currentColor" stroke="none"/>
+      <circle cx="16" cy="16" r="1.2" fill="currentColor" stroke="none"/>
+    </svg>
+    Tirar WOD
+  </button>
+
+  <div id="result">
+    <div class="empty-state">Elegí los filtros y tocá "Tirar WOD"</div>
+  </div>
+
+  <footer>WOD/RANDOM &mdash; biblioteca propia de circuitos</footer>
+</div>
+
+<script>
+// ============================================================
+// Biblioteca de WODs
+// format: "AMRAP" | "EMOM" | "FOR_TIME" | "TABATA" | "A_COMPLETAR"
+// difficulty: "facil" | "moderado" | "dificil"
+// duration: minutos de trabajo (para filtrar por tiempo)
+// ============================================================
+
+const WODS = [
+
+  // ---------------- FACILES 1-17 ----------------
+  {
+    id: 1, name: "RUN & BURPEE", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "facil",
+    movements: ["100 m carrera", "8 burpees", "12 air squats"],
+    notes: "Dosis: 10' continuos."
+  },
+  {
+    id: 2, name: "KB ENGINE", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "facil",
+    movements: ["12 KB swings", "10 goblet squats", "8 push-ups"],
+    notes: "KB: moderada, que permita 12 reps fluidas."
+  },
+  {
+    id: 3, name: "ROW & SQUAT", format: "EMOM", scheme: "EMOM 10'",
+    duration: 10, difficulty: "facil",
+    movements: ["Minutos impares: 12/10 cal remo", "Minutos pares: 15 air squats"],
+    notes: "Dosis: 5 × 12/10 cal + 5 × 15 squats."
+  },
+  {
+    id: 4, name: "BURPEE LADDER", format: "AMRAP", scheme: "AMRAP 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["5 burpees", "10 walking lunges", "15 mountain climbers / lado"],
+    notes: "Cada ronda vuelve a 5 burpees."
+  },
+  {
+    id: 5, name: "FARMER ENGINE", format: "EMOM", scheme: "E2MOM 10'",
+    duration: 10, difficulty: "facil",
+    movements: ["40 m Farmer Carry", "12 goblet squats", "Tiempo restante: descanso"],
+    notes: "Dosis: 5 rondas."
+  },
+  {
+    id: 6, name: "STEP & SWING", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "facil",
+    movements: ["10 box step-ups", "15 KB swings", "10 push-ups"],
+    notes: "Caja: 40–50 cm."
+  },
+  {
+    id: 7, name: "RUNNING COUPLET", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 10, difficulty: "facil",
+    movements: ["200 m carrera", "10 air squats"],
+    notes: "Cap: 10'."
+  },
+  {
+    id: 8, name: "SIMPLE METCON", format: "AMRAP", scheme: "AMRAP 15'",
+    duration: 15, difficulty: "facil",
+    movements: ["10 KB deadlifts", "10 push-ups", "10 walking lunges", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 9, name: "BURPEE + KB", format: "EMOM", scheme: "EMOM 10'",
+    duration: 10, difficulty: "facil",
+    movements: ["Min 1: 10 burpees", "Min 2: 15 KB swings"],
+    notes: "Alternar. Dosis: 5 × 10 + 5 × 15."
+  },
+  {
+    id: 10, name: "ROWING LADDER", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "facil",
+    movements: ["8 cal remo", "10 KB swings", "12 air squats"],
+    notes: ""
+  },
+  {
+    id: 11, name: "BOX ENGINE", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "facil",
+    movements: ["10 box step-ups", "10 KB deadlifts", "10 push-ups"],
+    notes: ""
+  },
+  {
+    id: 12, name: "30/30 ENGINE", format: "TABATA", scheme: "10 rondas — 30\"/30\"",
+    duration: 10, difficulty: "facil",
+    movements: ["30\" remo", "30\" descanso"],
+    notes: "Dosis: 10'. Objetivo: máxima producción sostenible, no sprint absoluto."
+  },
+  {
+    id: 13, name: "RUN + CARRY", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "facil",
+    movements: ["100 m carrera", "30 m Farmer Carry", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 14, name: "FULL BODY 10", format: "EMOM", scheme: "EMOM 10'",
+    duration: 10, difficulty: "facil",
+    movements: ["Cada minuto: 5 KB deadlifts", "5 KB swings", "5 goblet squats"],
+    notes: "Dosis: 15 reps/min × 10."
+  },
+  {
+    id: 15, name: "SQUAT & BURPEE", format: "AMRAP", scheme: "AMRAP 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["12 air squats", "8 burpees", "12 alternating reverse lunges"],
+    notes: ""
+  },
+  {
+    id: 16, name: "ROW + KB", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "facil",
+    movements: ["10 cal remo", "12 KB swings", "10 goblet squats"],
+    notes: ""
+  },
+  {
+    id: 17, name: "5×3 METCON", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 12, difficulty: "facil",
+    movements: ["300 m carrera", "10 push-ups", "15 air squats"],
+    notes: "Cap: 12'."
+  },
+
+  // ---------------- MODERADOS 18-34 ----------------
+  {
+    id: 18, name: "JACK LITE", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "moderado",
+    movements: ["8 DB push press", "10 KB swings", "10 box jumps"],
+    notes: "Dosis: 10'. Inspirado en la estructura clásica de Jack, reducida a este rango metabólico."
+  },
+  {
+    id: 19, name: "DB CYCLER", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["8 DB hang power cleans", "8 DB front squats", "8 DB push press", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 20, name: "BARBELL METCON", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["Min 1: 10 deadlifts", "Min 2: 8 hang power cleans", "Min 3: 10 front squats"],
+    notes: "Dosis: 4 ciclos. Carga ligera/moderada."
+  },
+  {
+    id: 21, name: "BOX JUMP + SWING", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["10 box jumps", "15 KB swings", "10 burpees"],
+    notes: "Combinación clásica de MetCon de alta densidad."
+  },
+  {
+    id: 22, name: "DOUBLE UNDER ENGINE", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "moderado",
+    movements: ["30 double-unders", "10 DB thrusters", "10 burpees"],
+    notes: "Escala: 60 single-unders."
+  },
+  {
+    id: 23, name: "ROW + THRUSTER", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["250 m remo", "10 DB thrusters", "10 burpees"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 24, name: "BARBELL 21", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "moderado",
+    movements: ["7 deadlifts", "7 hang power cleans", "7 push press"],
+    notes: "Carga que permita realizar cada bloque sin llegar al fallo."
+  },
+  {
+    id: 25, name: "BURPEE BOX", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "moderado",
+    movements: ["5 burpee box jump-overs", "10 KB swings", "15 air squats"],
+    notes: ""
+  },
+  {
+    id: 26, name: "RUNNING DB", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["200 m carrera", "10 DB hang cleans", "10 DB push press"],
+    notes: ""
+  },
+  {
+    id: 27, name: "PULL + RUN", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "moderado",
+    movements: ["5 pull-ups", "10 KB swings", "100 m carrera"],
+    notes: "Escala: ring rows."
+  },
+  {
+    id: 28, name: "40/20", format: "EMOM", scheme: "EMOM 10' (40\"/20\")",
+    duration: 10, difficulty: "moderado",
+    movements: ["40\" trabajo / 20\" descanso — alternar:", "1. Burpees", "2. KB swings"],
+    notes: "Dosis: 5 × cada ejercicio."
+  },
+  {
+    id: 29, name: "DB SNATCH ENGINE", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "moderado",
+    movements: ["8 DB snatches alternados", "10 box jumps", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 30, name: "12-MINUTE CHIPPER", format: "FOR_TIME", scheme: "For Time — Cap 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["30 KB swings", "20 box jumps", "20 push-ups", "15 DB thrusters", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 31, name: "CLEAN & RUN", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["Min 1: 8 DB hang power cleans", "Min 2: 100 m carrera", "Min 3: 8 burpees"],
+    notes: "Dosis: 4 vueltas."
+  },
+  {
+    id: 32, name: "BARBELL + BOX", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["8 deadlifts", "8 hang power cleans", "8 box jumps", "8 push-ups"],
+    notes: ""
+  },
+  {
+    id: 33, name: "ROWING BURPEE", format: "EMOM", scheme: "E2MOM 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["Cada 2': 12/10 cal remo", "8 burpees", "6 DB thrusters"],
+    notes: "Dosis: 6 rondas."
+  },
+  {
+    id: 34, name: "DOUBLE UNDER COMPLEX", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["40 double-unders", "10 DB hang cleans", "10 DB front squats", "10 push-ups"],
+    notes: ""
+  },
+
+  // ---------------- DIFICILES 35-50 ----------------
+  {
+    id: 35, name: "POWER CLEAN ENGINE", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "dificil",
+    movements: ["6 power cleans", "8 burpees over bar", "10 box jumps"],
+    notes: "Carga: moderada, permitiendo series de 6."
+  },
+  {
+    id: 36, name: "BARBELL COMPLEX", format: "EMOM", scheme: "EMOM 10'",
+    duration: 10, difficulty: "dificil",
+    movements: ["Cada minuto: 5 deadlifts", "5 hang power cleans", "5 front squats", "5 push press"],
+    notes: "Dosis: 10 complejos. Carga ligera/moderada."
+  },
+  {
+    id: 37, name: "SNATCH & BURPEE", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "dificil",
+    movements: ["5 power snatches", "8 burpees", "10 box jumps"],
+    notes: ""
+  },
+  {
+    id: 38, name: "CLEAN + THRUSTER", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "dificil",
+    movements: ["5 squat cleans", "10 thrusters", "10 burpees"],
+    notes: "Carga moderada."
+  },
+  {
+    id: 39, name: "PULL-UP ENGINE", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "dificil",
+    movements: ["6 kipping pull-ups", "10 DB snatches", "12 box jumps"],
+    notes: ""
+  },
+  {
+    id: 40, name: "BARBELL CYCLING", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "dificil",
+    movements: ["Min 1: 8 power cleans", "Min 2: 8 front squats", "Min 3: 8 push jerks"],
+    notes: "Dosis: 4 ciclos."
+  },
+  {
+    id: 41, name: "OVERHEAD ENGINE", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "dificil",
+    movements: ["6 power snatches", "10 overhead squats", "8 burpees over bar"],
+    notes: "Carga técnica, no máxima."
+  },
+  {
+    id: 42, name: "TOES + THRUSTER", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "dificil",
+    movements: ["8 toes-to-bar", "10 DB thrusters", "12 box jumps"],
+    notes: "Escala: hanging knee raises."
+  },
+  {
+    id: 43, name: "CLEAN & RUN", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 12, difficulty: "dificil",
+    movements: ["200 m carrera", "6 squat cleans", "8 burpees over bar"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 44, name: "GYMNASTIC METCON", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "dificil",
+    movements: ["5 pull-ups", "10 toes-to-bar", "15 box jumps", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 45, name: "SNATCH LADDER", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "dificil",
+    movements: ["3 power snatches", "6 overhead squats", "9 burpees"],
+    notes: "Cada ronda: 3 → 6 → 9."
+  },
+  {
+    id: 46, name: "BARBELL & BOX", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "dificil",
+    movements: ["6 squat cleans", "8 burpee box jump-overs", "10 push jerks"],
+    notes: ""
+  },
+  {
+    id: 47, name: "DOUBLE UNDER SNATCH", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "dificil",
+    movements: ["30 double-unders", "6 power snatches", "8 toes-to-bar", "10 box jumps"],
+    notes: ""
+  },
+  {
+    id: 48, name: "CLEAN COMPLEX", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "dificil",
+    movements: ["Min 1: 5 squat cleans", "Min 2: 8 burpees over bar", "Min 3: 10 front rack reverse lunges"],
+    notes: "Dosis: 4 ciclos."
+  },
+  {
+    id: 49, name: "GYM + BARBELL", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "dificil",
+    movements: ["5 toes-to-bar", "5 squat cleans", "10 box jumps", "5 push jerks", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 50, name: "FINAL METCON", format: "FOR_TIME", scheme: "For Time — Cap 15' — 3 rondas",
+    duration: 15, difficulty: "dificil",
+    movements: ["400 m carrera", "10 power cleans", "10 burpees over bar", "10 toes-to-bar", "10 box jumps"],
+    notes: "Objetivo: ritmo sostenido y transiciones rápidas; no convertir el WOD en un test de fuerza."
+  },
+
+  // ---------------- FACILES 51-67 ----------------
+  {
+    id: 51, name: "FARMER RUN", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "facil",
+    movements: ["30 m Farmer Carry", "100 m carrera", "12 air squats"],
+    notes: ""
+  },
+  {
+    id: 52, name: "TRX ENGINE", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "facil",
+    movements: ["10 TRX rows", "12 reverse lunges", "10 push-ups", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 53, name: "LANDMINE BASIC", format: "EMOM", scheme: "EMOM 10'",
+    duration: 10, difficulty: "facil",
+    movements: ["Min 1: 10 landmine squats", "Min 2: 10 landmine presses alternados"],
+    notes: "Dosis: 5 × cada movimiento."
+  },
+  {
+    id: 54, name: "TRAP BAR ENGINE", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "facil",
+    movements: ["10 trap-bar deadlifts", "10 box step-ups", "100 m carrera"],
+    notes: "Carga moderada."
+  },
+  {
+    id: 55, name: "ROPELESS RUNNER", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "facil",
+    movements: ["150 m carrera", "12 KB deadlifts", "12 walking lunges", "10 push-ups"],
+    notes: ""
+  },
+  {
+    id: 56, name: "PULLEY CIRCUIT", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "facil",
+    movements: ["Min 1: 12 cable rows", "Min 2: 12 cable presses", "Min 3: 12 cable squats"],
+    notes: "Dosis: 4 ciclos."
+  },
+  {
+    id: 57, name: "BOX & CARRY", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "facil",
+    movements: ["10 box step-ups", "30 m Farmer Carry", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 58, name: "TRX LEGS", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "facil",
+    movements: ["12 TRX-assisted squats", "10 TRX rows", "12 alternating lunges", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 59, name: "GRASS ENGINE", format: "EMOM", scheme: "E2MOM 10'",
+    duration: 10, difficulty: "facil",
+    movements: ["60 m sprint", "10 KB swings", "10 air squats"],
+    notes: "Dosis: 5 rondas."
+  },
+  {
+    id: 60, name: "KB + RUN", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 10, difficulty: "facil",
+    movements: ["150 m carrera", "12 KB swings", "10 goblet squats"],
+    notes: "Cap: 10'."
+  },
+  {
+    id: 61, name: "FARMER LADDER", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "facil",
+    movements: ["20 m Farmer Carry", "10 box step-ups", "10 push-ups", "20 m Farmer Carry"],
+    notes: ""
+  },
+  {
+    id: 62, name: "TRAP BAR + BURPEE", format: "EMOM", scheme: "EMOM 10'",
+    duration: 10, difficulty: "facil",
+    movements: ["8 trap-bar deadlifts", "6 burpees"],
+    notes: "Alternar cada minuto. Dosis: 5 × cada movimiento."
+  },
+  {
+    id: 63, name: "LANDMINE SQUAT", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "facil",
+    movements: ["12 landmine squats", "10 push-ups", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 64, name: "CARRY & SQUAT", format: "AMRAP", scheme: "AMRAP 15'",
+    duration: 15, difficulty: "facil",
+    movements: ["40 m Farmer Carry", "15 air squats", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 65, name: "TRX + KB", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "facil",
+    movements: ["10 TRX rows", "15 KB swings", "10 reverse lunges"],
+    notes: ""
+  },
+  {
+    id: 66, name: "ROW & CARRY", format: "EMOM", scheme: "E2MOM 12'",
+    duration: 12, difficulty: "facil",
+    movements: ["10/8 cal remo", "30 m Farmer Carry", "8 burpees"],
+    notes: "Dosis: 6 rondas."
+  },
+  {
+    id: 67, name: "SIMPLE GRASS", format: "AMRAP", scheme: "AMRAP 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["50 m carrera", "10 KB swings", "10 walking lunges", "5 burpees"],
+    notes: ""
+  },
+
+  // ---------------- MODERADOS 68-84 ----------------
+  {
+    id: 68, name: "TRAP BAR COMPLEX", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "moderado",
+    movements: ["8 trap-bar deadlifts", "8 box jumps", "10 DB push press", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 69, name: "LANDMINE CONDITIONING", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["8 landmine reverse lunges", "8 landmine presses", "10 box jumps", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 70, name: "FARMER + BURPEE", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "moderado",
+    movements: ["30 m Farmer Carry", "8 burpees over dumbbells", "12 DB hang cleans"],
+    notes: ""
+  },
+  {
+    id: 71, name: "TRX METCON", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["8 TRX rows", "8 TRX pike", "12 KB swings", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 72, name: "SWISS BAR ENGINE", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["Min 1: 8 Swiss-bar push press", "Min 2: 10 Swiss-bar front squats", "Min 3: 10 box jumps"],
+    notes: "Dosis: 4 ciclos."
+  },
+  {
+    id: 73, name: "CAMBER CONDITIONING", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "moderado",
+    movements: ["8 Camber-bar squats", "10 burpees", "100 m carrera"],
+    notes: "Carga moderada."
+  },
+  {
+    id: 74, name: "PULLEY + BOX", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["10 cable rows", "10 cable squats", "10 box jumps", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 75, name: "LANDMINE ROTATION", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "moderado",
+    movements: ["10 landmine rotations", "10 DB thrusters", "10 box jumps"],
+    notes: ""
+  },
+  {
+    id: 76, name: "TRAP BAR + RUN", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["200 m carrera", "8 trap-bar deadlifts", "8 burpees"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 77, name: "FARMER SPRINT", format: "TABATA", scheme: "10 rondas",
+    duration: 10, difficulty: "moderado",
+    movements: ["20 m Farmer Carry", "40 m sprint", "20\" descanso"],
+    notes: "Dosis total: 10'."
+  },
+  {
+    id: 78, name: "DB + TRX", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["8 DB hang cleans", "10 TRX rows", "10 DB push press", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 79, name: "LANDMINE COMPLEX", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["Cada minuto: 5 landmine squats", "5 landmine presses", "5 reverse lunges"],
+    notes: "Dosis: 15 reps/min × 12."
+  },
+  {
+    id: 80, name: "BOX + FARMER", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["10 box jumps", "30 m Farmer Carry", "10 DB push press", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 81, name: "PULLEY ENGINE", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "moderado",
+    movements: ["12 cable rows", "12 cable presses", "12 cable squats", "50 m carrera"],
+    notes: ""
+  },
+  {
+    id: 82, name: "SAFETY BAR METCON", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "moderado",
+    movements: ["8 Safety-bar squats", "8 burpees", "100 m carrera"],
+    notes: "Carga ligera/moderada."
+  },
+  {
+    id: 83, name: "TRAP BAR + BOX", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["10 trap-bar deadlifts", "10 box jumps", "10 DB snatches", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 84, name: "GRASS & KB", format: "FOR_TIME", scheme: "For Time — 4 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["200 m carrera", "12 KB swings", "10 burpees", "10 goblet squats"],
+    notes: "Cap: 12'."
+  },
+
+  // ---------------- DIFICILES 85-100 ----------------
+  {
+    id: 85, name: "TRAP BAR HIGH PULL", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "dificil",
+    movements: ["6 trap-bar high pulls", "8 burpee box jump-overs", "100 m carrera"],
+    notes: "Carga técnica y moderada."
+  },
+  {
+    id: 86, name: "LANDMINE CLEAN", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "dificil",
+    movements: ["6 landmine cleans", "8 landmine presses", "10 box jumps", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 87, name: "SWISS BAR COMPLEX", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "dificil",
+    movements: ["Cada minuto: 5 Swiss-bar deadlifts", "5 Swiss-bar hang cleans", "5 Swiss-bar push presses"],
+    notes: "Dosis: 15 reps × 12."
+  },
+  {
+    id: 88, name: "CAMBER CYCLING", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "dificil",
+    movements: ["6 Camber-bar squats", "8 Camber-bar reverse lunges", "8 burpees over bar", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 89, name: "TRX GYMNASTIC", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "dificil",
+    movements: ["8 TRX pike", "10 TRX rows", "10 DB snatches", "10 box jumps"],
+    notes: ""
+  },
+  {
+    id: 90, name: "LANDMINE COMPLEX II", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "dificil",
+    movements: ["5 landmine cleans", "5 landmine squats", "5 landmine presses", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 91, name: "BAR + GRASS", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 12, difficulty: "dificil",
+    movements: ["200 m carrera", "5 power cleans", "8 burpee box jump-overs", "5 push jerks"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 92, name: "SAFETY BAR ENGINE", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "dificil",
+    movements: ["6 Safety-bar squats", "8 DB hang cleans", "10 box jumps", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 93, name: "FARMER COMPLEX", format: "EMOM", scheme: "E2MOM 12'",
+    duration: 12, difficulty: "dificil",
+    movements: ["Cada 2': 40 m Farmer Carry", "8 DB hang cleans", "6 burpees over dumbbells"],
+    notes: "Dosis: 6 rondas."
+  },
+  {
+    id: 94, name: "LANDMINE ROTATIONAL", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "dificil",
+    movements: ["8 landmine rotations", "6 landmine cleans", "8 DB thrusters", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 95, name: "PULL + GRASS", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "dificil",
+    movements: ["6 pull-ups", "10 DB snatches", "10 box jumps", "150 m carrera"],
+    notes: ""
+  },
+  {
+    id: 96, name: "TRX + BARBELL", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "dificil",
+    movements: ["6 TRX pike", "6 power cleans", "8 burpees over bar", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 97, name: "SWISS BAR CYCLER", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "dificil",
+    movements: ["6 Swiss-bar hang cleans", "8 Swiss-bar push presses", "10 box jumps", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 98, name: "COMPLEX 15", format: "EMOM", scheme: "EMOM 15'",
+    duration: 15, difficulty: "dificil",
+    movements: ["Min 1: 5 power cleans + 5 front squats", "Min 2: 8 burpees + 8 box jumps", "Min 3: 10 DB snatches alternados"],
+    notes: "Dosis: 5 ciclos."
+  },
+  {
+    id: 99, name: "LANDMINE & BURPEE", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "dificil",
+    movements: ["5 landmine cleans", "5 landmine presses", "8 burpee box jump-overs", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 100, name: "THE GYM ENGINE", format: "FOR_TIME", scheme: "For Time — Cap 15' — 3 rondas",
+    duration: 15, difficulty: "dificil",
+    movements: ["300 m carrera", "8 trap-bar deadlifts", "8 DB hang cleans", "8 box jumps", "6 burpees over dumbbells", "8 landmine presses"],
+    notes: "Objetivo: mantener velocidad constante y minimizar las transiciones."
+  },
+
+];
+
+// ============================================================
+// App logic
+// ============================================================
+
+const FORMATOS = [
+  { key: "ANY", label: "Todos" },
+  { key: "A_COMPLETAR", label: "A Completar" },
+  { key: "FOR_TIME", label: "For Time" },
+  { key: "EMOM", label: "EMOM" },
+  { key: "AMRAP", label: "AMRAP" },
+  { key: "TABATA", label: "Tabata" },
+];
+
+const DIFICULTADES = [
+  { key: "ANY", label: "Cualquiera", cls: "" },
+  { key: "facil", label: "Fácil", cls: "dif-facil" },
+  { key: "moderado", label: "Moderado", cls: "dif-moderado" },
+  { key: "dificil", label: "Difícil", cls: "dif-dificil" },
+];
+
+const state = {
+  formato: "ANY",
+  tiempo: "ANY",
+  dificultad: "ANY",
+};
+
+// Historial de usados por combinación de filtros, para no repetir hasta agotar
+const usedHistory = {};
+
+function getTiempoOptions() {
+  const set = new Set(WODS.map(w => w.duration));
+  return Array.from(set).sort((a, b) => a - b);
+}
+
+function buildChipRow(container, options, stateKey, getLabel, getCls) {
+  container.innerHTML = "";
+  options.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.className = "chip";
+    if (getCls) {
+      const c = getCls(opt);
+      if (c) btn.classList.add(c);
+    }
+    btn.textContent = getLabel(opt);
+    btn.dataset.value = opt.key !== undefined ? opt.key : opt;
+    if (state[stateKey] === btn.dataset.value) btn.classList.add("active");
+    btn.addEventListener("click", () => {
+      state[stateKey] = btn.dataset.value;
+      container.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+      btn.classList.add("active");
+    });
+    container.appendChild(btn);
+  });
+}
+
+function initFilters() {
+  buildChipRow(
+    document.getElementById("formatoRow"),
+    FORMATOS,
+    "formato",
+    o => o.label
+  );
+
+  const tiempos = [{ key: "ANY", label: "Cualquiera" }, ...getTiempoOptions().map(t => ({ key: String(t), label: t + "'" }))];
+  buildChipRow(
+    document.getElementById("tiempoRow"),
+    tiempos,
+    "tiempo",
+    o => o.label
+  );
+
+  buildChipRow(
+    document.getElementById("dificultadRow"),
+    DIFICULTADES,
+    "dificultad",
+    o => o.label,
+    o => o.cls
+  );
+
+  document.getElementById("totalCount").textContent = WODS.length;
+}
+
+function matchesFilters(w) {
+  if (state.formato !== "ANY" && w.format !== state.formato) return false;
+  if (state.tiempo !== "ANY" && String(w.duration) !== state.tiempo) return false;
+  if (state.dificultad !== "ANY" && w.difficulty !== state.dificultad) return false;
+  return true;
+}
+
+function filterKey() {
+  return `${state.formato}|${state.tiempo}|${state.dificultad}`;
+}
+
+function pickRandomWod() {
+  const pool = WODS.filter(matchesFilters);
+  if (pool.length === 0) return { pool, picked: null };
+
+  const key = filterKey();
+  if (!usedHistory[key]) usedHistory[key] = new Set();
+  let used = usedHistory[key];
+
+  let candidates = pool.filter(w => !used.has(w.id));
+  if (candidates.length === 0) {
+    used.clear();
+    candidates = pool;
+  }
+
+  const picked = candidates[Math.floor(Math.random() * candidates.length)];
+  used.add(picked.id);
+  return { pool, picked };
+}
+
+const DIFF_LABELS = { facil: "Fácil", moderado: "Moderado", dificil: "Difícil" };
+const FORMAT_LABELS = {
+  AMRAP: "AMRAP", EMOM: "EMOM", FOR_TIME: "For Time",
+  TABATA: "Tabata", A_COMPLETAR: "A Completar"
+};
+
+function renderWod(w) {
+  const el = document.getElementById("result");
+  const movementsHtml = w.movements.map(m => `<li>${escapeHtml(m)}</li>`).join("");
+  const notesHtml = w.notes ? `<div class="notes"><b>Nota:</b> ${escapeHtml(w.notes)}</div>` : "";
+
+  el.innerHTML = `
+    <div class="card">
+      <div class="card-top">
+        <span class="wod-num">WOD #${String(w.id).padStart(2, "0")}</span>
+        <span class="diff-tag diff-${w.difficulty}">${DIFF_LABELS[w.difficulty]}</span>
+      </div>
+      <h2 class="wod-name">${escapeHtml(w.name)}</h2>
+      <div class="scheme-row">
+        <span class="scheme-badge">${FORMAT_LABELS[w.format]}</span>
+        <span class="scheme-time">${escapeHtml(w.scheme)}</span>
+      </div>
+      <ul class="movements">${movementsHtml}</ul>
+      ${notesHtml}
+    </div>
+  `;
+}
+
+function renderNoMatch() {
+  const el = document.getElementById("result");
+  el.innerHTML = `<div class="no-match">No hay WODs cargados todavía con esta combinación de filtros.<br>Probá otra combinación.</div>`;
+}
+
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function handleRoll() {
+  const btn = document.getElementById("rollBtn");
+  btn.classList.add("rolling");
+  btn.disabled = true;
+
+  setTimeout(() => {
+    const { picked } = pickRandomWod();
+    if (!picked) {
+      renderNoMatch();
+    } else {
+      renderWod(picked);
+    }
+    btn.classList.remove("rolling");
+    btn.disabled = false;
+  }, 260);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initFilters();
+  document.getElementById("rollBtn").addEventListener("click", handleRoll);
+});
+
+</script>
+</body>
+</html>
