@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Generador de WOD</title>
+<title>Circuitos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500;700&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet">
 <style>
   :root{
     --black:#0c0b0a;
@@ -42,20 +42,39 @@
   /* ---------- header ---------- */
   header{
     display:flex;
-    align-items:flex-end;
-    justify-content:space-between;
+    justify-content:center;
     border-bottom:3px solid var(--orange);
     padding-bottom:14px;
-    margin-bottom:26px;
+    margin-bottom:10px;
   }
   .brand{
     display:flex;
+    flex-direction:row;
     align-items:center;
-    gap:12px;
+    justify-content:center;
+    gap:14px;
+    text-align:center;
+  }
+  .disclaimer{
+    text-align:center;
+    font-family:'Archivo', sans-serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:12px;
+    line-height:1.5;
+    color:var(--paper-dim);
+    max-width:520px;
+    margin:0 auto 26px;
+  }
+  .disclaimer b{
+    font-style:normal;
+    color:var(--orange-2);
   }
   .brand-mark{
-    width:38px;height:38px;
+    width:58px;height:58px;
     flex:none;
+    object-fit:contain;
+    filter:drop-shadow(0 0 6px rgba(255,90,31,0.35));
   }
   h1{
     font-family:'Anton', sans-serif;
@@ -69,23 +88,14 @@
   }
   h1 span{color:var(--orange);}
   .tagline{
-    font-family:'JetBrains Mono', monospace;
-    font-size:11px;
+    font-family:'Oswald', sans-serif;
+    font-weight:600;
+    font-size:12px;
     letter-spacing:2px;
     text-transform:uppercase;
     color:var(--orange-2);
-    margin-top:2px;
+    margin-top:3px;
   }
-  .count-badge{
-    font-family:'JetBrains Mono', monospace;
-    font-size:11px;
-    color:var(--paper-dim);
-    text-align:right;
-    letter-spacing:0.5px;
-    white-space:nowrap;
-  }
-  .count-badge b{color:var(--orange-2); font-size:16px;}
-
   /* ---------- filters ---------- */
   .panel{
     background:var(--black-2);
@@ -94,8 +104,9 @@
     margin-bottom:20px;
   }
   .panel-title{
-    font-family:'JetBrains Mono', monospace;
-    font-size:11px;
+    font-family:'Oswald', sans-serif;
+    font-weight:600;
+    font-size:13px;
     letter-spacing:2px;
     text-transform:uppercase;
     color:var(--paper-dim);
@@ -126,6 +137,7 @@
   .chip-row{
     display:flex;
     flex-wrap:wrap;
+    align-items:flex-start;
     gap:8px;
   }
   .chip{
@@ -133,14 +145,14 @@
     background:var(--black-3);
     border:1px solid var(--line);
     color:var(--paper);
-    font-family:'Archivo', sans-serif;
+    font-family:'Oswald', sans-serif;
     font-weight:600;
-    font-size:13.5px;
+    font-size:14.5px;
     padding:9px 14px;
     cursor:pointer;
     transition:all .12s ease;
     text-transform:uppercase;
-    letter-spacing:0.3px;
+    letter-spacing:0.5px;
   }
   .chip:hover{border-color:var(--orange-2);}
   .chip.active{
@@ -151,6 +163,20 @@
   .chip.dif-facil.active{background:var(--green); border-color:var(--green); color:var(--black);}
   .chip.dif-moderado.active{background:var(--amber); border-color:var(--amber); color:var(--black);}
   .chip.dif-dificil.active{background:var(--red); border-color:var(--red); color:var(--paper);}
+  .chip-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:5px;
+  }
+  .chip-caption{
+    font-family:'Archivo', sans-serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:12px;
+    color:var(--paper-dim);
+    text-align:center;
+  }
 
   /* ---------- action button ---------- */
   .roll-btn{
@@ -292,6 +318,22 @@
     flex:none;
     transform:translateY(-2px);
   }
+  .movements li{ justify-content:space-between; }
+  .movements li .mv-text{ flex:1; }
+  .movements li .ex-yt{
+    flex:none;
+    width:22px;height:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#ff0000;
+    color:var(--paper);
+    text-decoration:none;
+    font-size:9px;
+    border-radius:50%;
+    transition:transform .12s ease, opacity .12s ease;
+  }
+  .movements li .ex-yt:hover{ transform:scale(1.12); opacity:0.9; }
   .movements li .sub{
     color:var(--paper-dim);
     font-size:12.5px;
@@ -331,6 +373,37 @@
   @media (max-width:480px){
     .panel{padding:14px;}
     .card{padding:20px 16px 18px;}
+    .chip-row{
+      display:grid;
+      grid-template-columns:repeat(2, 1fr);
+      gap:8px;
+    }
+    .chip-row .chip{
+      width:100%;
+      padding:10px 8px;
+      font-size:13px;
+    }
+    .chip-wrap{
+      width:100%;
+      gap:2px;
+      border:1px solid var(--line);
+      background:var(--black-3);
+      padding:9px 8px 8px;
+      transition:all .12s ease;
+    }
+    .chip-wrap .chip{
+      border:none;
+      background:transparent;
+      padding:0;
+      width:auto;
+    }
+    .chip-wrap:has(.chip.active){
+      background:var(--orange);
+      border-color:var(--orange);
+    }
+    .chip-wrap:has(.chip.active) .chip{color:var(--black);}
+    .chip-wrap:has(.chip.active) .chip-caption{color:var(--black); opacity:0.7;}
+    .chip-caption{font-size:11px;}
   }
 </style>
 </head>
@@ -339,22 +412,15 @@
 
   <header>
     <div class="brand">
-      <svg class="brand-mark" viewBox="0 0 48 48" fill="none">
-        <rect x="4" y="20" width="6" height="8" fill="#ff5a1f"/>
-        <rect x="12" y="14" width="6" height="20" fill="#ff5a1f"/>
-        <rect x="20" y="21" width="8" height="6" fill="#f3ede0"/>
-        <rect x="30" y="14" width="6" height="20" fill="#ff5a1f"/>
-        <rect x="38" y="20" width="6" height="8" fill="#ff5a1f"/>
-      </svg>
+      <img class="brand-mark" src="logo.png" alt="Bumper.Fit">
       <div>
-        <h1>WOD<span>/</span>RANDOM</h1>
-        <div class="tagline">generador de circuitos</div>
+        <h1>CIRCUITOS</h1>
+        <div class="tagline">generador aleatorio</div>
       </div>
     </div>
-    <div class="count-badge" id="countBadge">
-      <b id="totalCount">0</b><br>wods cargados
-    </div>
   </header>
+
+  <p class="disclaimer">Esta app se creó con el fin de dar variabilidad a los trabajos finalizadores, no reemplaza un trabajo de fuerza.<br>Creada por <b>@leo.lovera</b> y <b>@bumper.fit</b></p>
 
   <div class="panel">
     <p class="panel-title">Formato</p>
@@ -1014,6 +1080,3040 @@ const WODS = [
     notes: "Objetivo: mantener velocidad constante y minimizar las transiciones."
   },
 
+  // ---------------- FACILES 101-134 ----------------
+  {
+    id: 101, name: "RUN & SQUAT", format: "AMRAP", scheme: "AMRAP 6'",
+    duration: 6, difficulty: "facil",
+    movements: ["100 m carrera", "12 air squats", "8 push-ups"],
+    notes: ""
+  },
+  {
+    id: 102, name: "KB EXPRESS", format: "AMRAP", scheme: "AMRAP 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["12 KB swings", "10 goblet squats", "8 burpees"],
+    notes: ""
+  },
+  {
+    id: 103, name: "FARMER DASH", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["Minutos impares: 30 m Farmer Carry", "Minutos pares: 10 burpees"],
+    notes: "Dosis: 4 × cada ejercicio."
+  },
+  {
+    id: 104, name: "BOX ENGINE", format: "AMRAP", scheme: "AMRAP 7'",
+    duration: 7, difficulty: "facil",
+    movements: ["10 box step-ups", "10 KB deadlifts", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 105, name: "ROW & LUNGE", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["Min 1: 10/8 cal remo", "Min 2: 12 walking lunges"],
+    notes: ""
+  },
+  {
+    id: 106, name: "BURPEE RUN", format: "FOR_TIME", scheme: "For Time — 4 rondas",
+    duration: 6, difficulty: "facil",
+    movements: ["100 m carrera", "8 burpees"],
+    notes: "Cap: 6'."
+  },
+  {
+    id: 107, name: "KB + RUN", format: "AMRAP", scheme: "AMRAP 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["10 KB swings", "100 m carrera", "10 air squats"],
+    notes: ""
+  },
+  {
+    id: 108, name: "CARRY & STEP", format: "EMOM", scheme: "E2MOM 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["40 m Farmer Carry", "10 box step-ups", "8 push-ups"],
+    notes: "Dosis: 4 rondas."
+  },
+  {
+    id: 109, name: "SIMPLE 7", format: "AMRAP", scheme: "AMRAP 7'",
+    duration: 7, difficulty: "facil",
+    movements: ["7 burpees", "14 air squats", "21 mountain climbers"],
+    notes: ""
+  },
+  {
+    id: 110, name: "ROW SPRINT", format: "TABATA", scheme: "10 × 30\"/30\"",
+    duration: 5, difficulty: "facil",
+    movements: ["30\" remo", "30\" descanso"],
+    notes: "Trabajo total: 5'. Duración del protocolo: 10'."
+  },
+  {
+    id: 111, name: "GRASS RUNNER", format: "AMRAP", scheme: "AMRAP 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["50 m carrera", "10 reverse lunges", "10 KB swings"],
+    notes: ""
+  },
+  {
+    id: 112, name: "FULL BODY 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["5 KB deadlifts", "5 goblet squats", "5 push-ups"],
+    notes: "Cada minuto, los 3 movimientos en orden."
+  },
+  {
+    id: 113, name: "BURPEE LADDER 6", format: "AMRAP", scheme: "AMRAP 6'",
+    duration: 6, difficulty: "facil",
+    movements: ["5 burpees", "10 KB swings", "15 air squats"],
+    notes: ""
+  },
+  {
+    id: 114, name: "FARMER 6", format: "AMRAP", scheme: "AMRAP 6'",
+    duration: 6, difficulty: "facil",
+    movements: ["30 m Farmer Carry", "10 box step-ups", "10 air squats"],
+    notes: ""
+  },
+  {
+    id: 115, name: "ROW & BURPEE", format: "AMRAP", scheme: "AMRAP 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["8/6 cal remo", "8 burpees", "12 walking lunges"],
+    notes: ""
+  },
+  {
+    id: 116, name: "KB COMPLEX", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["6 KB deadlifts", "6 KB swings", "6 goblet squats"],
+    notes: "Rotar los 3 movimientos cada minuto."
+  },
+  {
+    id: 117, name: "RUN 10", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 6, difficulty: "facil",
+    movements: ["100 m carrera", "10 air squats"],
+    notes: "Cap: 6'."
+  },
+  {
+    id: 118, name: "STEP & BURPEE", format: "AMRAP", scheme: "AMRAP 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["10 step-ups", "8 burpees", "10 KB deadlifts"],
+    notes: ""
+  },
+  {
+    id: 119, name: "GRASS & CARRY", format: "AMRAP", scheme: "AMRAP 7'",
+    duration: 7, difficulty: "facil",
+    movements: ["100 m carrera", "30 m Farmer Carry", "10 air squats"],
+    notes: ""
+  },
+  {
+    id: 120, name: "ROWING 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["Min 1: 12/10 cal remo", "Min 2: 10 burpees"],
+    notes: ""
+  },
+  {
+    id: 121, name: "KB LUNGE", format: "AMRAP", scheme: "AMRAP 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["10 goblet reverse lunges", "12 KB swings", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 122, name: "PUSH & RUN", format: "AMRAP", scheme: "AMRAP 6'",
+    duration: 6, difficulty: "facil",
+    movements: ["8 push-ups", "100 m carrera", "12 air squats"],
+    notes: ""
+  },
+  {
+    id: 123, name: "TRX BASIC", format: "AMRAP", scheme: "AMRAP 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["10 TRX rows", "10 reverse lunges", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 124, name: "LANDMINE BASIC 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["Min 1: 10 landmine squats", "Min 2: 10 landmine presses"],
+    notes: ""
+  },
+  {
+    id: 125, name: "TRAP BAR 8", format: "AMRAP", scheme: "AMRAP 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["8 trap-bar deadlifts", "8 box step-ups", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 126, name: "SIMPLE 12", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "facil",
+    movements: ["10 KB swings", "10 push-ups", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 127, name: "FARMER 12", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "facil",
+    movements: ["40 m Farmer Carry", "12 air squats", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 128, name: "ROW & STEP", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "facil",
+    movements: ["10/8 cal remo", "12 box step-ups", "10 push-ups"],
+    notes: ""
+  },
+  {
+    id: 129, name: "KB ENGINE 15", format: "AMRAP", scheme: "AMRAP 15'",
+    duration: 15, difficulty: "facil",
+    movements: ["12 KB swings", "10 goblet squats", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 130, name: "TRX ENGINE 10", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "facil",
+    movements: ["12 TRX rows", "12 reverse lunges", "10 push-ups", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 131, name: "RUN & CARRY", format: "AMRAP", scheme: "AMRAP 15'",
+    duration: 15, difficulty: "facil",
+    movements: ["200 m carrera", "40 m Farmer Carry", "12 air squats"],
+    notes: ""
+  },
+  {
+    id: 132, name: "LANDMINE 10", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "facil",
+    movements: ["12 landmine squats", "10 landmine presses", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 133, name: "TRAP BAR 15", format: "AMRAP", scheme: "AMRAP 15'",
+    duration: 15, difficulty: "facil",
+    movements: ["10 trap-bar deadlifts", "10 box step-ups", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 134, name: "LONG SIMPLE", format: "AMRAP", scheme: "AMRAP 18'",
+    duration: 18, difficulty: "facil",
+    movements: ["200 m carrera", "15 KB swings", "15 air squats", "10 push-ups"],
+    notes: ""
+  },
+
+  // ---------------- MODERADOS 135-167 ----------------
+  {
+    id: 135, name: "DB CYCLER", format: "AMRAP", scheme: "AMRAP 8'",
+    duration: 8, difficulty: "moderado",
+    movements: ["8 DB hang cleans", "8 DB push press", "10 box jumps"],
+    notes: ""
+  },
+  {
+    id: 136, name: "THRUSTER DASH", format: "AMRAP", scheme: "AMRAP 8'",
+    duration: 8, difficulty: "moderado",
+    movements: ["8 DB thrusters", "10 burpees", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 137, name: "BOX & SWING", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "moderado",
+    movements: ["10 box jumps", "15 KB swings", "10 DB push press"],
+    notes: ""
+  },
+  {
+    id: 138, name: "ROW THRUSTER", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["10/8 cal remo", "8 DB thrusters", "8 burpees"],
+    notes: ""
+  },
+  {
+    id: 139, name: "DOUBLE UNDER 8", format: "AMRAP", scheme: "AMRAP 8'",
+    duration: 8, difficulty: "moderado",
+    movements: ["30 double-unders", "8 DB snatches", "8 burpees"],
+    notes: "Escala: 60 single-unders."
+  },
+  {
+    id: 140, name: "DB RUN", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "moderado",
+    movements: ["150 m carrera", "10 DB hang cleans", "10 DB push press"],
+    notes: ""
+  },
+  {
+    id: 141, name: "BOX CYCLER", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["8 box jumps", "8 DB hang cleans", "8 burpees"],
+    notes: ""
+  },
+  {
+    id: 142, name: "PULL & RUN", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "moderado",
+    movements: ["5 pull-ups", "10 KB swings", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 143, name: "DB SNATCH 8", format: "AMRAP", scheme: "AMRAP 8'",
+    duration: 8, difficulty: "moderado",
+    movements: ["8 DB snatches", "10 box jumps", "8 burpees"],
+    notes: ""
+  },
+  {
+    id: 144, name: "BARBELL 10", format: "EMOM", scheme: "EMOM 10'",
+    duration: 10, difficulty: "moderado",
+    movements: ["8 deadlifts", "8 hang power cleans"],
+    notes: "Alternar cada minuto."
+  },
+  {
+    id: 145, name: "BURPEE BOX 12", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["8 burpee box jump-overs", "12 KB swings", "10 air squats"],
+    notes: ""
+  },
+  {
+    id: 146, name: "DB COMPLEX", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["4 DB hang cleans", "4 DB front squats", "4 DB push press"],
+    notes: "Cada minuto, en orden fijo."
+  },
+  {
+    id: 147, name: "ROW & CLEAN", format: "EMOM", scheme: "E2MOM 10'",
+    duration: 10, difficulty: "moderado",
+    movements: ["10/8 cal remo", "8 DB hang cleans", "6 burpees"],
+    notes: ""
+  },
+  {
+    id: 148, name: "BOX RUNNER", format: "AMRAP", scheme: "AMRAP 15'",
+    duration: 15, difficulty: "moderado",
+    movements: ["200 m carrera", "10 box jumps", "10 DB push press"],
+    notes: ""
+  },
+  {
+    id: 149, name: "THRUSTER ENGINE", format: "AMRAP", scheme: "AMRAP 15'",
+    duration: 15, difficulty: "moderado",
+    movements: ["10 DB thrusters", "10 burpees", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 150, name: "DOUBLE UNDER ENGINE 12", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["40 double-unders", "10 KB swings", "10 box jumps"],
+    notes: ""
+  },
+  {
+    id: 151, name: "PULL-UP ENGINE 15", format: "AMRAP", scheme: "AMRAP 15'",
+    duration: 15, difficulty: "moderado",
+    movements: ["5 pull-ups", "10 DB snatches", "15 box jumps", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 152, name: "BARBELL 15", format: "AMRAP", scheme: "AMRAP 15'",
+    duration: 15, difficulty: "moderado",
+    movements: ["7 deadlifts", "7 hang power cleans", "7 push press", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 153, name: "DB CHIPPER", format: "FOR_TIME", scheme: "For Time — Cap 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["30 DB hang cleans", "20 box jumps", "15 DB thrusters", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 154, name: "TRX + DB", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["10 TRX rows", "8 DB snatches", "10 DB push press", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 155, name: "LANDMINE COMPLEX 12", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["5 landmine squats", "5 landmine presses", "5 reverse lunges"],
+    notes: ""
+  },
+  {
+    id: 156, name: "TRAP BAR METCON", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["8 trap-bar deadlifts", "8 box jumps", "8 DB push press", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 157, name: "FARMER SPRINT", format: "EMOM", scheme: "E2MOM 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["30 m Farmer Carry", "100 m carrera", "6 burpees"],
+    notes: ""
+  },
+  {
+    id: 158, name: "SWISS BAR", format: "EMOM", scheme: "EMOM 15'",
+    duration: 15, difficulty: "moderado",
+    movements: ["1. 8 Swiss-bar push press", "2. 10 Swiss-bar front squats", "3. 10 box jumps"],
+    notes: "Rotar. Dosis: 5 ciclos."
+  },
+  {
+    id: 159, name: "LANDMINE RUN", format: "AMRAP", scheme: "AMRAP 15'",
+    duration: 15, difficulty: "moderado",
+    movements: ["8 landmine reverse lunges", "8 landmine presses", "100 m carrera", "8 burpees"],
+    notes: ""
+  },
+  {
+    id: 160, name: "SAFETY BAR", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["8 Safety-bar squats", "10 box jumps", "100 m carrera", "8 burpees"],
+    notes: ""
+  },
+  {
+    id: 161, name: "CAMBER ENGINE", format: "AMRAP", scheme: "AMRAP 15'",
+    duration: 15, difficulty: "moderado",
+    movements: ["8 Camber-bar squats", "10 KB swings", "10 box jumps", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 162, name: "PULLEY METCON", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["10 cable rows", "10 cable presses", "10 box step-ups", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 163, name: "TRX CONDITIONING", format: "AMRAP", scheme: "AMRAP 15'",
+    duration: 15, difficulty: "moderado",
+    movements: ["10 TRX rows", "10 TRX pike", "12 KB swings", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 164, name: "TRAP BAR + BURPEE 15", format: "AMRAP", scheme: "AMRAP 15'",
+    duration: 15, difficulty: "moderado",
+    movements: ["10 trap-bar deadlifts", "10 burpees", "10 box jumps", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 165, name: "GRASS METCON", format: "FOR_TIME", scheme: "For Time — 4 rondas",
+    duration: 15, difficulty: "moderado",
+    movements: ["200 m carrera", "10 DB hang cleans", "10 box jumps", "8 burpees"],
+    notes: "Cap: 15'."
+  },
+  {
+    id: 166, name: "FARMER LONG", format: "AMRAP", scheme: "AMRAP 18'",
+    duration: 18, difficulty: "moderado",
+    movements: ["40 m Farmer Carry", "200 m carrera", "12 KB swings", "10 push-ups"],
+    notes: ""
+  },
+  {
+    id: 167, name: "MIXED ENGINE", format: "AMRAP", scheme: "AMRAP 20'",
+    duration: 20, difficulty: "moderado",
+    movements: ["200 m carrera", "10 DB push press", "10 box jumps", "10 KB swings", "10 burpees"],
+    notes: ""
+  },
+
+  // ---------------- DIFICILES 168-200 ----------------
+  {
+    id: 168, name: "POWER CLEAN 8", format: "AMRAP", scheme: "AMRAP 8'",
+    duration: 8, difficulty: "dificil",
+    movements: ["5 power cleans", "8 burpees over bar", "10 box jumps"],
+    notes: ""
+  },
+  {
+    id: 169, name: "SNATCH DASH", format: "AMRAP", scheme: "AMRAP 8'",
+    duration: 8, difficulty: "dificil",
+    movements: ["5 power snatches", "8 burpees", "10 box jumps"],
+    notes: ""
+  },
+  {
+    id: 170, name: "CLEAN & THRUSTER 10", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "dificil",
+    movements: ["5 squat cleans", "8 DB thrusters", "8 burpees"],
+    notes: ""
+  },
+  {
+    id: 171, name: "TTB ENGINE", format: "AMRAP", scheme: "AMRAP 8'",
+    duration: 8, difficulty: "dificil",
+    movements: ["6 toes-to-bar", "8 DB thrusters", "10 box jumps"],
+    notes: ""
+  },
+  {
+    id: 172, name: "PULL-UP CYCLER", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "dificil",
+    movements: ["5 kipping pull-ups", "6 DB snatches", "10 box jumps", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 173, name: "BARBELL COMPLEX 12", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "dificil",
+    movements: ["5 deadlifts", "5 hang power cleans", "5 push jerks"],
+    notes: ""
+  },
+  {
+    id: 174, name: "SNATCH + RUN", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "dificil",
+    movements: ["5 power snatches", "100 m carrera", "8 burpees over bar"],
+    notes: ""
+  },
+  {
+    id: 175, name: "CLEAN ENGINE", format: "AMRAP", scheme: "AMRAP 15'",
+    duration: 15, difficulty: "dificil",
+    movements: ["5 squat cleans", "10 box jumps", "10 burpees", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 176, name: "TTB + RUN", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "dificil",
+    movements: ["8 toes-to-bar", "10 box jumps", "100 m carrera", "8 DB snatches"],
+    notes: ""
+  },
+  {
+    id: 177, name: "OVERHEAD 10", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "dificil",
+    movements: ["5 power snatches", "8 overhead squats", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 178, name: "BARBELL CYCLING 15", format: "EMOM", scheme: "EMOM 15'",
+    duration: 15, difficulty: "dificil",
+    movements: ["8 power cleans", "8 front squats", "8 push jerks"],
+    notes: "Rotar. Dosis: 5 ciclos."
+  },
+  {
+    id: 179, name: "GYMNASTIC ENGINE 15", format: "AMRAP", scheme: "AMRAP 15'",
+    duration: 15, difficulty: "dificil",
+    movements: ["5 pull-ups", "8 toes-to-bar", "10 box jumps", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 180, name: "CLEAN & BOX", format: "FOR_TIME", scheme: "For Time — 4 rondas",
+    duration: 12, difficulty: "dificil",
+    movements: ["6 squat cleans", "8 burpees over bar", "10 box jumps"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 181, name: "SNATCH LADDER 15", format: "AMRAP", scheme: "AMRAP 15'",
+    duration: 15, difficulty: "dificil",
+    movements: ["3 power snatches", "6 overhead squats", "9 burpees", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 182, name: "BARBELL + TTB", format: "AMRAP", scheme: "AMRAP 12'",
+    duration: 12, difficulty: "dificil",
+    movements: ["5 power cleans", "8 toes-to-bar", "10 box jumps", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 183, name: "GYM + BAR", format: "AMRAP", scheme: "AMRAP 15'",
+    duration: 15, difficulty: "dificil",
+    movements: ["5 pull-ups", "5 power cleans", "10 box jumps", "5 push jerks", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 184, name: "CLEAN COMPLEX 12", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "dificil",
+    movements: ["5 squat cleans", "5 front squats", "5 push jerks"],
+    notes: ""
+  },
+  {
+    id: 185, name: "BURPEE SNATCH", format: "AMRAP", scheme: "AMRAP 10'",
+    duration: 10, difficulty: "dificil",
+    movements: ["5 power snatches", "8 burpees over bar", "10 box jumps", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 186, name: "TTB THRUSTER", format: "AMRAP", scheme: "AMRAP 15'",
+    duration: 15, difficulty: "dificil",
+    movements: ["8 toes-to-bar", "10 DB thrusters", "10 box jumps", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 187, name: "OLYMPIC ENGINE", format: "AMRAP", scheme: "AMRAP 18'",
+    duration: 18, difficulty: "dificil",
+    movements: ["5 power cleans", "5 front squats", "5 push jerks", "200 m carrera"],
+    notes: ""
+  },
+  {
+    id: 188, name: "LONG BARBELL", format: "AMRAP", scheme: "AMRAP 20'",
+    duration: 20, difficulty: "dificil",
+    movements: ["200 m carrera", "8 deadlifts", "8 hang power cleans", "8 push press", "8 box jumps"],
+    notes: ""
+  },
+  {
+    id: 189, name: "LONG GYMNASTIC", format: "AMRAP", scheme: "AMRAP 18'",
+    duration: 18, difficulty: "dificil",
+    movements: ["5 pull-ups", "8 toes-to-bar", "10 box jumps", "200 m carrera"],
+    notes: ""
+  },
+  {
+    id: 190, name: "SNATCH ENGINE", format: "AMRAP", scheme: "AMRAP 18'",
+    duration: 18, difficulty: "dificil",
+    movements: ["5 power snatches", "10 overhead squats", "10 burpees", "200 m carrera"],
+    notes: ""
+  },
+  {
+    id: 191, name: "CLEAN & RUN LONG", format: "FOR_TIME", scheme: "For Time — 4 rondas",
+    duration: 20, difficulty: "dificil",
+    movements: ["300 m carrera", "6 squat cleans", "8 burpees over bar", "10 box jumps"],
+    notes: "Cap: 20'."
+  },
+  {
+    id: 192, name: "BARBELL CHIPPER", format: "FOR_TIME", scheme: "For Time — Cap 18'",
+    duration: 18, difficulty: "dificil",
+    movements: ["30 deadlifts", "20 hang power cleans", "15 front squats", "10 push jerks", "20 burpees", "400 m carrera"],
+    notes: ""
+  },
+  {
+    id: 193, name: "GYM ENGINE LONG", format: "AMRAP", scheme: "AMRAP 20'",
+    duration: 20, difficulty: "dificil",
+    movements: ["5 pull-ups", "8 toes-to-bar", "10 box jumps", "10 DB snatches", "200 m carrera"],
+    notes: ""
+  },
+  {
+    id: 194, name: "OLYMPIC CHIPPER", format: "FOR_TIME", scheme: "For Time — Cap 20'",
+    duration: 20, difficulty: "dificil",
+    movements: ["20 power cleans", "20 box jumps", "15 push jerks", "15 burpees over bar", "400 m carrera"],
+    notes: ""
+  },
+  {
+    id: 195, name: "LONG THRUSTER", format: "AMRAP", scheme: "AMRAP 18'",
+    duration: 18, difficulty: "dificil",
+    movements: ["10 DB thrusters", "10 burpees", "200 m carrera", "8 toes-to-bar"],
+    notes: ""
+  },
+  {
+    id: 196, name: "BAR + RUN", format: "AMRAP", scheme: "AMRAP 20'",
+    duration: 20, difficulty: "dificil",
+    movements: ["200 m carrera", "6 power cleans", "8 box jumps", "8 burpees over bar", "6 push jerks"],
+    notes: ""
+  },
+  {
+    id: 197, name: "LONG SNATCH", format: "AMRAP", scheme: "AMRAP 18'",
+    duration: 18, difficulty: "dificil",
+    movements: ["5 power snatches", "8 overhead squats", "10 box jumps", "200 m carrera"],
+    notes: ""
+  },
+  {
+    id: 198, name: "THE LONG COMPLEX", format: "EMOM", scheme: "EMOM 20'",
+    duration: 20, difficulty: "dificil",
+    movements: ["Min 1: 5 power cleans", "Min 2: 8 box jumps", "Min 3: 5 push jerks", "Min 4: 10 burpees"],
+    notes: "Rotar. Dosis: 5 ciclos."
+  },
+  {
+    id: 199, name: "20-MIN ENGINE", format: "AMRAP", scheme: "AMRAP 20'",
+    duration: 20, difficulty: "dificil",
+    movements: ["200 m carrera", "10 KB swings", "8 DB snatches", "8 box jumps", "5 pull-ups", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 200, name: "THE 20", format: "FOR_TIME", scheme: "For Time — 4 rondas",
+    duration: 20, difficulty: "dificil",
+    movements: ["300 m carrera", "5 power cleans", "8 burpees over bar", "10 box jumps", "8 toes-to-bar"],
+    notes: "Cap: 20'."
+  },
+
+  // ---------------- FACILES 201-230 (intervalos) ----------------
+  {
+    id: 201, name: "TABATA AIR SQUAT", format: "TABATA", scheme: "20\"/10\" × 8",
+    duration: 4, difficulty: "facil",
+    movements: ["8 intervalos de air squats"],
+    notes: ""
+  },
+  {
+    id: 202, name: "TABATA BURPEE", format: "TABATA", scheme: "20\"/10\" × 8",
+    duration: 4, difficulty: "facil",
+    movements: ["8 intervalos de burpees"],
+    notes: ""
+  },
+  {
+    id: 203, name: "TABATA KB SWING", format: "TABATA", scheme: "20\"/10\" × 8",
+    duration: 4, difficulty: "facil",
+    movements: ["8 intervalos de KB swings"],
+    notes: ""
+  },
+  {
+    id: 204, name: "15/15 RUN", format: "TABATA", scheme: "15\"/15\" × 8",
+    duration: 4, difficulty: "facil",
+    movements: ["15\" carrera rápida", "15\" recuperación"],
+    notes: ""
+  },
+  {
+    id: 205, name: "10/10 BURPEE", format: "TABATA", scheme: "10\"/10\" × 12",
+    duration: 4, difficulty: "facil",
+    movements: ["10\" burpees", "10\" descanso"],
+    notes: ""
+  },
+  {
+    id: 206, name: "20/20 FARMER", format: "TABATA", scheme: "20\"/20\" × 8",
+    duration: 5, difficulty: "facil",
+    movements: ["20\" Farmer Carry", "20\" descanso"],
+    notes: ""
+  },
+  {
+    id: 207, name: "30/30 ROW", format: "TABATA", scheme: "30\"/30\" × 8",
+    duration: 8, difficulty: "facil",
+    movements: ["30\" remo", "30\" descanso"],
+    notes: ""
+  },
+  {
+    id: 208, name: "30/30 BOX", format: "TABATA", scheme: "30\"/30\" × 8",
+    duration: 8, difficulty: "facil",
+    movements: ["30\" box step-ups", "30\" descanso"],
+    notes: ""
+  },
+  {
+    id: 209, name: "15/15 KB", format: "TABATA", scheme: "15\"/15\" × 12",
+    duration: 6, difficulty: "facil",
+    movements: ["15\" KB swings", "15\" descanso"],
+    notes: ""
+  },
+  {
+    id: 210, name: "10/10 RUN", format: "TABATA", scheme: "10\"/10\" × 18",
+    duration: 6, difficulty: "facil",
+    movements: ["10\" sprint", "10\" caminata"],
+    notes: ""
+  },
+  {
+    id: 211, name: "TABATA LUNGE", format: "TABATA", scheme: "20\"/10\" × 8",
+    duration: 4, difficulty: "facil",
+    movements: ["Alternating reverse lunges"],
+    notes: ""
+  },
+  {
+    id: 212, name: "TABATA PUSH-UP", format: "TABATA", scheme: "20\"/10\" × 8",
+    duration: 4, difficulty: "facil",
+    movements: ["Push-ups"],
+    notes: ""
+  },
+  {
+    id: 213, name: "TABATA STEP-UP", format: "TABATA", scheme: "20\"/10\" × 8",
+    duration: 4, difficulty: "facil",
+    movements: ["Box step-ups"],
+    notes: ""
+  },
+  {
+    id: 214, name: "20/20 KB + SQUAT", format: "TABATA", scheme: "20\"/20\" × 8",
+    duration: 5, difficulty: "facil",
+    movements: ["1. KB swings", "2. Air squats"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 215, name: "15/15 ROW", format: "TABATA", scheme: "15\"/15\" × 16",
+    duration: 8, difficulty: "facil",
+    movements: ["15\" remo", "15\" descanso"],
+    notes: ""
+  },
+  {
+    id: 216, name: "10/10 STEP", format: "TABATA", scheme: "10\"/10\" × 24",
+    duration: 8, difficulty: "facil",
+    movements: ["10\" step-ups", "10\" descanso"],
+    notes: ""
+  },
+  {
+    id: 217, name: "30/30 CARRY", format: "TABATA", scheme: "30\"/30\" × 8",
+    duration: 8, difficulty: "facil",
+    movements: ["Farmer Carry"],
+    notes: ""
+  },
+  {
+    id: 218, name: "TABATA MOUNTAIN CLIMBER", format: "TABATA", scheme: "20\"/10\" × 8",
+    duration: 4, difficulty: "facil",
+    movements: ["Mountain climbers"],
+    notes: ""
+  },
+  {
+    id: 219, name: "15/15 BURPEE", format: "TABATA", scheme: "15\"/15\" × 16",
+    duration: 8, difficulty: "facil",
+    movements: ["Burpees"],
+    notes: ""
+  },
+  {
+    id: 220, name: "20/20 RUN", format: "TABATA", scheme: "20\"/20\" × 8",
+    duration: 5, difficulty: "facil",
+    movements: ["Carrera rápida", "Caminata"],
+    notes: ""
+  },
+  {
+    id: 221, name: "30/30 KB", format: "TABATA", scheme: "30\"/30\" × 8",
+    duration: 8, difficulty: "facil",
+    movements: ["KB swings"],
+    notes: ""
+  },
+  {
+    id: 222, name: "40/20 AIR SQUAT", format: "TABATA", scheme: "40\"/20\" × 8",
+    duration: 8, difficulty: "facil",
+    movements: ["Air squats"],
+    notes: ""
+  },
+  {
+    id: 223, name: "40/20 BURPEE", format: "TABATA", scheme: "40\"/20\" × 8",
+    duration: 8, difficulty: "facil",
+    movements: ["Burpees"],
+    notes: ""
+  },
+  {
+    id: 224, name: "45/15 ROW", format: "TABATA", scheme: "45\"/15\" × 8",
+    duration: 8, difficulty: "facil",
+    movements: ["Remo"],
+    notes: ""
+  },
+  {
+    id: 225, name: "60/30 WALK-RUN", format: "TABATA", scheme: "60\"/30\" × 5",
+    duration: 8, difficulty: "facil",
+    movements: ["60\" carrera", "30\" caminata"],
+    notes: ""
+  },
+  {
+    id: 226, name: "30/30 TRX", format: "TABATA", scheme: "30\"/30\" × 8",
+    duration: 8, difficulty: "facil",
+    movements: ["TRX rows"],
+    notes: ""
+  },
+  {
+    id: 227, name: "20/20 GOBLET", format: "TABATA", scheme: "20\"/20\" × 8",
+    duration: 5, difficulty: "facil",
+    movements: ["Goblet squats"],
+    notes: ""
+  },
+  {
+    id: 228, name: "15/15 PUSH-UP", format: "TABATA", scheme: "15\"/15\" × 16",
+    duration: 8, difficulty: "facil",
+    movements: ["Push-ups"],
+    notes: ""
+  },
+  {
+    id: 229, name: "10/10 KB", format: "TABATA", scheme: "10\"/10\" × 24",
+    duration: 8, difficulty: "facil",
+    movements: ["KB swings"],
+    notes: ""
+  },
+  {
+    id: 230, name: "TABATA MIX", format: "TABATA", scheme: "20\"/10\" × 8",
+    duration: 4, difficulty: "facil",
+    movements: ["1. Burpees", "2. Air squats"],
+    notes: "Alternar cada intervalo."
+  },
+
+  // ---------------- MODERADOS 231-270 (intervalos) ----------------
+  {
+    id: 231, name: "30/30 DB SNATCH", format: "TABATA", scheme: "30\"/30\" × 10",
+    duration: 10, difficulty: "moderado",
+    movements: ["DB snatch"],
+    notes: "Alternar brazo cada intervalo."
+  },
+  {
+    id: 232, name: "40/20 DB THRUSTER", format: "TABATA", scheme: "40\"/20\" × 10",
+    duration: 10, difficulty: "moderado",
+    movements: ["DB thruster"],
+    notes: ""
+  },
+  {
+    id: 233, name: "30/30 BOX JUMP", format: "TABATA", scheme: "30\"/30\" × 10",
+    duration: 10, difficulty: "moderado",
+    movements: ["Box jump"],
+    notes: ""
+  },
+  {
+    id: 234, name: "20/20 KB + BURPEE", format: "TABATA", scheme: "20\"/20\" × 15",
+    duration: 10, difficulty: "moderado",
+    movements: ["KB swings", "Burpees"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 235, name: "15/15 DB CLEAN", format: "TABATA", scheme: "15\"/15\" × 20",
+    duration: 10, difficulty: "moderado",
+    movements: ["DB hang cleans"],
+    notes: ""
+  },
+  {
+    id: 236, name: "45/15 ROW 10", format: "TABATA", scheme: "45\"/15\" × 10",
+    duration: 10, difficulty: "moderado",
+    movements: ["Remo"],
+    notes: ""
+  },
+  {
+    id: 237, name: "30/30 PULL-UP", format: "TABATA", scheme: "30\"/30\" × 10",
+    duration: 10, difficulty: "moderado",
+    movements: ["Pull-ups"],
+    notes: "Escala: ring/TRX rows."
+  },
+  {
+    id: 238, name: "40/20 BOX", format: "TABATA", scheme: "40\"/20\" × 10",
+    duration: 10, difficulty: "moderado",
+    movements: ["Box jumps"],
+    notes: ""
+  },
+  {
+    id: 239, name: "30/30 LANDMINE", format: "TABATA", scheme: "30\"/30\" × 10",
+    duration: 10, difficulty: "moderado",
+    movements: ["Landmine squats", "Landmine presses"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 240, name: "20/20 DB COMPLEX 10", format: "TABATA", scheme: "20\"/20\" × 15",
+    duration: 10, difficulty: "moderado",
+    movements: ["1. DB hang clean", "2. DB push press"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 241, name: "60/30 ROW", format: "TABATA", scheme: "60\"/30\" × 8",
+    duration: 12, difficulty: "moderado",
+    movements: ["Remo"],
+    notes: ""
+  },
+  {
+    id: 242, name: "60/30 RUN", format: "TABATA", scheme: "60\"/30\" × 8",
+    duration: 12, difficulty: "moderado",
+    movements: ["Carrera rápida", "Caminata"],
+    notes: ""
+  },
+  {
+    id: 243, name: "45/15 KB", format: "TABATA", scheme: "45\"/15\" × 12",
+    duration: 12, difficulty: "moderado",
+    movements: ["KB swings"],
+    notes: ""
+  },
+  {
+    id: 244, name: "40/20 BURPEE BOX", format: "TABATA", scheme: "40\"/20\" × 12",
+    duration: 12, difficulty: "moderado",
+    movements: ["Burpee box jump-over"],
+    notes: ""
+  },
+  {
+    id: 245, name: "30/30 DB THRUSTER 12", format: "TABATA", scheme: "30\"/30\" × 12",
+    duration: 12, difficulty: "moderado",
+    movements: ["DB thruster"],
+    notes: ""
+  },
+  {
+    id: 246, name: "20/20 DOUBLE UNDER", format: "TABATA", scheme: "20\"/20\" × 18",
+    duration: 12, difficulty: "moderado",
+    movements: ["Double-unders"],
+    notes: "Escala: single-unders."
+  },
+  {
+    id: 247, name: "15/15 BOX JUMP", format: "TABATA", scheme: "15\"/15\" × 24",
+    duration: 12, difficulty: "moderado",
+    movements: ["Box jump"],
+    notes: ""
+  },
+  {
+    id: 248, name: "30/30 TRAP BAR", format: "TABATA", scheme: "30\"/30\" × 12",
+    duration: 12, difficulty: "moderado",
+    movements: ["Trap-bar deadlift"],
+    notes: "Carga moderada."
+  },
+  {
+    id: 249, name: "40/20 FARMER + RUN", format: "TABATA", scheme: "40\"/20\" × 12",
+    duration: 12, difficulty: "moderado",
+    movements: ["1. Farmer Carry", "2. Carrera"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 250, name: "30/30 DB SNATCH + BURPEE", format: "TABATA", scheme: "30\"/30\" × 12",
+    duration: 12, difficulty: "moderado",
+    movements: ["1. DB snatch", "2. Burpees"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 251, name: "45/15 ROW + THRUSTER", format: "TABATA", scheme: "45\"/15\" × 12",
+    duration: 12, difficulty: "moderado",
+    movements: ["1. Remo", "2. DB thrusters"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 252, name: "30/30 PULL + BOX", format: "TABATA", scheme: "30\"/30\" × 12",
+    duration: 12, difficulty: "moderado",
+    movements: ["1. Pull-ups", "2. Box jumps"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 253, name: "20/20 CLEAN + RUN", format: "TABATA", scheme: "20\"/20\" × 18",
+    duration: 12, difficulty: "moderado",
+    movements: ["1. DB hang cleans", "2. Carrera"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 254, name: "15/15 KB + BURPEE", format: "TABATA", scheme: "15\"/15\" × 24",
+    duration: 12, difficulty: "moderado",
+    movements: ["1. KB swings", "2. Burpees"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 255, name: "60/30 BOX", format: "TABATA", scheme: "60\"/30\" × 8",
+    duration: 12, difficulty: "moderado",
+    movements: ["Box jumps/step-ups"],
+    notes: ""
+  },
+  {
+    id: 256, name: "40/20 LANDMINE", format: "TABATA", scheme: "40\"/20\" × 12",
+    duration: 12, difficulty: "moderado",
+    movements: ["1. Landmine squat", "2. Landmine press"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 257, name: "30/30 TRX + RUN", format: "TABATA", scheme: "30\"/30\" × 12",
+    duration: 12, difficulty: "moderado",
+    movements: ["1. TRX rows", "2. Carrera"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 258, name: "45/15 FARMER 12", format: "TABATA", scheme: "45\"/15\" × 12",
+    duration: 12, difficulty: "moderado",
+    movements: ["Farmer Carry"],
+    notes: ""
+  },
+  {
+    id: 259, name: "30/30 SWISS BAR", format: "TABATA", scheme: "30\"/30\" × 12",
+    duration: 12, difficulty: "moderado",
+    movements: ["1. Swiss-bar push press", "2. Swiss-bar front squat"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 260, name: "20/20 DB COMPLEX 12", format: "TABATA", scheme: "20\"/20\" × 18",
+    duration: 12, difficulty: "moderado",
+    movements: ["1. Hang clean", "2. Front squat", "3. Push press"],
+    notes: "Rotar cada intervalo."
+  },
+  {
+    id: 261, name: "30/30 SPRINT", format: "TABATA", scheme: "30\"/30\" × 14",
+    duration: 14, difficulty: "moderado",
+    movements: ["Carrera rápida", "Caminata"],
+    notes: ""
+  },
+  {
+    id: 262, name: "40/20 KB", format: "TABATA", scheme: "40\"/20\" × 14",
+    duration: 14, difficulty: "moderado",
+    movements: ["KB swings"],
+    notes: ""
+  },
+  {
+    id: 263, name: "45/15 ROW 14", format: "TABATA", scheme: "45\"/15\" × 14",
+    duration: 14, difficulty: "moderado",
+    movements: ["Remo"],
+    notes: ""
+  },
+  {
+    id: 264, name: "30/30 DB THRUSTER 14", format: "TABATA", scheme: "30\"/30\" × 14",
+    duration: 14, difficulty: "moderado",
+    movements: ["DB thruster"],
+    notes: ""
+  },
+  {
+    id: 265, name: "20/20 BOX 14", format: "TABATA", scheme: "20\"/20\" × 21",
+    duration: 14, difficulty: "moderado",
+    movements: ["Box jumps"],
+    notes: ""
+  },
+  {
+    id: 266, name: "15/15 BURPEE 14", format: "TABATA", scheme: "15\"/15\" × 28",
+    duration: 14, difficulty: "moderado",
+    movements: ["Burpees"],
+    notes: ""
+  },
+  {
+    id: 267, name: "10/10 RUN 14", format: "TABATA", scheme: "10\"/10\" × 42",
+    duration: 14, difficulty: "moderado",
+    movements: ["10\" sprint", "10\" recuperación"],
+    notes: ""
+  },
+  {
+    id: 268, name: "60/30 ROW 14", format: "TABATA", scheme: "60\"/30\" × 9",
+    duration: 14, difficulty: "moderado",
+    movements: ["Remo"],
+    notes: ""
+  },
+  {
+    id: 269, name: "45/15 FARMER 14", format: "TABATA", scheme: "45\"/15\" × 14",
+    duration: 14, difficulty: "moderado",
+    movements: ["Farmer Carry"],
+    notes: ""
+  },
+  {
+    id: 270, name: "30/30 MIX", format: "TABATA", scheme: "30\"/30\" × 14",
+    duration: 14, difficulty: "moderado",
+    movements: ["1. KB swings", "2. Burpees", "3. Box jumps", "4. Carrera"],
+    notes: "Rotar cada intervalo."
+  },
+
+  // ---------------- DIFICILES 271-295 (intervalos) ----------------
+  {
+    id: 271, name: "TABATA POWER SNATCH", format: "TABATA", scheme: "20\"/10\" × 8",
+    duration: 4, difficulty: "dificil",
+    movements: ["Power snatch"],
+    notes: "Carga técnica y ligera."
+  },
+  {
+    id: 272, name: "TABATA TOES-TO-BAR", format: "TABATA", scheme: "20\"/10\" × 8",
+    duration: 4, difficulty: "dificil",
+    movements: ["Toes-to-bar"],
+    notes: ""
+  },
+  {
+    id: 273, name: "15/15 POWER CLEAN", format: "TABATA", scheme: "15\"/15\" × 8",
+    duration: 4, difficulty: "dificil",
+    movements: ["Power cleans"],
+    notes: ""
+  },
+  {
+    id: 274, name: "20/20 PUSH JERK", format: "TABATA", scheme: "20\"/20\" × 8",
+    duration: 5, difficulty: "dificil",
+    movements: ["Push jerks"],
+    notes: ""
+  },
+  {
+    id: 275, name: "30/30 POWER CLEAN", format: "TABATA", scheme: "30\"/30\" × 8",
+    duration: 8, difficulty: "dificil",
+    movements: ["Power cleans"],
+    notes: ""
+  },
+  {
+    id: 276, name: "20/20 SNATCH", format: "TABATA", scheme: "20\"/20\" × 12",
+    duration: 8, difficulty: "dificil",
+    movements: ["Power snatches"],
+    notes: ""
+  },
+  {
+    id: 277, name: "30/30 TOES + BOX", format: "TABATA", scheme: "30\"/30\" × 10",
+    duration: 10, difficulty: "dificil",
+    movements: ["1. Toes-to-bar", "2. Box jumps"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 278, name: "30/30 CLEAN + BURPEE", format: "TABATA", scheme: "30\"/30\" × 10",
+    duration: 10, difficulty: "dificil",
+    movements: ["1. Squat cleans", "2. Burpees over bar"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 279, name: "40/20 SNATCH", format: "TABATA", scheme: "40\"/20\" × 10",
+    duration: 10, difficulty: "dificil",
+    movements: ["Power snatch"],
+    notes: ""
+  },
+  {
+    id: 280, name: "15/15 TTB + RUN", format: "TABATA", scheme: "15\"/15\" × 20",
+    duration: 10, difficulty: "dificil",
+    movements: ["1. Toes-to-bar", "2. Carrera"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 281, name: "30/30 PULL + SNATCH", format: "TABATA", scheme: "30\"/30\" × 10",
+    duration: 10, difficulty: "dificil",
+    movements: ["1. Kipping pull-ups", "2. DB snatches"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 282, name: "20/20 CLEAN + THRUSTER", format: "TABATA", scheme: "20\"/20\" × 15",
+    duration: 10, difficulty: "dificil",
+    movements: ["1. Squat clean", "2. DB thruster"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 283, name: "45/15 OLYMPIC", format: "TABATA", scheme: "45\"/15\" × 10",
+    duration: 10, difficulty: "dificil",
+    movements: ["1. Power cleans", "2. Box jumps"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 284, name: "30/30 SNATCH + BURPEE", format: "TABATA", scheme: "30\"/30\" × 12",
+    duration: 12, difficulty: "dificil",
+    movements: ["1. Power snatch", "2. Burpees over bar"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 285, name: "40/20 TTB", format: "TABATA", scheme: "40\"/20\" × 12",
+    duration: 12, difficulty: "dificil",
+    movements: ["Toes-to-bar"],
+    notes: ""
+  },
+  {
+    id: 286, name: "30/30 CLEAN", format: "TABATA", scheme: "30\"/30\" × 12",
+    duration: 12, difficulty: "dificil",
+    movements: ["Squat cleans"],
+    notes: ""
+  },
+  {
+    id: 287, name: "20/20 SNATCH + RUN", format: "TABATA", scheme: "20\"/20\" × 18",
+    duration: 12, difficulty: "dificil",
+    movements: ["1. Power snatch", "2. Carrera"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 288, name: "15/15 PULL-UP + BOX", format: "TABATA", scheme: "15\"/15\" × 24",
+    duration: 12, difficulty: "dificil",
+    movements: ["1. Kipping pull-ups", "2. Box jumps"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 289, name: "30/30 OLYMPIC COMPLEX", format: "TABATA", scheme: "30\"/30\" × 12",
+    duration: 12, difficulty: "dificil",
+    movements: ["1. Power clean", "2. Push jerk", "3. Power snatch"],
+    notes: "Rotar cada intervalo."
+  },
+  {
+    id: 290, name: "45/15 CLEAN + RUN", format: "TABATA", scheme: "45\"/15\" × 12",
+    duration: 12, difficulty: "dificil",
+    movements: ["1. Squat cleans", "2. Carrera"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 291, name: "60/30 SNATCH", format: "TABATA", scheme: "60\"/30\" × 10",
+    duration: 15, difficulty: "dificil",
+    movements: ["Power snatches"],
+    notes: ""
+  },
+  {
+    id: 292, name: "40/20 TTB + BURPEE", format: "TABATA", scheme: "40\"/20\" × 15",
+    duration: 15, difficulty: "dificil",
+    movements: ["1. Toes-to-bar", "2. Burpees over bar"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 293, name: "30/30 CLEAN + BOX", format: "TABATA", scheme: "30\"/30\" × 15",
+    duration: 15, difficulty: "dificil",
+    movements: ["1. Squat cleans", "2. Box jumps"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 294, name: "20/20 OLYMPIC CIRCUIT", format: "TABATA", scheme: "20\"/20\" × 22",
+    duration: 15, difficulty: "dificil",
+    movements: ["1. Power clean", "2. Push jerk", "3. Box jump", "4. Burpee over bar"],
+    notes: "Rotar cada intervalo."
+  },
+  {
+    id: 295, name: "15/15 GYMNASTIC", format: "TABATA", scheme: "15\"/15\" × 30",
+    duration: 15, difficulty: "dificil",
+    movements: ["1. Toes-to-bar", "2. Pull-ups", "3. Box jumps"],
+    notes: "Rotar cada intervalo."
+  },
+
+  // ---------------- LARGOS 296-300 (intervalos) ----------------
+  {
+    id: 296, name: "30/30 OLYMPIC ENGINE", format: "TABATA", scheme: "30\"/30\" × 16",
+    duration: 16, difficulty: "dificil",
+    movements: ["1. Power cleans", "2. Box jumps", "3. Burpees over bar", "4. Carrera"],
+    notes: "Rotar cada intervalo."
+  },
+  {
+    id: 297, name: "40/20 SNATCH ENGINE", format: "TABATA", scheme: "40\"/20\" × 16",
+    duration: 16, difficulty: "dificil",
+    movements: ["1. Power snatch", "2. Carrera"],
+    notes: "Alternar cada intervalo."
+  },
+  {
+    id: 298, name: "45/15 GYM ENGINE", format: "TABATA", scheme: "45\"/15\" × 16",
+    duration: 16, difficulty: "dificil",
+    movements: ["1. Pull-ups", "2. Toes-to-bar", "3. Box jumps", "4. Carrera"],
+    notes: "Rotar cada intervalo."
+  },
+  {
+    id: 299, name: "60/30 METCON", format: "TABATA", scheme: "60\"/30\" × 12",
+    duration: 18, difficulty: "dificil",
+    movements: ["1. Remo", "2. KB swings", "3. Box jumps", "4. Burpees", "5. Carrera", "6. DB thrusters"],
+    notes: "Rotar cada intervalo."
+  },
+  {
+    id: 300, name: "THE INTERVAL ENGINE", format: "TABATA", scheme: "40\"/20\" × 20",
+    duration: 20, difficulty: "dificil",
+    movements: ["1. Remo", "2. KB swings", "3. Box jumps", "4. Burpees", "5. Carrera"],
+    notes: "Dosis: 20 intervalos = 10 bloques de trabajo + recuperación por cada ciclo de 5 ejercicios."
+  },
+
+  // ---------------- FACILES 401-420 (a completar) ----------------
+  {
+    id: 401, name: "SIMPLE TRIPLE", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 6, difficulty: "facil",
+    movements: ["10 KB swings", "10 air squats", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 402, name: "RUN & BURPEE 2", format: "A_COMPLETAR", scheme: "4 rondas",
+    duration: 7, difficulty: "facil",
+    movements: ["200 m carrera", "10 burpees", "10 walking lunges"],
+    notes: ""
+  },
+  {
+    id: 403, name: "BOX BASIC", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 8, difficulty: "facil",
+    movements: ["12 box step-ups", "10 KB swings", "8 push-ups"],
+    notes: ""
+  },
+  {
+    id: 404, name: "ROW TRIPLE", format: "A_COMPLETAR", scheme: "4 rondas",
+    duration: 8, difficulty: "facil",
+    movements: ["250 m remo", "12 air squats", "8 burpees"],
+    notes: ""
+  },
+  {
+    id: 405, name: "FARMER RUN", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 6, difficulty: "facil",
+    movements: ["30 m Farmer Carry", "100 m carrera", "10 air squats"],
+    notes: ""
+  },
+  {
+    id: 406, name: "KB CHIPPER", format: "A_COMPLETAR", scheme: "Chipper",
+    duration: 7, difficulty: "facil",
+    movements: ["40 KB swings", "30 goblet squats", "20 reverse lunges", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 407, name: "BODYWEIGHT 8", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 8, difficulty: "facil",
+    movements: ["10 push-ups", "15 air squats", "10 sit-ups", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 408, name: "TRX BASIC 2", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 8, difficulty: "facil",
+    movements: ["10 TRX rows", "10 reverse lunges", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 409, name: "LANDMINE BASIC 2", format: "A_COMPLETAR", scheme: "4 rondas",
+    duration: 8, difficulty: "facil",
+    movements: ["12 landmine squats", "10 landmine presses", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 410, name: "GRASS SPRINT", format: "A_COMPLETAR", scheme: "6 rondas",
+    duration: 6, difficulty: "facil",
+    movements: ["100 m carrera", "8 burpees"],
+    notes: ""
+  },
+  {
+    id: 411, name: "3×10", format: "A_COMPLETAR", scheme: "10 rondas",
+    duration: 6, difficulty: "facil",
+    movements: ["10 KB swings", "10 air squats", "10 box step-ups"],
+    notes: ""
+  },
+  {
+    id: 412, name: "CARRY CHIPPER", format: "A_COMPLETAR", scheme: "Chipper",
+    duration: 8, difficulty: "facil",
+    movements: ["100 m Farmer Carry", "30 burpees", "40 air squats", "50 walking lunges"],
+    notes: ""
+  },
+  {
+    id: 413, name: "ROW & RUN", format: "A_COMPLETAR", scheme: "3 rondas",
+    duration: 8, difficulty: "facil",
+    movements: ["300 m remo", "200 m carrera", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 414, name: "KB DESCENDENTE", format: "A_COMPLETAR", scheme: "Descendente",
+    duration: 7, difficulty: "facil",
+    movements: ["30 KB swings", "25 goblet squats", "20 KB swings", "15 goblet squats", "10 KB swings"],
+    notes: ""
+  },
+  {
+    id: 415, name: "STEP & RUN", format: "A_COMPLETAR", scheme: "4 rondas",
+    duration: 8, difficulty: "facil",
+    movements: ["15 box step-ups", "150 m carrera", "10 push-ups"],
+    notes: ""
+  },
+  {
+    id: 416, name: "SIMPLE CHIPPER", format: "A_COMPLETAR", scheme: "Chipper",
+    duration: 8, difficulty: "facil",
+    movements: ["50 air squats", "40 KB swings", "30 walking lunges", "20 push-ups", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 417, name: "FARMER 3", format: "A_COMPLETAR", scheme: "4 rondas",
+    duration: 8, difficulty: "facil",
+    movements: ["40 m Farmer Carry", "10 KB deadlifts", "10 box step-ups"],
+    notes: ""
+  },
+  {
+    id: 418, name: "RUN 600", format: "A_COMPLETAR", scheme: "Chipper",
+    duration: 6, difficulty: "facil",
+    movements: ["600 m carrera", "30 air squats", "20 burpees"],
+    notes: ""
+  },
+  {
+    id: 419, name: "TRX RUN", format: "A_COMPLETAR", scheme: "4 rondas",
+    duration: 8, difficulty: "facil",
+    movements: ["12 TRX rows", "12 reverse lunges", "150 m carrera"],
+    notes: ""
+  },
+  {
+    id: 420, name: "KB FINISHER", format: "A_COMPLETAR", scheme: "6 rondas",
+    duration: 8, difficulty: "facil",
+    movements: ["10 KB swings", "8 burpees"],
+    notes: ""
+  },
+
+  // ---------------- MODERADOS 421-450 (a completar) ----------------
+  {
+    id: 421, name: "DB TRIPLE", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 10, difficulty: "moderado",
+    movements: ["10 DB hang cleans", "10 DB push press", "150 m carrera"],
+    notes: ""
+  },
+  {
+    id: 422, name: "BOX & DB", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 10, difficulty: "moderado",
+    movements: ["10 DB snatches", "12 box jumps", "150 m carrera"],
+    notes: ""
+  },
+  {
+    id: 423, name: "BURPEE THRUSTER", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["10 DB thrusters", "10 burpees", "200 m carrera"],
+    notes: ""
+  },
+  {
+    id: 424, name: "ROW & DB", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 10, difficulty: "moderado",
+    movements: ["250 m remo", "10 DB hang cleans", "10 box jumps"],
+    notes: ""
+  },
+  {
+    id: 425, name: "DOUBLE UNDER MIX", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 10, difficulty: "moderado",
+    movements: ["40 double-unders", "10 DB snatches", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 426, name: "TRAP ENGINE", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["10 trap-bar deadlifts", "10 box jumps", "150 m carrera"],
+    notes: ""
+  },
+  {
+    id: 427, name: "SWISS BAR ENGINE", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["10 Swiss-bar push press", "10 box jumps", "150 m carrera"],
+    notes: ""
+  },
+  {
+    id: 428, name: "LANDMINE RUN", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["10 landmine squats", "10 landmine presses", "200 m carrera"],
+    notes: ""
+  },
+  {
+    id: 429, name: "FARMER & BURPEE", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 10, difficulty: "moderado",
+    movements: ["40 m Farmer Carry", "10 burpees", "10 box jumps"],
+    notes: ""
+  },
+  {
+    id: 430, name: "DB CHIPPER", format: "A_COMPLETAR", scheme: "Chipper",
+    duration: 12, difficulty: "moderado",
+    movements: ["40 DB hang cleans", "30 DB push press", "20 DB snatches", "10 DB thrusters"],
+    notes: ""
+  },
+  {
+    id: 431, name: "RUNNER 12", format: "A_COMPLETAR", scheme: "6 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["200 m carrera", "10 DB snatches", "10 box jumps"],
+    notes: ""
+  },
+  {
+    id: 432, name: "KB COMPLEX 2", format: "A_COMPLETAR", scheme: "6 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["10 KB swings", "8 goblet squats", "6 burpees"],
+    notes: ""
+  },
+  {
+    id: 433, name: "TRX + BOX", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["12 TRX rows", "12 box jumps", "200 m carrera"],
+    notes: ""
+  },
+  {
+    id: 434, name: "DOUBLE UNDER ENGINE 2", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["50 double-unders", "10 KB swings", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 435, name: "DB DESCENDING", format: "A_COMPLETAR", scheme: "Descendente",
+    duration: 12, difficulty: "moderado",
+    movements: ["30 DB snatches", "25 box jumps", "20 DB thrusters", "15 burpees", "10 DB snatches"],
+    notes: ""
+  },
+  {
+    id: 436, name: "BARBELL BASIC", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["8 deadlifts", "8 hang power cleans", "8 push press", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 437, name: "BOX CHIPPER", format: "A_COMPLETAR", scheme: "Chipper",
+    duration: 10, difficulty: "moderado",
+    movements: ["50 box jumps", "40 KB swings", "30 burpees", "20 DB push press"],
+    notes: ""
+  },
+  {
+    id: 438, name: "PULL & RUN", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["6 pull-ups", "10 box jumps", "200 m carrera"],
+    notes: ""
+  },
+  {
+    id: 439, name: "DB ENGINE 15", format: "A_COMPLETAR", scheme: "6 rondas",
+    duration: 15, difficulty: "moderado",
+    movements: ["10 DB hang cleans", "10 DB thrusters", "200 m carrera"],
+    notes: ""
+  },
+  {
+    id: 440, name: "METCON 15", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 15, difficulty: "moderado",
+    movements: ["250 m remo", "10 KB swings", "10 box jumps", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 441, name: "FARMER LONG", format: "A_COMPLETAR", scheme: "6 rondas",
+    duration: 18, difficulty: "moderado",
+    movements: ["200 m carrera", "50 m Farmer Carry", "15 air squats"],
+    notes: ""
+  },
+  {
+    id: 442, name: "KB LONG", format: "A_COMPLETAR", scheme: "6 rondas",
+    duration: 18, difficulty: "moderado",
+    movements: ["300 m carrera", "15 KB swings", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 443, name: "ROW LONG", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 18, difficulty: "moderado",
+    movements: ["400 m remo", "15 KB swings", "10 box jumps"],
+    notes: ""
+  },
+  {
+    id: 444, name: "BOX ENDURANCE", format: "A_COMPLETAR", scheme: "6 rondas",
+    duration: 20, difficulty: "moderado",
+    movements: ["300 m carrera", "15 box step-ups", "10 push-ups"],
+    notes: ""
+  },
+  {
+    id: 445, name: "DB LONG", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 18, difficulty: "moderado",
+    movements: ["300 m carrera", "12 DB hang cleans", "10 DB thrusters", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 446, name: "LONG CHIPPER", format: "A_COMPLETAR", scheme: "Chipper",
+    duration: 20, difficulty: "moderado",
+    movements: ["1000 m carrera", "50 KB swings", "40 box jumps", "30 push-ups", "20 burpees"],
+    notes: ""
+  },
+  {
+    id: 447, name: "TRAP LONG", format: "A_COMPLETAR", scheme: "6 rondas",
+    duration: 20, difficulty: "moderado",
+    movements: ["10 trap-bar deadlifts", "10 box jumps", "200 m carrera"],
+    notes: ""
+  },
+  {
+    id: 448, name: "DOUBLE UNDER LONG", format: "A_COMPLETAR", scheme: "6 rondas",
+    duration: 18, difficulty: "moderado",
+    movements: ["50 double-unders", "10 DB snatches", "10 burpees", "200 m carrera"],
+    notes: ""
+  },
+  {
+    id: 449, name: "LANDMINE LONG", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 18, difficulty: "moderado",
+    movements: ["12 landmine squats", "10 landmine presses", "300 m carrera"],
+    notes: ""
+  },
+  {
+    id: 450, name: "ENGINE 20", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 20, difficulty: "moderado",
+    movements: ["400 m carrera", "15 KB swings", "10 box jumps", "10 burpees"],
+    notes: ""
+  },
+
+  // ---------------- DIFICILES 451-480 (a completar) ----------------
+  {
+    id: 451, name: "CLEAN SHORT", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 7, difficulty: "dificil",
+    movements: ["5 power cleans", "8 burpees over bar", "10 box jumps"],
+    notes: ""
+  },
+  {
+    id: 452, name: "SNATCH SHORT", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 7, difficulty: "dificil",
+    movements: ["5 power snatches", "8 box jumps", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 453, name: "TTB SHORT", format: "A_COMPLETAR", scheme: "4 rondas",
+    duration: 8, difficulty: "dificil",
+    movements: ["8 toes-to-bar", "10 DB thrusters", "10 box jumps"],
+    notes: ""
+  },
+  {
+    id: 454, name: "PULL + SNATCH", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 8, difficulty: "dificil",
+    movements: ["5 pull-ups", "8 DB snatches", "10 box jumps"],
+    notes: ""
+  },
+  {
+    id: 455, name: "OLYMPIC CHIPPER", format: "A_COMPLETAR", scheme: "Chipper",
+    duration: 8, difficulty: "dificil",
+    movements: ["20 power cleans", "20 box jumps", "15 push jerks", "10 burpees over bar"],
+    notes: ""
+  },
+  {
+    id: 456, name: "CLEAN RUN", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 10, difficulty: "dificil",
+    movements: ["5 squat cleans", "10 burpees over bar", "200 m carrera"],
+    notes: ""
+  },
+  {
+    id: 457, name: "SNATCH BOX", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 10, difficulty: "dificil",
+    movements: ["5 power snatches", "10 box jumps", "150 m carrera"],
+    notes: ""
+  },
+  {
+    id: 458, name: "GYMNASTIC TRIPLE", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 10, difficulty: "dificil",
+    movements: ["5 pull-ups", "8 toes-to-bar", "10 box jumps"],
+    notes: ""
+  },
+  {
+    id: 459, name: "CLEAN COMPLEX 2", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 10, difficulty: "dificil",
+    movements: ["5 power cleans", "5 front squats", "5 push jerks"],
+    notes: ""
+  },
+  {
+    id: 460, name: "BURPEE CLEAN", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 12, difficulty: "dificil",
+    movements: ["6 squat cleans", "8 burpees over bar", "10 box jumps"],
+    notes: ""
+  },
+  {
+    id: 461, name: "TTB RUN", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 12, difficulty: "dificil",
+    movements: ["8 toes-to-bar", "10 box jumps", "200 m carrera"],
+    notes: ""
+  },
+  {
+    id: 462, name: "SNATCH RUN", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 12, difficulty: "dificil",
+    movements: ["6 power snatches", "10 overhead squats", "200 m carrera"],
+    notes: ""
+  },
+  {
+    id: 463, name: "PULL-UP ENGINE 2", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 12, difficulty: "dificil",
+    movements: ["6 pull-ups", "10 DB snatches", "10 box jumps", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 464, name: "OLYMPIC TRIPLE", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 12, difficulty: "dificil",
+    movements: ["5 power cleans", "5 push jerks", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 465, name: "TTB CHIPPER", format: "A_COMPLETAR", scheme: "Chipper",
+    duration: 15, difficulty: "dificil",
+    movements: ["30 toes-to-bar", "40 box jumps", "30 DB thrusters", "20 burpees", "400 m carrera"],
+    notes: ""
+  },
+  {
+    id: 466, name: "SNATCH CHIPPER", format: "A_COMPLETAR", scheme: "Chipper",
+    duration: 15, difficulty: "dificil",
+    movements: ["30 power snatches", "30 overhead squats", "30 box jumps", "20 burpees", "400 m carrera"],
+    notes: ""
+  },
+  {
+    id: 467, name: "CLEAN ENGINE 2", format: "A_COMPLETAR", scheme: "6 rondas",
+    duration: 15, difficulty: "dificil",
+    movements: ["5 squat cleans", "8 box jumps", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 468, name: "BARBELL CYCLER", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 15, difficulty: "dificil",
+    movements: ["6 power cleans", "6 front squats", "6 push jerks", "150 m carrera"],
+    notes: ""
+  },
+  {
+    id: 469, name: "GYM ENGINE 2", format: "A_COMPLETAR", scheme: "6 rondas",
+    duration: 15, difficulty: "dificil",
+    movements: ["5 pull-ups", "8 toes-to-bar", "10 box jumps", "100 m carrera"],
+    notes: ""
+  },
+  {
+    id: 470, name: "OLYMPIC RUN", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 15, difficulty: "dificil",
+    movements: ["6 power cleans", "6 push jerks", "200 m carrera"],
+    notes: ""
+  },
+  {
+    id: 471, name: "LONG CLEAN", format: "A_COMPLETAR", scheme: "6 rondas",
+    duration: 18, difficulty: "dificil",
+    movements: ["200 m carrera", "6 squat cleans", "8 burpees over bar", "10 box jumps"],
+    notes: ""
+  },
+  {
+    id: 472, name: "LONG SNATCH", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 18, difficulty: "dificil",
+    movements: ["300 m carrera", "6 power snatches", "8 overhead squats", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 473, name: "LONG GYM", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 18, difficulty: "dificil",
+    movements: ["300 m carrera", "5 pull-ups", "8 toes-to-bar", "10 box jumps"],
+    notes: ""
+  },
+  {
+    id: 474, name: "LONG BARBELL", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 20, difficulty: "dificil",
+    movements: ["300 m carrera", "6 power cleans", "8 front squats", "8 push jerks", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 475, name: "LONG OLYMPIC", format: "A_COMPLETAR", scheme: "4 rondas",
+    duration: 20, difficulty: "dificil",
+    movements: ["400 m carrera", "8 power cleans", "8 push jerks", "10 box jumps", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 476, name: "LONG TTB", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 18, difficulty: "dificil",
+    movements: ["300 m carrera", "8 toes-to-bar", "10 DB thrusters", "10 box jumps"],
+    notes: ""
+  },
+  {
+    id: 477, name: "SNATCH ENDURANCE", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 20, difficulty: "dificil",
+    movements: ["300 m carrera", "6 power snatches", "10 overhead squats", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 478, name: "CLEAN & BOX", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 20, difficulty: "dificil",
+    movements: ["300 m carrera", "6 squat cleans", "10 box jumps", "8 burpees over bar"],
+    notes: ""
+  },
+  {
+    id: 479, name: "GYM + BAR 2", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 20, difficulty: "dificil",
+    movements: ["300 m carrera", "5 pull-ups", "5 power cleans", "8 toes-to-bar", "10 box jumps"],
+    notes: ""
+  },
+  {
+    id: 480, name: "METCON 20", format: "A_COMPLETAR", scheme: "4 rondas",
+    duration: 20, difficulty: "dificil",
+    movements: ["400 m carrera", "8 power cleans", "10 DB thrusters", "10 toes-to-bar", "10 burpees over bar"],
+    notes: ""
+  },
+
+  // ---------------- VARIANTES MIXTAS 481-500 (ladders y chippers) ----------------
+  {
+    id: 481, name: "LADDER UP", format: "A_COMPLETAR", scheme: "10-15-20",
+    duration: 10, difficulty: "moderado",
+    movements: ["KB swings", "Air squats", "100 m carrera después de cada bloque"],
+    notes: ""
+  },
+  {
+    id: 482, name: "LADDER DOWN", format: "A_COMPLETAR", scheme: "30-20-10",
+    duration: 10, difficulty: "moderado",
+    movements: ["KB swings", "Burpees"],
+    notes: ""
+  },
+  {
+    id: 483, name: "21-15-9", format: "A_COMPLETAR", scheme: "21-15-9",
+    duration: 9, difficulty: "moderado",
+    movements: ["DB thrusters", "Box jumps", "Burpees"],
+    notes: ""
+  },
+  {
+    id: 484, name: "15-12-9", format: "A_COMPLETAR", scheme: "15-12-9",
+    duration: 10, difficulty: "moderado",
+    movements: ["DB snatches", "Push-ups", "Box jumps"],
+    notes: ""
+  },
+  {
+    id: 485, name: "10-20-30", format: "A_COMPLETAR", scheme: "10-20-30",
+    duration: 10, difficulty: "moderado",
+    movements: ["Goblet squats", "KB swings", "Walking lunges"],
+    notes: ""
+  },
+  {
+    id: 486, name: "5-10-15-20", format: "A_COMPLETAR", scheme: "5-10-15-20",
+    duration: 12, difficulty: "moderado",
+    movements: ["Burpees", "Box jumps", "KB swings"],
+    notes: ""
+  },
+  {
+    id: 487, name: "CHIPPER 5", format: "A_COMPLETAR", scheme: "Chipper",
+    duration: 8, difficulty: "facil",
+    movements: ["50 air squats", "40 KB swings", "30 box step-ups", "20 push-ups", "10 burpees"],
+    notes: ""
+  },
+  {
+    id: 488, name: "CHIPPER 6", format: "A_COMPLETAR", scheme: "Chipper",
+    duration: 12, difficulty: "moderado",
+    movements: ["60 KB swings", "50 box jumps", "40 walking lunges", "30 push-ups", "20 burpees", "10 DB thrusters"],
+    notes: ""
+  },
+  {
+    id: 489, name: "CHIPPER 7", format: "A_COMPLETAR", scheme: "Chipper",
+    duration: 15, difficulty: "moderado",
+    movements: ["700 m carrera", "60 air squats", "50 KB swings", "40 box jumps", "30 push-ups", "20 burpees"],
+    notes: ""
+  },
+  {
+    id: 490, name: "DESCENDING ENGINE", format: "A_COMPLETAR", scheme: "5 rondas descendentes",
+    duration: 12, difficulty: "moderado",
+    movements: ["15 → 11 → 9 → 7 → 5 KB swings", "15 → 11 → 9 → 7 → 5 box jumps", "200 m carrera cada ronda"],
+    notes: ""
+  },
+  {
+    id: 491, name: "ASCENDING ENGINE", format: "A_COMPLETAR", scheme: "5 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["5 burpees", "10 KB swings", "15 box jumps", "200 m carrera"],
+    notes: "Aumentar 5 reps por ejercicio cada ronda."
+  },
+  {
+    id: 492, name: "BARBELL LADDER", format: "A_COMPLETAR", scheme: "5-10-15",
+    duration: 12, difficulty: "dificil",
+    movements: ["Deadlift", "Hang power clean", "Push press"],
+    notes: ""
+  },
+  {
+    id: 493, name: "OLYMPIC LADDER", format: "A_COMPLETAR", scheme: "3-6-9-12",
+    duration: 12, difficulty: "dificil",
+    movements: ["Power clean", "Push jerk", "Box jump"],
+    notes: ""
+  },
+  {
+    id: 494, name: "GYM LADDER", format: "A_COMPLETAR", scheme: "3-6-9-12",
+    duration: 12, difficulty: "dificil",
+    movements: ["Pull-ups", "Toes-to-bar", "Burpees"],
+    notes: ""
+  },
+  {
+    id: 495, name: "21-15-9 OLYMPIC", format: "A_COMPLETAR", scheme: "21-15-9",
+    duration: 15, difficulty: "dificil",
+    movements: ["Power cleans", "Box jumps", "Burpees over bar"],
+    notes: ""
+  },
+  {
+    id: 496, name: "LONG CHIPPER 2", format: "A_COMPLETAR", scheme: "Chipper",
+    duration: 18, difficulty: "moderado",
+    movements: ["1000 m carrera", "80 KB swings", "60 box jumps", "40 DB thrusters", "20 burpees"],
+    notes: ""
+  },
+  {
+    id: 497, name: "LONG LADDER", format: "A_COMPLETAR", scheme: "10-15-20-25",
+    duration: 18, difficulty: "moderado",
+    movements: ["KB swings", "Box jumps", "Air squats", "200 m carrera entre cada bloque"],
+    notes: ""
+  },
+  {
+    id: 498, name: "LONG OLYMPIC LADDER", format: "A_COMPLETAR", scheme: "5-10-15-20",
+    duration: 20, difficulty: "dificil",
+    movements: ["Power cleans", "Push jerks", "200 m carrera después de cada bloque"],
+    notes: ""
+  },
+  {
+    id: 499, name: "LONG GYM LADDER", format: "A_COMPLETAR", scheme: "5-10-15-20",
+    duration: 20, difficulty: "dificil",
+    movements: ["Pull-ups", "Toes-to-bar", "Box jumps"],
+    notes: ""
+  },
+  {
+    id: 500, name: "THE 20' CHIPPER", format: "A_COMPLETAR", scheme: "Chipper",
+    duration: 20, difficulty: "dificil",
+    movements: ["1000 m carrera", "50 KB swings", "40 box jumps", "30 DB thrusters", "20 pull-ups", "10 burpees over bar"],
+    notes: "Objetivo: completar todo el volumen."
+  },
+
+  // ---------------- FACILES 501-540 (for time) ----------------
+  {
+    id: 501, name: "RUN BASIC", format: "FOR_TIME", scheme: "For Time — 4 rondas",
+    duration: 6, difficulty: "facil",
+    movements: ["200 m carrera", "10 air squats", "5 burpees"],
+    notes: "Cap: 6'."
+  },
+  {
+    id: 502, name: "KB BASIC", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 8, difficulty: "facil",
+    movements: ["12 KB swings", "10 goblet squats"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 503, name: "BOX RUN", format: "FOR_TIME", scheme: "For Time — 4 rondas",
+    duration: 8, difficulty: "facil",
+    movements: ["150 m carrera", "12 box step-ups", "8 push-ups"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 504, name: "ROW BASIC", format: "FOR_TIME", scheme: "For Time — 4 rondas",
+    duration: 8, difficulty: "facil",
+    movements: ["200 m remo", "15 air squats", "8 burpees"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 505, name: "FARMER BASIC", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 7, difficulty: "facil",
+    movements: ["30 m Farmer Carry", "10 air squats", "8 burpees"],
+    notes: "Cap: 7'."
+  },
+  {
+    id: 506, name: "TRX RUN 2", format: "FOR_TIME", scheme: "For Time — 4 rondas",
+    duration: 8, difficulty: "facil",
+    movements: ["10 TRX rows", "10 reverse lunges", "100 m carrera"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 507, name: "LANDMINE BASIC 3", format: "FOR_TIME", scheme: "For Time — 4 rondas",
+    duration: 8, difficulty: "facil",
+    movements: ["10 landmine squats", "10 landmine presses", "100 m carrera"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 508, name: "KB CHIPPER 2", format: "FOR_TIME", scheme: "For Time — Chipper",
+    duration: 8, difficulty: "facil",
+    movements: ["40 KB swings", "30 air squats", "20 walking lunges", "10 burpees"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 509, name: "SIMPLE 5", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 6, difficulty: "facil",
+    movements: ["10 KB swings", "10 box step-ups"],
+    notes: "Cap: 6'."
+  },
+  {
+    id: 510, name: "RUNNER", format: "FOR_TIME", scheme: "For Time — 3 rondas",
+    duration: 8, difficulty: "facil",
+    movements: ["300 m carrera", "10 push-ups", "10 air squats"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 511, name: "CARRY & RUN", format: "FOR_TIME", scheme: "For Time — 4 rondas",
+    duration: 8, difficulty: "facil",
+    movements: ["30 m Farmer Carry", "150 m carrera", "10 squats"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 512, name: "ROW & KB", format: "FOR_TIME", scheme: "For Time — 4 rondas",
+    duration: 8, difficulty: "facil",
+    movements: ["200 m remo", "12 KB swings", "10 air squats"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 513, name: "BURPEE BASIC 2", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 7, difficulty: "facil",
+    movements: ["8 burpees", "12 air squats", "100 m carrera"],
+    notes: "Cap: 7'."
+  },
+  {
+    id: 514, name: "STEP-UP", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 8, difficulty: "facil",
+    movements: ["12 box step-ups", "10 KB deadlifts", "100 m carrera"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 515, name: "TRX CHIPPER", format: "FOR_TIME", scheme: "For Time — Chipper",
+    duration: 8, difficulty: "facil",
+    movements: ["40 TRX rows", "30 reverse lunges", "20 push-ups", "10 burpees"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 516, name: "600 RUN", format: "FOR_TIME", scheme: "For Time — Chipper",
+    duration: 6, difficulty: "facil",
+    movements: ["600 m carrera", "30 air squats", "15 burpees"],
+    notes: "Cap: 6'."
+  },
+  {
+    id: 517, name: "KB DESCENDING", format: "FOR_TIME", scheme: "30-20-10",
+    duration: 8, difficulty: "facil",
+    movements: ["KB swings", "Goblet squats"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 518, name: "BODYWEIGHT", format: "FOR_TIME", scheme: "For Time — 3 rondas",
+    duration: 8, difficulty: "facil",
+    movements: ["15 push-ups", "20 air squats", "10 burpees"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 519, name: "FARMER CHIPPER", format: "FOR_TIME", scheme: "For Time — Chipper",
+    duration: 8, difficulty: "facil",
+    movements: ["100 m Farmer Carry", "40 air squats", "30 lunges", "20 burpees"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 520, name: "GRASS 8", format: "FOR_TIME", scheme: "For Time — 4 rondas",
+    duration: 8, difficulty: "facil",
+    movements: ["200 m carrera", "10 KB swings", "8 burpees"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 521, name: "KB ENGINE 2", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 10, difficulty: "moderado",
+    movements: ["200 m carrera", "15 KB swings", "10 air squats"],
+    notes: "Cap: 10'."
+  },
+  {
+    id: 522, name: "ROW ENGINE", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 10, difficulty: "moderado",
+    movements: ["250 m remo", "10 box step-ups", "10 push-ups"],
+    notes: "Cap: 10'."
+  },
+  {
+    id: 523, name: "FARMER ENGINE 2", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 10, difficulty: "moderado",
+    movements: ["40 m Farmer Carry", "150 m carrera", "10 burpees"],
+    notes: "Cap: 10'."
+  },
+  {
+    id: 524, name: "BOX ENGINE 2", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["15 box step-ups", "15 KB swings", "150 m carrera"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 525, name: "RUN & BURPEE 4", format: "FOR_TIME", scheme: "For Time — 6 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["200 m carrera", "10 burpees"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 526, name: "TRX ENGINE 2", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["12 TRX rows", "12 lunges", "200 m carrera"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 527, name: "LANDMINE ENGINE", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["12 landmine squats", "10 landmine presses", "150 m carrera"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 528, name: "KB LONG 2", format: "FOR_TIME", scheme: "For Time — 6 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["150 m carrera", "15 KB swings", "10 burpees"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 529, name: "ROW & RUN 2", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["300 m remo", "200 m carrera", "10 air squats"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 530, name: "CARRY & BOX", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["40 m Farmer Carry", "12 box step-ups", "10 burpees"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 531, name: "SIMPLE 15", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 15, difficulty: "moderado",
+    movements: ["200 m carrera", "15 KB swings", "10 air squats", "5 burpees"],
+    notes: "Cap: 15'."
+  },
+  {
+    id: 532, name: "LONG RUN", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 15, difficulty: "moderado",
+    movements: ["300 m carrera", "12 lunges", "10 push-ups"],
+    notes: "Cap: 15'."
+  },
+  {
+    id: 533, name: "KB CHIPPER 15", format: "FOR_TIME", scheme: "For Time — Chipper",
+    duration: 15, difficulty: "moderado",
+    movements: ["60 KB swings", "50 air squats", "40 box step-ups", "30 push-ups", "20 burpees"],
+    notes: "Cap: 15'."
+  },
+  {
+    id: 534, name: "ROW CHIPPER", format: "FOR_TIME", scheme: "For Time — Chipper",
+    duration: 15, difficulty: "moderado",
+    movements: ["1000 m remo", "50 air squats", "30 KB swings", "20 burpees"],
+    notes: "Cap: 15'."
+  },
+  {
+    id: 535, name: "FARMER LONG 2", format: "FOR_TIME", scheme: "For Time — 6 rondas",
+    duration: 15, difficulty: "moderado",
+    movements: ["40 m Farmer Carry", "200 m carrera", "10 squats"],
+    notes: "Cap: 15'."
+  },
+  {
+    id: 536, name: "LONG KB", format: "FOR_TIME", scheme: "For Time — 6 rondas",
+    duration: 18, difficulty: "moderado",
+    movements: ["300 m carrera", "15 KB swings", "10 burpees"],
+    notes: "Cap: 18'."
+  },
+  {
+    id: 537, name: "LONG ROW", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 18, difficulty: "moderado",
+    movements: ["400 m remo", "15 KB swings", "10 box step-ups"],
+    notes: "Cap: 18'."
+  },
+  {
+    id: 538, name: "LONG FARMER", format: "FOR_TIME", scheme: "For Time — 6 rondas",
+    duration: 20, difficulty: "moderado",
+    movements: ["300 m carrera", "50 m Farmer Carry", "15 air squats"],
+    notes: "Cap: 20'."
+  },
+  {
+    id: 539, name: "ENDURANCE", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 20, difficulty: "moderado",
+    movements: ["400 m carrera", "15 KB swings", "10 burpees"],
+    notes: "Cap: 20'."
+  },
+  {
+    id: 540, name: "LONG CHIPPER 3", format: "FOR_TIME", scheme: "For Time — Chipper",
+    duration: 20, difficulty: "moderado",
+    movements: ["1000 m carrera", "60 KB swings", "50 box step-ups", "40 air squats", "30 burpees"],
+    notes: "Cap: 20'."
+  },
+
+  // ---------------- MODERADOS 541-570 (for time) ----------------
+  {
+    id: 541, name: "DB CLEAN RUN", format: "FOR_TIME", scheme: "For Time — 4 rondas",
+    duration: 8, difficulty: "moderado",
+    movements: ["8 DB hang cleans", "10 box jumps", "100 m carrera"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 542, name: "DB THRUSTER", format: "FOR_TIME", scheme: "For Time — 4 rondas",
+    duration: 8, difficulty: "moderado",
+    movements: ["10 DB thrusters", "10 burpees", "100 m carrera"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 543, name: "DB SNATCH", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 8, difficulty: "moderado",
+    movements: ["8 DB snatches", "10 box jumps"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 544, name: "BURPEE BOX 2", format: "FOR_TIME", scheme: "For Time — 4 rondas",
+    duration: 8, difficulty: "moderado",
+    movements: ["10 burpee box jump-overs", "12 KB swings", "100 m carrera"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 545, name: "DOUBLE UNDER", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 8, difficulty: "moderado",
+    movements: ["40 double-unders", "10 DB push press", "8 burpees"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 546, name: "BARBELL SHORT", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 8, difficulty: "moderado",
+    movements: ["8 deadlifts", "6 hang power cleans", "8 push press"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 547, name: "PULL-UP RUN", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 8, difficulty: "moderado",
+    movements: ["5 pull-ups", "10 box jumps", "100 m carrera"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 548, name: "DB ENGINE", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 10, difficulty: "moderado",
+    movements: ["10 DB hang cleans", "10 DB push press", "150 m carrera"],
+    notes: "Cap: 10'."
+  },
+  {
+    id: 549, name: "BOX & SNATCH", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 10, difficulty: "moderado",
+    movements: ["10 DB snatches", "10 box jumps", "150 m carrera"],
+    notes: "Cap: 10'."
+  },
+  {
+    id: 550, name: "TRAP BAR", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 10, difficulty: "moderado",
+    movements: ["8 trap-bar deadlifts", "10 box jumps", "150 m carrera"],
+    notes: "Cap: 10'."
+  },
+  {
+    id: 551, name: "SWISS BAR", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 10, difficulty: "moderado",
+    movements: ["8 Swiss-bar push press", "10 box jumps", "150 m carrera"],
+    notes: "Cap: 10'."
+  },
+  {
+    id: 552, name: "LANDMINE COMPLEX 2", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 10, difficulty: "moderado",
+    movements: ["8 landmine squats", "8 landmine presses", "10 box jumps"],
+    notes: "Cap: 10'."
+  },
+  {
+    id: 553, name: "DB CHIPPER 2", format: "FOR_TIME", scheme: "For Time — Chipper",
+    duration: 12, difficulty: "moderado",
+    movements: ["40 DB hang cleans", "30 DB push press", "20 DB snatches", "10 DB thrusters"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 554, name: "DOUBLE UNDER ENGINE 3", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["50 double-unders", "10 DB snatches", "10 burpees"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 555, name: "PULL & BOX 2", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["6 pull-ups", "10 box jumps", "150 m carrera"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 556, name: "DB RUNNER", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["200 m carrera", "10 DB snatches", "10 box jumps"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 557, name: "BARBELL ENGINE", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["8 deadlifts", "8 hang power cleans", "8 push press", "100 m carrera"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 558, name: "BURPEE CYCLER", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["8 burpees", "10 DB push press", "12 KB swings"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 559, name: "FARMER & DB", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 12, difficulty: "moderado",
+    movements: ["40 m Farmer Carry", "10 DB snatches", "10 box jumps"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 560, name: "DB THRUSTER ENGINE", format: "FOR_TIME", scheme: "For Time — 6 rondas",
+    duration: 15, difficulty: "moderado",
+    movements: ["10 DB thrusters", "10 box jumps", "150 m carrera"],
+    notes: "Cap: 15'."
+  },
+  {
+    id: 561, name: "LONG DB", format: "FOR_TIME", scheme: "For Time — 6 rondas",
+    duration: 18, difficulty: "moderado",
+    movements: ["200 m carrera", "10 DB hang cleans", "10 DB thrusters", "10 box jumps"],
+    notes: "Cap: 18'."
+  },
+  {
+    id: 562, name: "LONG BARBELL 2", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 20, difficulty: "moderado",
+    movements: ["300 m carrera", "8 deadlifts", "8 hang power cleans", "8 push press", "10 box jumps"],
+    notes: "Cap: 20'."
+  },
+  {
+    id: 563, name: "LONG PULL", format: "FOR_TIME", scheme: "For Time — 6 rondas",
+    duration: 18, difficulty: "moderado",
+    movements: ["200 m carrera", "6 pull-ups", "10 KB swings", "10 box jumps"],
+    notes: "Cap: 18'."
+  },
+  {
+    id: 564, name: "LONG DOUBLE UNDER", format: "FOR_TIME", scheme: "For Time — 6 rondas",
+    duration: 20, difficulty: "moderado",
+    movements: ["50 double-unders", "10 DB snatches", "10 burpees", "200 m carrera"],
+    notes: "Cap: 20'."
+  },
+  {
+    id: 565, name: "LONG TRAP", format: "FOR_TIME", scheme: "For Time — 6 rondas",
+    duration: 20, difficulty: "moderado",
+    movements: ["10 trap-bar deadlifts", "10 box jumps", "200 m carrera"],
+    notes: "Cap: 20'."
+  },
+  {
+    id: 566, name: "LONG SWISS", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 18, difficulty: "moderado",
+    movements: ["10 Swiss-bar push press", "10 box jumps", "300 m carrera"],
+    notes: "Cap: 18'."
+  },
+  {
+    id: 567, name: "LONG LANDMINE", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 18, difficulty: "moderado",
+    movements: ["12 landmine squats", "10 landmine presses", "300 m carrera"],
+    notes: "Cap: 18'."
+  },
+  {
+    id: 568, name: "LONG DB CHIPPER", format: "FOR_TIME", scheme: "For Time — Chipper",
+    duration: 20, difficulty: "moderado",
+    movements: ["50 DB hang cleans", "40 box jumps", "30 DB thrusters", "20 burpees", "500 m carrera"],
+    notes: "Cap: 20'."
+  },
+  {
+    id: 569, name: "METCON 20B", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 20, difficulty: "moderado",
+    movements: ["300 m carrera", "10 DB snatches", "10 box jumps", "10 burpees"],
+    notes: "Cap: 20'."
+  },
+  {
+    id: 570, name: "ENGINE 20B", format: "FOR_TIME", scheme: "For Time — 4 rondas",
+    duration: 20, difficulty: "moderado",
+    movements: ["400 m carrera", "15 KB swings", "12 DB push press", "10 box jumps", "8 burpees"],
+    notes: "Cap: 20'."
+  },
+
+  // ---------------- DIFICILES 571-600 (for time) ----------------
+  {
+    id: 571, name: "POWER CLEAN", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 8, difficulty: "dificil",
+    movements: ["5 power cleans", "8 burpees over bar", "10 box jumps"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 572, name: "POWER SNATCH", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 8, difficulty: "dificil",
+    movements: ["5 power snatches", "8 box jumps", "10 burpees"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 573, name: "TTB SHORT 2", format: "FOR_TIME", scheme: "For Time — 4 rondas",
+    duration: 8, difficulty: "dificil",
+    movements: ["8 toes-to-bar", "10 DB thrusters", "10 box jumps"],
+    notes: "Cap: 8'."
+  },
+  {
+    id: 574, name: "CLEAN RUN 2", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 10, difficulty: "dificil",
+    movements: ["5 squat cleans", "8 burpees over bar", "200 m carrera"],
+    notes: "Cap: 10'."
+  },
+  {
+    id: 575, name: "SNATCH BOX 2", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 10, difficulty: "dificil",
+    movements: ["5 power snatches", "10 box jumps", "150 m carrera"],
+    notes: "Cap: 10'."
+  },
+  {
+    id: 576, name: "GYMNASTIC", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 10, difficulty: "dificil",
+    movements: ["5 pull-ups", "8 toes-to-bar", "10 box jumps"],
+    notes: "Cap: 10'."
+  },
+  {
+    id: 577, name: "CLEAN COMPLEX 3", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 12, difficulty: "dificil",
+    movements: ["5 power cleans", "5 front squats", "5 push jerks"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 578, name: "TTB RUN 2", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 12, difficulty: "dificil",
+    movements: ["8 toes-to-bar", "10 box jumps", "200 m carrera"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 579, name: "OLYMPIC TRIPLE 2", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 12, difficulty: "dificil",
+    movements: ["5 power cleans", "5 push jerks", "10 burpees"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 580, name: "BURPEE CLEAN 2", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 12, difficulty: "dificil",
+    movements: ["6 squat cleans", "8 burpees over bar", "10 box jumps"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 581, name: "SNATCH RUN 2", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 12, difficulty: "dificil",
+    movements: ["6 power snatches", "8 overhead squats", "200 m carrera"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 582, name: "PULL SNATCH", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 12, difficulty: "dificil",
+    movements: ["5 pull-ups", "6 DB snatches", "10 box jumps", "100 m carrera"],
+    notes: "Cap: 12'."
+  },
+  {
+    id: 583, name: "CLEAN ENGINE 3", format: "FOR_TIME", scheme: "For Time — 6 rondas",
+    duration: 15, difficulty: "dificil",
+    movements: ["5 squat cleans", "8 box jumps", "10 burpees"],
+    notes: "Cap: 15'."
+  },
+  {
+    id: 584, name: "TTB ENGINE", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 15, difficulty: "dificil",
+    movements: ["8 toes-to-bar", "10 DB thrusters", "10 box jumps", "150 m carrera"],
+    notes: "Cap: 15'."
+  },
+  {
+    id: 585, name: "BARBELL CYCLER 2", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 15, difficulty: "dificil",
+    movements: ["6 power cleans", "6 front squats", "6 push jerks", "150 m carrera"],
+    notes: "Cap: 15'."
+  },
+  {
+    id: 586, name: "OLYMPIC RUN 2", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 15, difficulty: "dificil",
+    movements: ["6 power cleans", "6 push jerks", "200 m carrera"],
+    notes: "Cap: 15'."
+  },
+  {
+    id: 587, name: "GYM ENGINE 3", format: "FOR_TIME", scheme: "For Time — 6 rondas",
+    duration: 15, difficulty: "dificil",
+    movements: ["5 pull-ups", "8 toes-to-bar", "10 box jumps", "100 m carrera"],
+    notes: "Cap: 15'."
+  },
+  {
+    id: 588, name: "OLYMPIC CHIPPER 2", format: "FOR_TIME", scheme: "For Time — Chipper",
+    duration: 15, difficulty: "dificil",
+    movements: ["30 power cleans", "20 push jerks", "30 box jumps", "20 burpees over bar", "400 m carrera"],
+    notes: "Cap: 15'."
+  },
+  {
+    id: 589, name: "LONG CLEAN 2", format: "FOR_TIME", scheme: "For Time — 6 rondas",
+    duration: 18, difficulty: "dificil",
+    movements: ["200 m carrera", "6 squat cleans", "8 burpees over bar", "10 box jumps"],
+    notes: "Cap: 18'."
+  },
+  {
+    id: 590, name: "LONG SNATCH 2", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 18, difficulty: "dificil",
+    movements: ["300 m carrera", "6 power snatches", "8 overhead squats", "10 burpees"],
+    notes: "Cap: 18'."
+  },
+  {
+    id: 591, name: "LONG GYM 2", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 18, difficulty: "dificil",
+    movements: ["300 m carrera", "5 pull-ups", "8 toes-to-bar", "10 box jumps"],
+    notes: "Cap: 18'."
+  },
+  {
+    id: 592, name: "LONG BARBELL 3", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 20, difficulty: "dificil",
+    movements: ["300 m carrera", "6 power cleans", "8 front squats", "8 push jerks", "10 burpees"],
+    notes: "Cap: 20'."
+  },
+  {
+    id: 593, name: "LONG OLYMPIC 2", format: "FOR_TIME", scheme: "For Time — 4 rondas",
+    duration: 20, difficulty: "dificil",
+    movements: ["400 m carrera", "8 power cleans", "8 push jerks", "10 box jumps", "10 burpees"],
+    notes: "Cap: 20'."
+  },
+  {
+    id: 594, name: "LONG TTB 2", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 18, difficulty: "dificil",
+    movements: ["300 m carrera", "8 toes-to-bar", "10 DB thrusters", "10 box jumps"],
+    notes: "Cap: 18'."
+  },
+  {
+    id: 595, name: "SNATCH ENDURANCE 2", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 20, difficulty: "dificil",
+    movements: ["300 m carrera", "6 power snatches", "10 overhead squats", "10 burpees"],
+    notes: "Cap: 20'."
+  },
+  {
+    id: 596, name: "CLEAN & BOX 2", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 20, difficulty: "dificil",
+    movements: ["300 m carrera", "6 squat cleans", "10 box jumps", "8 burpees over bar"],
+    notes: "Cap: 20'."
+  },
+  {
+    id: 597, name: "GYM + BAR 3", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 20, difficulty: "dificil",
+    movements: ["300 m carrera", "5 pull-ups", "5 power cleans", "8 toes-to-bar", "10 box jumps"],
+    notes: "Cap: 20'."
+  },
+  {
+    id: 598, name: "OLYMPIC ENDURANCE", format: "FOR_TIME", scheme: "For Time — 4 rondas",
+    duration: 20, difficulty: "dificil",
+    movements: ["400 m carrera", "8 power cleans", "8 push jerks", "10 burpees over bar"],
+    notes: "Cap: 20'."
+  },
+  {
+    id: 599, name: "LONG CHALLENGE", format: "FOR_TIME", scheme: "For Time — 5 rondas",
+    duration: 20, difficulty: "dificil",
+    movements: ["300 m carrera", "5 squat cleans", "5 pull-ups", "10 box jumps", "10 burpees"],
+    notes: "Cap: 20'."
+  },
+  {
+    id: 600, name: "THE FOR TIME 20", format: "FOR_TIME", scheme: "For Time — 4 rondas",
+    duration: 20, difficulty: "dificil",
+    movements: ["400 m carrera", "8 power cleans", "10 DB thrusters", "10 toes-to-bar", "10 burpees over bar"],
+    notes: "Cap: 20'."
+  },
+
+  // ---------------- EMOM 601-640 FACILES ----------------
+  {
+    id: 601, name: "EMOM SIMPLE 6", format: "EMOM", scheme: "EMOM 6'",
+    duration: 6, difficulty: "facil",
+    movements: ["Min 1: 10 KB swings", "Min 2: 10 air squats", "Min 3: 100 m carrera"],
+    notes: "Repetir ×2. Dosis: 6'."
+  },
+  {
+    id: 602, name: "EMOM SIMPLE 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["10 box step-ups", "10 KB swings", "8 burpees", "100 m carrera"],
+    notes: "Repetir ×2."
+  },
+  {
+    id: 603, name: "EMOM SQUAT 6", format: "EMOM", scheme: "EMOM 6'",
+    duration: 6, difficulty: "facil",
+    movements: ["10 air squats/min"],
+    notes: "Dosis: 10 × 6 = 60 squats."
+  },
+  {
+    id: 604, name: "EMOM KB 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["12 KB swings/min"],
+    notes: ""
+  },
+  {
+    id: 605, name: "EMOM STEP 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["10 box step-ups/min"],
+    notes: ""
+  },
+  {
+    id: 606, name: "EMOM RUN 6", format: "EMOM", scheme: "EMOM 6'",
+    duration: 6, difficulty: "facil",
+    movements: ["100 m carrera/min"],
+    notes: ""
+  },
+  {
+    id: 607, name: "EMOM ODD-EVEN 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["Min impar: 10 KB swings", "Min par: 8 burpees"],
+    notes: ""
+  },
+  {
+    id: 608, name: "EMOM ODD-EVEN 8B", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["Min impar: 12 air squats", "Min par: 10 push-ups"],
+    notes: ""
+  },
+  {
+    id: 609, name: "EMOM QUAD 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["10 KB deadlifts", "10 box step-ups", "100 m carrera", "8 burpees"],
+    notes: "Repetir ×2."
+  },
+  {
+    id: 610, name: "EMOM TRIPLE 6", format: "EMOM", scheme: "EMOM 6'",
+    duration: 6, difficulty: "facil",
+    movements: ["10 KB swings", "10 air squats", "100 m carrera"],
+    notes: "×2."
+  },
+  {
+    id: 611, name: "EMOM BURPEE 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["8 burpees/min"],
+    notes: ""
+  },
+  {
+    id: 612, name: "EMOM TRX 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["10 TRX rows/min"],
+    notes: ""
+  },
+  {
+    id: 613, name: "EMOM LUNGE 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["10 reverse lunges/min"],
+    notes: ""
+  },
+  {
+    id: 614, name: "EMOM FARMER 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["30 m Farmer Carry/min"],
+    notes: ""
+  },
+  {
+    id: 615, name: "EMOM KB+STEP 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["10 KB swings", "10 box step-ups"],
+    notes: "Repetir ×4."
+  },
+  {
+    id: 616, name: "EMOM BURPEE+SQUAT 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["8 burpees", "12 air squats"],
+    notes: "Repetir ×4."
+  },
+  {
+    id: 617, name: "EMOM RUN+PUSH 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["100 m carrera", "10 push-ups"],
+    notes: "Repetir ×4."
+  },
+  {
+    id: 618, name: "EMOM KB+GOBLET 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["10 KB deadlifts", "10 goblet squats"],
+    notes: "Repetir ×4."
+  },
+  {
+    id: 619, name: "EMOM STEP+BURPEE 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["12 box step-ups", "8 burpees"],
+    notes: "Repetir ×4."
+  },
+  {
+    id: 620, name: "EMOM ROW+SQUAT 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "facil",
+    movements: ["150 m remo", "10 air squats"],
+    notes: "Repetir ×4."
+  },
+  {
+    id: 621, name: "EMOM KB 10", format: "EMOM", scheme: "EMOM 10'",
+    duration: 10, difficulty: "facil",
+    movements: ["10 KB swings/min"],
+    notes: ""
+  },
+  {
+    id: 622, name: "EMOM STEP 10", format: "EMOM", scheme: "EMOM 10'",
+    duration: 10, difficulty: "facil",
+    movements: ["10 box step-ups/min"],
+    notes: ""
+  },
+  {
+    id: 623, name: "EMOM RUN 10", format: "EMOM", scheme: "EMOM 10'",
+    duration: 10, difficulty: "facil",
+    movements: ["100 m carrera/min"],
+    notes: ""
+  },
+  {
+    id: 624, name: "EMOM QUAD 12", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "facil",
+    movements: ["12 KB swings", "10 air squats", "8 burpees", "100 m carrera"],
+    notes: "Repetir ×3."
+  },
+  {
+    id: 625, name: "EMOM QUAD 12B", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "facil",
+    movements: ["10 box step-ups", "10 KB swings", "10 push-ups", "100 m carrera"],
+    notes: "×3."
+  },
+  {
+    id: 626, name: "EMOM QUAD 12C", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "facil",
+    movements: ["200 m remo", "10 air squats", "10 KB swings", "8 burpees"],
+    notes: "×3."
+  },
+  {
+    id: 627, name: "EMOM QUAD 12D", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "facil",
+    movements: ["40 m Farmer Carry", "10 box step-ups", "10 air squats", "100 m carrera"],
+    notes: "×3."
+  },
+  {
+    id: 628, name: "EMOM KB 12", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "facil",
+    movements: ["12 KB swings/min"],
+    notes: ""
+  },
+  {
+    id: 629, name: "EMOM PENTA 15", format: "EMOM", scheme: "EMOM 15'",
+    duration: 15, difficulty: "facil",
+    movements: ["10 KB swings", "10 box step-ups", "100 m carrera", "10 air squats", "8 burpees"],
+    notes: "×3."
+  },
+  {
+    id: 630, name: "EMOM PENTA 15B", format: "EMOM", scheme: "EMOM 15'",
+    duration: 15, difficulty: "facil",
+    movements: ["200 m remo", "12 KB swings", "10 push-ups", "10 box step-ups", "100 m carrera"],
+    notes: "×3."
+  },
+  {
+    id: 631, name: "EMOM BURPEE 15", format: "EMOM", scheme: "EMOM 15'",
+    duration: 15, difficulty: "facil",
+    movements: ["10 burpees/min"],
+    notes: ""
+  },
+  {
+    id: 632, name: "EMOM STEP 15", format: "EMOM", scheme: "EMOM 15'",
+    duration: 15, difficulty: "facil",
+    movements: ["12 box step-ups/min"],
+    notes: ""
+  },
+  {
+    id: 633, name: "EMOM FARMER 15", format: "EMOM", scheme: "EMOM 15'",
+    duration: 15, difficulty: "facil",
+    movements: ["40 m Farmer Carry/min"],
+    notes: ""
+  },
+  {
+    id: 634, name: "EMOM RUN 15", format: "EMOM", scheme: "EMOM 15'",
+    duration: 15, difficulty: "facil",
+    movements: ["150 m carrera/min"],
+    notes: ""
+  },
+  {
+    id: 635, name: "EMOM PENTA 15C", format: "EMOM", scheme: "EMOM 15'",
+    duration: 15, difficulty: "facil",
+    movements: ["12 KB swings", "10 air squats", "8 burpees", "10 box step-ups", "150 m carrera"],
+    notes: "×3."
+  },
+  {
+    id: 636, name: "EMOM PENTA 15D", format: "EMOM", scheme: "EMOM 15'",
+    duration: 15, difficulty: "facil",
+    movements: ["250 m remo", "10 KB swings", "10 push-ups", "10 lunges", "8 burpees"],
+    notes: "×3."
+  },
+  {
+    id: 637, name: "EMOM LARGO 18", format: "EMOM", scheme: "EMOM 18'",
+    duration: 18, difficulty: "facil",
+    movements: ["200 m carrera", "12 KB swings", "10 box step-ups", "10 air squats", "8 burpees", "10 push-ups"],
+    notes: "×3."
+  },
+  {
+    id: 638, name: "EMOM ALTERNADO 18", format: "EMOM", scheme: "EMOM 18'",
+    duration: 18, difficulty: "facil",
+    movements: ["10 KB swings + 10 air squats alternados"],
+    notes: "9 rondas."
+  },
+  {
+    id: 639, name: "EMOM LARGO 20", format: "EMOM", scheme: "EMOM 20'",
+    duration: 20, difficulty: "facil",
+    movements: ["200 m carrera", "12 KB swings", "10 box step-ups", "10 burpees", "10 air squats"],
+    notes: "×4."
+  },
+  {
+    id: 640, name: "EMOM LARGO 20B", format: "EMOM", scheme: "EMOM 20'",
+    duration: 20, difficulty: "facil",
+    movements: ["250 m remo", "12 KB swings", "10 box step-ups", "10 push-ups", "8 burpees"],
+    notes: "×4."
+  },
+
+  // ---------------- EMOM 641-670 MODERADOS ----------------
+  {
+    id: 641, name: "EMOM DB 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "moderado",
+    movements: ["8 DB hang cleans", "8 box jumps"],
+    notes: "Repetir ×4."
+  },
+  {
+    id: 642, name: "EMOM DB 8B", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "moderado",
+    movements: ["8 DB snatches", "8 burpees"],
+    notes: "×4."
+  },
+  {
+    id: 643, name: "EMOM PUSH PRESS 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "moderado",
+    movements: ["8 DB push press/min"],
+    notes: ""
+  },
+  {
+    id: 644, name: "EMOM BOX 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "moderado",
+    movements: ["8 box jumps/min"],
+    notes: ""
+  },
+  {
+    id: 645, name: "EMOM KB+THRUSTER 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "moderado",
+    movements: ["10 KB swings", "8 DB thrusters"],
+    notes: "×4."
+  },
+  {
+    id: 646, name: "EMOM PENTA 10", format: "EMOM", scheme: "EMOM 10'",
+    duration: 10, difficulty: "moderado",
+    movements: ["8 DB hang cleans", "10 box jumps", "100 m carrera", "8 burpees", "10 DB push press"],
+    notes: "×2."
+  },
+  {
+    id: 647, name: "EMOM DB SNATCH 10", format: "EMOM", scheme: "EMOM 10'",
+    duration: 10, difficulty: "moderado",
+    movements: ["8 DB snatches/min"],
+    notes: ""
+  },
+  {
+    id: 648, name: "EMOM PENTA 10B", format: "EMOM", scheme: "EMOM 10'",
+    duration: 10, difficulty: "moderado",
+    movements: ["10 KB swings", "8 DB thrusters", "10 box jumps", "100 m carrera", "8 burpees"],
+    notes: "×2."
+  },
+  {
+    id: 649, name: "EMOM SEXTO 12", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["10 DB hang cleans", "10 box jumps", "100 m carrera", "10 DB push press", "8 burpees", "40 m Farmer Carry"],
+    notes: "×2."
+  },
+  {
+    id: 650, name: "EMOM CUAD 12", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["8 DB snatches", "10 box jumps", "8 burpees", "100 m carrera"],
+    notes: "×3."
+  },
+  {
+    id: 651, name: "EMOM PUSH PRESS 12", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["10 DB push press/min"],
+    notes: ""
+  },
+  {
+    id: 652, name: "EMOM THRUSTER 12", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["8 DB thrusters/min"],
+    notes: ""
+  },
+  {
+    id: 653, name: "EMOM TRAP 12", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["10 trap-bar deadlifts", "10 box jumps", "100 m carrera", "8 burpees"],
+    notes: "×3."
+  },
+  {
+    id: 654, name: "EMOM LANDMINE 12", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "moderado",
+    movements: ["8 landmine squats", "8 landmine presses", "10 box jumps", "100 m carrera"],
+    notes: "×3."
+  },
+  {
+    id: 655, name: "EMOM PENTA 15E", format: "EMOM", scheme: "EMOM 15'",
+    duration: 15, difficulty: "moderado",
+    movements: ["10 DB hang cleans", "10 DB push press", "10 box jumps", "100 m carrera", "8 burpees"],
+    notes: "×3."
+  },
+  {
+    id: 656, name: "EMOM PENTA 15F", format: "EMOM", scheme: "EMOM 15'",
+    duration: 15, difficulty: "moderado",
+    movements: ["8 DB snatches", "10 box jumps", "10 KB swings", "8 burpees", "150 m carrera"],
+    notes: "×3."
+  },
+  {
+    id: 657, name: "EMOM PENTA 15G", format: "EMOM", scheme: "EMOM 15'",
+    duration: 15, difficulty: "moderado",
+    movements: ["10 trap-bar deadlifts", "10 DB push press", "10 box jumps", "150 m carrera", "8 burpees"],
+    notes: "×3."
+  },
+  {
+    id: 658, name: "EMOM PENTA 15H", format: "EMOM", scheme: "EMOM 15'",
+    duration: 15, difficulty: "moderado",
+    movements: ["10 Swiss-bar push press", "10 box jumps", "10 KB swings", "100 m carrera", "8 burpees"],
+    notes: "×3."
+  },
+  {
+    id: 659, name: "EMOM PENTA 15I", format: "EMOM", scheme: "EMOM 15'",
+    duration: 15, difficulty: "moderado",
+    movements: ["8 pull-ups", "10 DB snatches", "10 box jumps", "150 m carrera", "8 burpees"],
+    notes: "×3."
+  },
+  {
+    id: 660, name: "EMOM DB SNATCH 15", format: "EMOM", scheme: "EMOM 15'",
+    duration: 15, difficulty: "moderado",
+    movements: ["10 DB snatches/min"],
+    notes: ""
+  },
+  {
+    id: 661, name: "EMOM SEXTO 18", format: "EMOM", scheme: "EMOM 18'",
+    duration: 18, difficulty: "moderado",
+    movements: ["10 DB hang cleans", "10 box jumps", "150 m carrera", "10 DB push press", "8 burpees", "10 KB swings"],
+    notes: "×3."
+  },
+  {
+    id: 662, name: "EMOM SEXTO 18B", format: "EMOM", scheme: "EMOM 18'",
+    duration: 18, difficulty: "moderado",
+    movements: ["8 DB snatches", "10 box jumps", "10 KB swings", "8 burpees", "150 m carrera", "10 DB push press"],
+    notes: "×3."
+  },
+  {
+    id: 663, name: "EMOM SEXTO 18C", format: "EMOM", scheme: "EMOM 18'",
+    duration: 18, difficulty: "moderado",
+    movements: ["10 trap-bar deadlifts", "10 box jumps", "150 m carrera", "10 DB push press", "8 burpees", "40 m Farmer Carry"],
+    notes: "×3."
+  },
+  {
+    id: 664, name: "EMOM SEXTO 18D", format: "EMOM", scheme: "EMOM 18'",
+    duration: 18, difficulty: "moderado",
+    movements: ["250 m remo", "10 DB snatches", "10 box jumps", "10 KB swings", "8 burpees", "100 m carrera"],
+    notes: "×3."
+  },
+  {
+    id: 665, name: "EMOM PENTA 20", format: "EMOM", scheme: "EMOM 20'",
+    duration: 20, difficulty: "moderado",
+    movements: ["10 DB hang cleans", "10 box jumps", "150 m carrera", "10 DB thrusters", "8 burpees"],
+    notes: "×4."
+  },
+  {
+    id: 666, name: "EMOM PENTA 20B", format: "EMOM", scheme: "EMOM 20'",
+    duration: 20, difficulty: "moderado",
+    movements: ["250 m remo", "10 DB snatches", "10 box jumps", "10 KB swings", "8 burpees"],
+    notes: "×4."
+  },
+  {
+    id: 667, name: "EMOM PENTA 20C", format: "EMOM", scheme: "EMOM 20'",
+    duration: 20, difficulty: "moderado",
+    movements: ["10 trap-bar deadlifts", "10 DB push press", "10 box jumps", "150 m carrera", "8 burpees"],
+    notes: "×4."
+  },
+  {
+    id: 668, name: "EMOM PENTA 20D", format: "EMOM", scheme: "EMOM 20'",
+    duration: 20, difficulty: "moderado",
+    movements: ["40 m Farmer Carry", "10 DB snatches", "10 box jumps", "10 KB swings", "100 m carrera"],
+    notes: "×4."
+  },
+  {
+    id: 669, name: "EMOM PUSH PRESS 20", format: "EMOM", scheme: "EMOM 20'",
+    duration: 20, difficulty: "moderado",
+    movements: ["10 DB push press/min"],
+    notes: ""
+  },
+  {
+    id: 670, name: "EMOM BOX 20", format: "EMOM", scheme: "EMOM 20'",
+    duration: 20, difficulty: "moderado",
+    movements: ["10 box jumps/min"],
+    notes: ""
+  },
+
+  // ---------------- EMOM 671-700 DIFICILES ----------------
+  {
+    id: 671, name: "EMOM CLEAN 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "dificil",
+    movements: ["5 power cleans", "8 box jumps"],
+    notes: "×4."
+  },
+  {
+    id: 672, name: "EMOM SNATCH 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "dificil",
+    movements: ["5 power snatches", "8 burpees over bar"],
+    notes: "×4."
+  },
+  {
+    id: 673, name: "EMOM TTB 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "dificil",
+    movements: ["6 toes-to-bar/min"],
+    notes: ""
+  },
+  {
+    id: 674, name: "EMOM PULL 8", format: "EMOM", scheme: "EMOM 8'",
+    duration: 8, difficulty: "dificil",
+    movements: ["5 pull-ups", "8 box jumps"],
+    notes: "×4."
+  },
+  {
+    id: 675, name: "EMOM PENTA CLEAN 10", format: "EMOM", scheme: "EMOM 10'",
+    duration: 10, difficulty: "dificil",
+    movements: ["5 power cleans", "8 burpees over bar", "10 box jumps", "100 m carrera", "5 push jerks"],
+    notes: "×2."
+  },
+  {
+    id: 676, name: "EMOM PENTA SNATCH 10", format: "EMOM", scheme: "EMOM 10'",
+    duration: 10, difficulty: "dificil",
+    movements: ["5 power snatches", "8 overhead squats", "8 box jumps", "100 m carrera", "8 burpees"],
+    notes: "×2."
+  },
+  {
+    id: 677, name: "EMOM PENTA GYM 10", format: "EMOM", scheme: "EMOM 10'",
+    duration: 10, difficulty: "dificil",
+    movements: ["5 pull-ups", "8 toes-to-bar", "10 box jumps", "100 m carrera", "8 burpees"],
+    notes: "×2."
+  },
+  {
+    id: 678, name: "EMOM SEXTO CLEAN 12", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "dificil",
+    movements: ["5 power cleans", "5 front squats", "5 push jerks", "8 box jumps", "8 burpees", "100 m carrera"],
+    notes: "×2."
+  },
+  {
+    id: 679, name: "EMOM SEXTO SNATCH 12", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "dificil",
+    movements: ["5 power snatches", "8 overhead squats", "10 box jumps", "8 burpees", "150 m carrera", "5 pull-ups"],
+    notes: "×2."
+  },
+  {
+    id: 680, name: "EMOM CLEAN 12", format: "EMOM", scheme: "EMOM 12'",
+    duration: 12, difficulty: "dificil",
+    movements: ["5 power cleans/min"],
+    notes: ""
+  },
+  {
+    id: 681, name: "EMOM PENTA CLEAN 15", format: "EMOM", scheme: "EMOM 15'",
+    duration: 15, difficulty: "dificil",
+    movements: ["5 power cleans", "8 box jumps", "8 burpees over bar", "5 push jerks", "150 m carrera"],
+    notes: "×3."
+  },
+  {
+    id: 682, name: "EMOM PENTA SNATCH 15", format: "EMOM", scheme: "EMOM 15'",
+    duration: 15, difficulty: "dificil",
+    movements: ["5 power snatches", "8 overhead squats", "8 box jumps", "8 burpees", "150 m carrera"],
+    notes: "×3."
+  },
+  {
+    id: 683, name: "EMOM PENTA GYM 15", format: "EMOM", scheme: "EMOM 15'",
+    duration: 15, difficulty: "dificil",
+    movements: ["5 pull-ups", "8 toes-to-bar", "10 box jumps", "8 burpees", "150 m carrera"],
+    notes: "×3."
+  },
+  {
+    id: 684, name: "EMOM PENTA CLEAN 15B", format: "EMOM", scheme: "EMOM 15'",
+    duration: 15, difficulty: "dificil",
+    movements: ["5 squat cleans", "5 push jerks", "10 box jumps", "8 burpees", "150 m carrera"],
+    notes: "×3."
+  },
+  {
+    id: 685, name: "EMOM PENTA OLYMPIC 15", format: "EMOM", scheme: "EMOM 15'",
+    duration: 15, difficulty: "dificil",
+    movements: ["5 power cleans", "5 front squats", "5 push jerks", "10 box jumps", "10 burpees"],
+    notes: "×3."
+  },
+  {
+    id: 686, name: "EMOM SEXTO CLEAN 18", format: "EMOM", scheme: "EMOM 18'",
+    duration: 18, difficulty: "dificil",
+    movements: ["5 power cleans", "8 box jumps", "8 burpees", "5 push jerks", "150 m carrera", "5 pull-ups"],
+    notes: "×3."
+  },
+  {
+    id: 687, name: "EMOM SEXTO SNATCH 18", format: "EMOM", scheme: "EMOM 18'",
+    duration: 18, difficulty: "dificil",
+    movements: ["5 power snatches", "8 overhead squats", "10 box jumps", "8 burpees", "150 m carrera", "5 toes-to-bar"],
+    notes: "×3."
+  },
+  {
+    id: 688, name: "EMOM SEXTO CLEAN 18B", format: "EMOM", scheme: "EMOM 18'",
+    duration: 18, difficulty: "dificil",
+    movements: ["5 squat cleans", "8 box jumps", "8 burpees over bar", "5 push jerks", "150 m carrera", "5 pull-ups"],
+    notes: "×3."
+  },
+  {
+    id: 689, name: "EMOM SEXTO ROW 18", format: "EMOM", scheme: "EMOM 18'",
+    duration: 18, difficulty: "dificil",
+    movements: ["250 m remo", "5 power cleans", "8 box jumps", "8 burpees", "5 toes-to-bar", "150 m carrera"],
+    notes: "×3."
+  },
+  {
+    id: 690, name: "EMOM SEXTO SNATCH 18B", format: "EMOM", scheme: "EMOM 18'",
+    duration: 18, difficulty: "dificil",
+    movements: ["5 power snatches", "5 overhead squats", "8 box jumps", "8 burpees", "5 pull-ups", "150 m carrera"],
+    notes: "×3."
+  },
+  {
+    id: 691, name: "EMOM PENTA CLEAN 20", format: "EMOM", scheme: "EMOM 20'",
+    duration: 20, difficulty: "dificil",
+    movements: ["5 power cleans", "8 box jumps", "8 burpees over bar", "5 push jerks", "150 m carrera"],
+    notes: "×4."
+  },
+  {
+    id: 692, name: "EMOM PENTA SNATCH 20", format: "EMOM", scheme: "EMOM 20'",
+    duration: 20, difficulty: "dificil",
+    movements: ["5 power snatches", "8 overhead squats", "8 box jumps", "8 burpees", "150 m carrera"],
+    notes: "×4."
+  },
+  {
+    id: 693, name: "EMOM PENTA GYM 20", format: "EMOM", scheme: "EMOM 20'",
+    duration: 20, difficulty: "dificil",
+    movements: ["5 pull-ups", "8 toes-to-bar", "10 box jumps", "8 burpees", "150 m carrera"],
+    notes: "×4."
+  },
+  {
+    id: 694, name: "EMOM PENTA CLEAN 20B", format: "EMOM", scheme: "EMOM 20'",
+    duration: 20, difficulty: "dificil",
+    movements: ["5 squat cleans", "5 push jerks", "10 box jumps", "8 burpees", "150 m carrera"],
+    notes: "×4."
+  },
+  {
+    id: 695, name: "EMOM PENTA OLYMPIC 20", format: "EMOM", scheme: "EMOM 20'",
+    duration: 20, difficulty: "dificil",
+    movements: ["5 power cleans", "5 front squats", "5 push jerks", "10 box jumps", "10 burpees"],
+    notes: "×4."
+  },
+  {
+    id: 696, name: "EMOM PENTA SNATCH 20B", format: "EMOM", scheme: "EMOM 20'",
+    duration: 20, difficulty: "dificil",
+    movements: ["5 power snatches", "5 overhead squats", "10 box jumps", "8 burpees", "150 m carrera"],
+    notes: "×4."
+  },
+  {
+    id: 697, name: "EMOM PENTA GYM 20B", format: "EMOM", scheme: "EMOM 20'",
+    duration: 20, difficulty: "dificil",
+    movements: ["5 pull-ups", "8 toes-to-bar", "5 power cleans", "10 box jumps", "8 burpees"],
+    notes: "×4."
+  },
+  {
+    id: 698, name: "EMOM ROW+CLEAN 20", format: "EMOM", scheme: "EMOM 20'",
+    duration: 20, difficulty: "dificil",
+    movements: ["250 m remo", "5 power cleans", "8 box jumps", "8 burpees", "5 toes-to-bar"],
+    notes: "×4."
+  },
+  {
+    id: 699, name: "EMOM SNATCH+PULL 20", format: "EMOM", scheme: "EMOM 20'",
+    duration: 20, difficulty: "dificil",
+    movements: ["5 power snatches", "5 pull-ups", "10 box jumps", "8 burpees", "150 m carrera"],
+    notes: "×4."
+  },
+  {
+    id: 700, name: "THE EMOM 20", format: "EMOM", scheme: "EMOM 20'",
+    duration: 20, difficulty: "dificil",
+    movements: ["Min 1: 5 power cleans", "Min 2: 8 box jumps", "Min 3: 8 burpees over bar", "Min 4: 5 pull-ups", "Min 5: 150 m carrera"],
+    notes: "Repetir ×4. Dosis total: 20 power cleans, 32 box jumps, 32 burpees over bar, 20 pull-ups, 600 m carrera, 20' totales."
+  },
+
 ];
 
 // ============================================================
@@ -1023,11 +4123,24 @@ const WODS = [
 const FORMATOS = [
   { key: "ANY", label: "Todos" },
   { key: "A_COMPLETAR", label: "A Completar" },
-  { key: "FOR_TIME", label: "For Time" },
+  { key: "FOR_TIME", label: "Por Tiempo" },
   { key: "EMOM", label: "EMOM" },
   { key: "AMRAP", label: "AMRAP" },
-  { key: "TABATA", label: "Tabata" },
+  { key: "TABATA", label: "Intermitente" },
 ];
+
+const TIEMPOS = [
+  { key: "ANY", label: "Cualquiera" },
+  { key: "corto", label: "Cortos", sub: "< 8 mins" },
+  { key: "medio", label: "Medios", sub: "8 a 15 mins" },
+  { key: "largo", label: "Largos", sub: "> 15 mins" },
+];
+
+function tiempoBucket(duration) {
+  if (duration <= 8) return "corto";
+  if (duration <= 15) return "medio";
+  return "largo";
+}
 
 const DIFICULTADES = [
   { key: "ANY", label: "Cualquiera", cls: "" },
@@ -1045,12 +4158,7 @@ const state = {
 // Historial de usados por combinación de filtros, para no repetir hasta agotar
 const usedHistory = {};
 
-function getTiempoOptions() {
-  const set = new Set(WODS.map(w => w.duration));
-  return Array.from(set).sort((a, b) => a - b);
-}
-
-function buildChipRow(container, options, stateKey, getLabel, getCls) {
+function buildChipRow(container, options, stateKey, getLabel, getCls, getSub) {
   container.innerHTML = "";
   options.forEach(opt => {
     const btn = document.createElement("button");
@@ -1067,7 +4175,20 @@ function buildChipRow(container, options, stateKey, getLabel, getCls) {
       container.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
       btn.classList.add("active");
     });
-    container.appendChild(btn);
+
+    const sub = getSub ? getSub(opt) : null;
+    if (sub) {
+      const wrap = document.createElement("div");
+      wrap.className = "chip-wrap";
+      wrap.appendChild(btn);
+      const cap = document.createElement("div");
+      cap.className = "chip-caption";
+      cap.textContent = sub;
+      wrap.appendChild(cap);
+      container.appendChild(wrap);
+    } else {
+      container.appendChild(btn);
+    }
   });
 }
 
@@ -1079,12 +4200,13 @@ function initFilters() {
     o => o.label
   );
 
-  const tiempos = [{ key: "ANY", label: "Cualquiera" }, ...getTiempoOptions().map(t => ({ key: String(t), label: t + "'" }))];
   buildChipRow(
     document.getElementById("tiempoRow"),
-    tiempos,
+    TIEMPOS,
     "tiempo",
-    o => o.label
+    o => o.label,
+    null,
+    o => o.sub
   );
 
   buildChipRow(
@@ -1095,12 +4217,11 @@ function initFilters() {
     o => o.cls
   );
 
-  document.getElementById("totalCount").textContent = WODS.length;
 }
 
 function matchesFilters(w) {
   if (state.formato !== "ANY" && w.format !== state.formato) return false;
-  if (state.tiempo !== "ANY" && String(w.duration) !== state.tiempo) return false;
+  if (state.tiempo !== "ANY" && tiempoBucket(w.duration) !== state.tiempo) return false;
   if (state.dificultad !== "ANY" && w.difficulty !== state.dificultad) return false;
   return true;
 }
@@ -1130,13 +4251,124 @@ function pickRandomWod() {
 
 const DIFF_LABELS = { facil: "Fácil", moderado: "Moderado", dificil: "Difícil" };
 const FORMAT_LABELS = {
-  AMRAP: "AMRAP", EMOM: "EMOM", FOR_TIME: "For Time",
-  TABATA: "Tabata", A_COMPLETAR: "A Completar"
+  AMRAP: "AMRAP", EMOM: "EMOM", FOR_TIME: "Por Tiempo",
+  TABATA: "Intermitente", A_COMPLETAR: "A Completar"
 };
+
+// Videos puntuales de YouTube por ejercicio (verificados). No se aplica a
+// nombres de WOD ni al scheme/tiempo de trabajo — solo a la lista de movimientos.
+// Orden: de frase más específica a más genérica (la primera que matchea gana).
+const EXERCISE_VIDEOS = [
+  ["burpees over dumbbells", "https://www.youtube.com/watch?v=4cnTYo4secI"],
+  ["burpee over dumbbell", "https://www.youtube.com/watch?v=4cnTYo4secI"],
+  ["burpee box jump-overs", "https://www.youtube.com/watch?v=triakPkhsUY"],
+  ["burpee box jump-over", "https://www.youtube.com/watch?v=triakPkhsUY"],
+  ["burpees over bar", "https://www.youtube.com/watch?v=BX_t8RArfKw"],
+  ["burpee over bar", "https://www.youtube.com/watch?v=BX_t8RArfKw"],
+  ["kipping pull-ups", "https://www.youtube.com/watch?v=r45xLlH7r_M"],
+  ["pull-ups", "https://www.youtube.com/watch?v=HRV5YKKaeVw"],
+  ["toes-to-bar", "https://www.youtube.com/watch?v=6dHvTlsMvNY"],
+  ["double-unders", "https://www.youtube.com/watch?v=pQRnSYfliEc"],
+  ["single-unders", "https://www.youtube.com/watch?v=FJmRQ5iTXKE"],
+  ["mountain climbers", "https://www.youtube.com/watch?v=ixxk9Qfn61o"],
+  ["goblet reverse lunges", "https://www.youtube.com/watch?v=gWN9epxFqX8"],
+  ["goblet squats", "https://www.youtube.com/watch?v=mF5tnEBrdkc"],
+  ["air squats", "https://www.youtube.com/watch?v=C_VtOYc6j5c"],
+  ["KB swings", "https://www.youtube.com/watch?v=1Qi0NQW89Oc"],
+  ["KB deadlifts", "https://www.youtube.com/watch?v=sDbMsk3d6F4"],
+  ["front rack reverse lunges", "https://www.youtube.com/watch?v=94AXT7D3bKY"],
+  ["landmine reverse lunges", "https://www.youtube.com/watch?v=94AXT7D3bKY"],
+  ["Camber-bar reverse lunges", "https://www.youtube.com/watch?v=94AXT7D3bKY"],
+  ["alternating reverse lunges", "https://www.youtube.com/watch?v=YnYA-ughpNQ"],
+  ["walking lunges", "https://www.youtube.com/watch?v=YYWhkctnP2o"],
+  ["reverse lunges", "https://www.youtube.com/watch?v=94AXT7D3bKY"],
+  ["alternating lunges", "https://www.youtube.com/watch?v=YnYA-ughpNQ"],
+  ["lunges", "https://www.youtube.com/watch?v=YYWhkctnP2o"],
+  ["box step-ups", "https://www.youtube.com/watch?v=vs87hPGdnCc"],
+  ["step-ups", "https://www.youtube.com/watch?v=vs87hPGdnCc"],
+  ["box jump-overs", "https://www.youtube.com/watch?v=4o2duvMXo1Y"],
+  ["box jumps", "https://www.youtube.com/watch?v=lE_z2wvC4oI"],
+  ["box jump", "https://www.youtube.com/watch?v=lE_z2wvC4oI"],
+  ["push-ups", "https://www.youtube.com/watch?v=WDIpL0pjun0"],
+  ["sit-ups", "https://www.youtube.com/watch?v=fTxaDVXhMnw"],
+  ["Swiss-bar push presses", "https://www.youtube.com/watch?v=a8HQo8z20Uo"],
+  ["Swiss-bar push press", "https://www.youtube.com/watch?v=a8HQo8z20Uo"],
+  ["DB push press", "https://www.youtube.com/watch?v=hYFI6_wDJ2c"],
+  ["push press", "https://www.youtube.com/watch?v=a8HQo8z20Uo"],
+  ["push jerks", "https://www.youtube.com/watch?v=V-hKuAfWNUw"],
+  ["push jerk", "https://www.youtube.com/watch?v=V-hKuAfWNUw"],
+  ["Farmer Carry", "https://www.youtube.com/watch?v=VBobkldqqvk"],
+  ["Swiss-bar front squats", "https://www.youtube.com/watch?v=Q4REDQdplnM"],
+  ["Swiss-bar front squat", "https://www.youtube.com/watch?v=Q4REDQdplnM"],
+  ["DB front squats", "https://www.youtube.com/watch?v=U0vVherYVsA"],
+  ["front squats", "https://www.youtube.com/watch?v=Q4REDQdplnM"],
+  ["front squat", "https://www.youtube.com/watch?v=Q4REDQdplnM"],
+  ["overhead squats", "https://www.youtube.com/watch?v=RD_vUnqwqqI"],
+  ["squat cleans", "https://www.youtube.com/watch?v=g9Y8QwctmhU"],
+  ["squat clean", "https://www.youtube.com/watch?v=g9Y8QwctmhU"],
+  ["DB hang power cleans", "https://www.youtube.com/watch?v=loJGqTGkXEo"],
+  ["hang power cleans", "https://www.youtube.com/watch?v=9Bl9gYjTrgQ"],
+  ["power cleans", "https://www.youtube.com/watch?v=E2z5zK5V-MM"],
+  ["power clean", "https://www.youtube.com/watch?v=E2z5zK5V-MM"],
+  ["power snatches", "https://www.youtube.com/watch?v=4epDxeUlzz4"],
+  ["power snatch", "https://www.youtube.com/watch?v=4epDxeUlzz4"],
+  ["DB hang cleans", "https://www.youtube.com/watch?v=loJGqTGkXEo"],
+  ["DB hang clean", "https://www.youtube.com/watch?v=loJGqTGkXEo"],
+  ["Swiss-bar hang cleans", "https://www.youtube.com/watch?v=TjTEOme9fvw"],
+  ["hang cleans", "https://www.youtube.com/watch?v=TjTEOme9fvw"],
+  ["hang clean", "https://www.youtube.com/watch?v=TjTEOme9fvw"],
+  ["landmine cleans", "https://www.youtube.com/watch?v=tDKju5qmxOM"],
+  ["landmine squats", "https://www.youtube.com/watch?v=SdSyl59auck"],
+  ["landmine squat", "https://www.youtube.com/watch?v=SdSyl59auck"],
+  ["landmine presses", "https://www.youtube.com/watch?v=3gYz0bLG-wY"],
+  ["landmine press", "https://www.youtube.com/watch?v=3gYz0bLG-wY"],
+  ["landmine rotations", "https://www.youtube.com/watch?v=0Njim4THoqA"],
+  ["trap-bar deadlifts", "https://www.youtube.com/watch?v=mqiIFX4MinE"],
+  ["trap-bar deadlift", "https://www.youtube.com/watch?v=mqiIFX4MinE"],
+  ["trap-bar high pulls", "https://www.youtube.com/watch?v=5to8kjtUPtU"],
+  ["Swiss-bar deadlifts", "https://www.youtube.com/watch?v=pWybO8rWuLI"],
+  ["deadlifts", "https://www.youtube.com/watch?v=pWybO8rWuLI"],
+  ["deadlift", "https://www.youtube.com/watch?v=pWybO8rWuLI"],
+  ["Camber-bar squats", "https://www.youtube.com/watch?v=CMn1Z9pzZAk"],
+  ["Safety-bar squats", "https://www.youtube.com/watch?v=CMn1Z9pzZAk"],
+  ["cable rows", "https://www.youtube.com/watch?v=f_r95UajQcg"],
+  ["cable presses", "https://www.youtube.com/watch?v=sh92B-_2O48"],
+  ["cable squats", "https://www.youtube.com/watch?v=C_VtOYc6j5c"],
+  ["TRX-assisted squats", "https://www.youtube.com/watch?v=htMldsOurDQ"],
+  ["TRX rows", "https://www.youtube.com/watch?v=N_14s8zFOms"],
+  ["TRX pike", "https://www.youtube.com/watch?v=eCkgdkJJhjM"],
+  ["DB snatches", "https://www.youtube.com/watch?v=zVptpUTqUUg"],
+  ["DB snatch", "https://www.youtube.com/watch?v=zVptpUTqUUg"],
+  ["DB thrusters", "https://www.youtube.com/watch?v=M5gEwLTtWbg"],
+  ["DB thruster", "https://www.youtube.com/watch?v=M5gEwLTtWbg"],
+  ["thrusters", "https://www.youtube.com/watch?v=TH9LJsYIbx8"],
+  ["thruster", "https://www.youtube.com/watch?v=TH9LJsYIbx8"],
+  ["sprint", "https://www.youtube.com/watch?v=7ovHV7jVByI"],
+  ["carrera", "https://www.youtube.com/watch?v=LnNse_AwPyE"],
+  ["remo", "https://www.youtube.com/watch?v=4zWu1yuJ0_g"],
+  ["burpees", "https://www.youtube.com/watch?v=auBLPXO8Fww"],
+  ["squats", "https://www.youtube.com/watch?v=C_VtOYc6j5c"],
+];
+const EXERCISE_VIDEOS_RE = EXERCISE_VIDEOS.map(
+  ([phrase, url]) => [new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"), url]
+);
+
+function youtubeLink(text) {
+  for (const [re, url] of EXERCISE_VIDEOS_RE) {
+    if (re.test(text)) return url;
+  }
+  return null;
+}
 
 function renderWod(w) {
   const el = document.getElementById("result");
-  const movementsHtml = w.movements.map(m => `<li>${escapeHtml(m)}</li>`).join("");
+  const movementsHtml = w.movements.map(m => {
+    const url = youtubeLink(m);
+    const ytHtml = url
+      ? ` <a class="ex-yt" href="${url}" target="_blank" rel="noopener noreferrer" title="Ver técnica en YouTube" onclick="event.stopPropagation()">▶</a>`
+      : "";
+    return `<li><span class="mv-text">${escapeHtml(m)}</span>${ytHtml}</li>`;
+  }).join("");
   const notesHtml = w.notes ? `<div class="notes"><b>Nota:</b> ${escapeHtml(w.notes)}</div>` : "";
 
   el.innerHTML = `
