@@ -178,6 +178,68 @@
     text-align:center;
   }
 
+  /* ---------- mode select (home) ---------- */
+  .mode-select{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin-bottom:20px;
+  }
+  .mode-select[hidden]{display:none;}
+  .mode-btn{
+    appearance:none;
+    background:var(--black-2);
+    border:1px solid var(--line);
+    color:var(--paper);
+    text-align:center;
+    padding:28px 16px;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    transition:all .12s ease;
+  }
+  .mode-btn:hover{border-color:var(--orange); background:var(--black-3);}
+  .mode-btn:active{transform:scale(0.99);}
+  .mode-btn-emoji{
+    font-size:34px;
+    line-height:1;
+  }
+  .mode-btn-label{
+    font-family:'Anton', sans-serif;
+    font-size:22px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--orange);
+  }
+  .mode-btn-sub{
+    font-family:'Archivo', sans-serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:12.5px;
+    color:var(--paper-dim);
+  }
+  .screen[hidden]{display:none;}
+  .back-btn{
+    appearance:none;
+    background:none;
+    border:none;
+    color:var(--paper-dim);
+    font-family:'Oswald', sans-serif;
+    font-weight:600;
+    font-size:13px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    cursor:pointer;
+    padding:0 0 18px 0;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+  .back-btn:hover{color:var(--orange-2);}
+
   /* ---------- action button ---------- */
   .roll-btn{
     width:100%;
@@ -414,45 +476,117 @@
     <div class="brand">
       <img class="brand-mark" src="logo.png" alt="Bumper.Fit">
       <div>
-        <h1>CIRCUITOS</h1>
-        <div class="tagline">generador aleatorio</div>
+        <h1>GENERADOR ALEATORIO</h1>
       </div>
     </div>
   </header>
 
-  <p class="disclaimer">Esta app se creó con el fin de dar variabilidad a los trabajos finalizadores, no reemplaza un trabajo de fuerza.<br>Creada por <b>@leo.lovera</b> y <b>@bumper.fit</b></p>
+  <p class="disclaimer">Esta app se creó con el fin de dar variabilidad a los trabajos finalizadores y de entrada en calor/vuelta a la calma. No reemplazan tu entrenamiento.<br>Creada por <b>@leo.lovera</b> y <b>@bumper.fit</b></p>
 
-  <div class="panel">
-    <p class="panel-title">Formato</p>
-    <div class="field">
-      <div class="chip-row" id="formatoRow"></div>
+  <!-- HOME: selector de modo -->
+  <div id="screen-home" class="mode-select">
+    <button class="mode-btn" id="modeWodsBtn">
+      <span class="mode-btn-emoji">🔥</span>
+      <span class="mode-btn-label">Circuitos</span>
+      <span class="mode-btn-sub">Genera ejercicios para el final de tu sesión</span>
+    </button>
+    <button class="mode-btn" id="modeMovBtn">
+      <span class="mode-btn-emoji">🤸</span>
+      <span class="mode-btn-label">Movilidad</span>
+      <span class="mode-btn-sub">Genera ejercicios para tu inicio o sesión de recuperación</span>
+    </button>
+  </div>
+
+  <!-- SCREEN: Circuitos (finalizadores) -->
+  <div id="screen-wods" class="screen" hidden>
+    <button class="back-btn" data-back>&larr; Volver</button>
+
+    <div class="panel">
+      <p class="panel-title">Formato</p>
+      <div class="field">
+        <div class="chip-row" id="formatoRow"></div>
+      </div>
+
+      <p class="panel-title" style="margin-top:20px;">Tiempo de trabajo</p>
+      <div class="field">
+        <div class="chip-row" id="tiempoRow"></div>
+      </div>
+
+      <p class="panel-title" style="margin-top:20px;">Dificultad</p>
+      <div class="field">
+        <div class="chip-row" id="dificultadRow"></div>
+      </div>
     </div>
 
-    <p class="panel-title" style="margin-top:20px;">Tiempo de trabajo</p>
-    <div class="field">
-      <div class="chip-row" id="tiempoRow"></div>
-    </div>
+    <button class="roll-btn" id="rollBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="18" height="18" rx="2"/>
+        <circle cx="8" cy="8" r="1.2" fill="currentColor" stroke="none"/>
+        <circle cx="16" cy="8" r="1.2" fill="currentColor" stroke="none"/>
+        <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/>
+        <circle cx="8" cy="16" r="1.2" fill="currentColor" stroke="none"/>
+        <circle cx="16" cy="16" r="1.2" fill="currentColor" stroke="none"/>
+      </svg>
+      Tirar WOD
+    </button>
 
-    <p class="panel-title" style="margin-top:20px;">Dificultad</p>
-    <div class="field">
-      <div class="chip-row" id="dificultadRow"></div>
+    <div id="result">
+      <div class="empty-state">Elegí los filtros y tocá "Tirar WOD"</div>
     </div>
   </div>
 
-  <button class="roll-btn" id="rollBtn">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <rect x="3" y="3" width="18" height="18" rx="2"/>
-      <circle cx="8" cy="8" r="1.2" fill="currentColor" stroke="none"/>
-      <circle cx="16" cy="8" r="1.2" fill="currentColor" stroke="none"/>
-      <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/>
-      <circle cx="8" cy="16" r="1.2" fill="currentColor" stroke="none"/>
-      <circle cx="16" cy="16" r="1.2" fill="currentColor" stroke="none"/>
-    </svg>
-    Tirar WOD
-  </button>
+  <!-- SCREEN: Movilidad -->
+  <div id="screen-mov" class="screen" hidden>
+    <button class="back-btn" data-back>&larr; Volver</button>
 
-  <div id="result">
-    <div class="empty-state">Elegí los filtros y tocá "Tirar WOD"</div>
+    <!-- STEP 1: elegir momento -->
+    <div id="movMomentoSelect" class="mode-select">
+      <button class="mode-btn" id="movMomentoInicioBtn">
+        <span class="mode-btn-emoji">🌅</span>
+        <span class="mode-btn-label">Inicio</span>
+        <span class="mode-btn-sub">Entrada en calor</span>
+      </button>
+      <button class="mode-btn" id="movMomentoVueltaBtn">
+        <span class="mode-btn-emoji">🧘</span>
+        <span class="mode-btn-label">Vuelta a la calma</span>
+        <span class="mode-btn-sub">Cool-down / recuperación</span>
+      </button>
+    </div>
+
+    <!-- STEP 2: filtro de tipo + roll (oculto hasta elegir momento) -->
+    <div id="movStep2" hidden>
+      <button class="back-btn" id="movBackToMomento">&larr; Cambiar momento</button>
+
+      <div class="panel">
+        <p class="panel-title" id="movTipoTitle">Tipo</p>
+        <div class="field">
+          <div class="chip-row" id="movTipoRow"></div>
+        </div>
+
+        <div id="movArticulacionWrap" hidden>
+          <p class="panel-title" style="margin-top:20px;">¿Qué querés mejorar?</p>
+          <div class="field">
+            <div class="chip-row" id="movArticulacionRow"></div>
+          </div>
+        </div>
+      </div>
+
+      <button class="roll-btn" id="movRollBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <circle cx="8" cy="8" r="1.2" fill="currentColor" stroke="none"/>
+          <circle cx="16" cy="8" r="1.2" fill="currentColor" stroke="none"/>
+          <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/>
+          <circle cx="8" cy="16" r="1.2" fill="currentColor" stroke="none"/>
+          <circle cx="16" cy="16" r="1.2" fill="currentColor" stroke="none"/>
+        </svg>
+        Tirar Movilidad
+      </button>
+
+      <div id="movResult">
+        <div class="empty-state">Elegí los filtros y tocá "Tirar Movilidad"</div>
+      </div>
+    </div>
   </div>
 
   <footer>WOD/RANDOM &mdash; biblioteca propia de circuitos</footer>
@@ -4158,7 +4292,7 @@ const state = {
 // Historial de usados por combinación de filtros, para no repetir hasta agotar
 const usedHistory = {};
 
-function buildChipRow(container, options, stateKey, getLabel, getCls, getSub) {
+function buildChipRow(container, options, stateObj, stateKey, getLabel, getCls, getSub, onChange) {
   container.innerHTML = "";
   options.forEach(opt => {
     const btn = document.createElement("button");
@@ -4169,11 +4303,12 @@ function buildChipRow(container, options, stateKey, getLabel, getCls, getSub) {
     }
     btn.textContent = getLabel(opt);
     btn.dataset.value = opt.key !== undefined ? opt.key : opt;
-    if (state[stateKey] === btn.dataset.value) btn.classList.add("active");
+    if (stateObj[stateKey] === btn.dataset.value) btn.classList.add("active");
     btn.addEventListener("click", () => {
-      state[stateKey] = btn.dataset.value;
+      stateObj[stateKey] = btn.dataset.value;
       container.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
       btn.classList.add("active");
+      if (onChange) onChange();
     });
 
     const sub = getSub ? getSub(opt) : null;
@@ -4196,6 +4331,7 @@ function initFilters() {
   buildChipRow(
     document.getElementById("formatoRow"),
     FORMATOS,
+    state,
     "formato",
     o => o.label
   );
@@ -4203,6 +4339,7 @@ function initFilters() {
   buildChipRow(
     document.getElementById("tiempoRow"),
     TIEMPOS,
+    state,
     "tiempo",
     o => o.label,
     null,
@@ -4212,6 +4349,7 @@ function initFilters() {
   buildChipRow(
     document.getElementById("dificultadRow"),
     DIFICULTADES,
+    state,
     "dificultad",
     o => o.label,
     o => o.cls
@@ -4416,9 +4554,204 @@ function handleRoll() {
   }, 260);
 }
 
+// ============================================================
+// Movilidad
+// momento: "inicio" | "vuelta_calma"
+// tipo (si momento === "inicio"): "sentadilla" | "peso_muerto" | "press_banca" | "dominadas"
+// tipo (si momento === "vuelta_calma"): "estatico" | "dinamico"
+// Ejemplo de entrada:
+// articulaciones (solo aplica si momento === "vuelta_calma"): array con
+// alguno de: "hombro","dorsal","cadera","lumbar","isquiosurales","rodilla","tobillo"
+// { id: 1, name: "CADERA 90/90", scheme: "Circuito x3",
+//   momento: "inicio", tipo: "sentadilla",
+//   movements: ["90/90 hip switch x10 c/lado", "..."],
+//   notes: null }
+// ============================================================
+
+const MOVILIDAD = [
+];
+
+const MOV_TIPOS_INICIO = [
+  { key: "ANY", label: "Cualquiera" },
+  { key: "sentadilla", label: "Sentadilla" },
+  { key: "peso_muerto", label: "Peso muerto" },
+  { key: "press_banca", label: "Press de banco" },
+  { key: "dominadas", label: "Dominadas" },
+];
+
+const MOV_TIPOS_VUELTA = [
+  { key: "ANY", label: "Cualquiera" },
+  { key: "estatico", label: "Estáticos" },
+  { key: "dinamico", label: "Dinámicos" },
+];
+
+const MOV_ARTICULACIONES = [
+  { key: "ANY", label: "Cualquiera" },
+  { key: "hombro", label: "Hombro" },
+  { key: "dorsal", label: "Dorsal" },
+  { key: "cadera", label: "Cadera" },
+  { key: "lumbar", label: "Lumbar" },
+  { key: "isquiosurales", label: "Isquiosurales" },
+  { key: "rodilla", label: "Rodilla" },
+  { key: "tobillo", label: "Tobillo" },
+];
+
+const movState = {
+  momento: null,
+  tipo: "ANY",
+  articulacion: "ANY",
+};
+
+const movUsedHistory = {};
+
+function setMovMomento(momento) {
+  movState.momento = momento;
+  movState.tipo = "ANY";
+  movState.articulacion = "ANY";
+
+  const title = document.getElementById("movTipoTitle");
+  const row = document.getElementById("movTipoRow");
+  const artWrap = document.getElementById("movArticulacionWrap");
+
+  if (momento === "inicio") {
+    title.textContent = "¿Cuál es el ejercicio principal de tu sesión?";
+    buildChipRow(row, MOV_TIPOS_INICIO, movState, "tipo", o => o.label);
+    artWrap.hidden = true;
+  } else {
+    title.textContent = "Tipo";
+    buildChipRow(row, MOV_TIPOS_VUELTA, movState, "tipo", o => o.label);
+    artWrap.hidden = false;
+    buildChipRow(
+      document.getElementById("movArticulacionRow"),
+      MOV_ARTICULACIONES,
+      movState,
+      "articulacion",
+      o => o.label
+    );
+  }
+
+  document.getElementById("movMomentoSelect").hidden = true;
+  document.getElementById("movStep2").hidden = false;
+  document.getElementById("movResult").innerHTML = `<div class="empty-state">Elegí los filtros y tocá "Tirar Movilidad"</div>`;
+}
+
+function resetMovWizard() {
+  movState.momento = null;
+  movState.tipo = "ANY";
+  movState.articulacion = "ANY";
+  document.getElementById("movMomentoSelect").hidden = false;
+  document.getElementById("movStep2").hidden = true;
+}
+
+function initMovFilters() {
+  document.getElementById("movMomentoInicioBtn").addEventListener("click", () => setMovMomento("inicio"));
+  document.getElementById("movMomentoVueltaBtn").addEventListener("click", () => setMovMomento("vuelta_calma"));
+  document.getElementById("movBackToMomento").addEventListener("click", resetMovWizard);
+}
+
+function matchesMovFilters(w) {
+  if (movState.momento && w.momento !== movState.momento) return false;
+  if (movState.tipo !== "ANY" && w.tipo !== movState.tipo) return false;
+  if (movState.momento === "vuelta_calma" && movState.articulacion !== "ANY" && !(w.articulaciones || []).includes(movState.articulacion)) return false;
+  return true;
+}
+
+function movFilterKey() {
+  return `${movState.momento}|${movState.tipo}|${movState.articulacion}`;
+}
+
+function pickRandomMov() {
+  const pool = MOVILIDAD.filter(matchesMovFilters);
+  if (pool.length === 0) return { pool, picked: null };
+
+  const key = movFilterKey();
+  if (!movUsedHistory[key]) movUsedHistory[key] = new Set();
+  let used = movUsedHistory[key];
+
+  let candidates = pool.filter(w => !used.has(w.id));
+  if (candidates.length === 0) {
+    used.clear();
+    candidates = pool;
+  }
+
+  const picked = candidates[Math.floor(Math.random() * candidates.length)];
+  used.add(picked.id);
+  return { pool, picked };
+}
+
+function renderMov(w) {
+  const el = document.getElementById("movResult");
+  const movementsHtml = w.movements.map(m => {
+    const url = youtubeLink(m);
+    const ytHtml = url
+      ? ` <a class="ex-yt" href="${url}" target="_blank" rel="noopener noreferrer" title="Ver técnica en YouTube" onclick="event.stopPropagation()">▶</a>`
+      : "";
+    return `<li><span class="mv-text">${escapeHtml(m)}</span>${ytHtml}</li>`;
+  }).join("");
+  const notesHtml = w.notes ? `<div class="notes"><b>Nota:</b> ${escapeHtml(w.notes)}</div>` : "";
+
+  el.innerHTML = `
+    <div class="card">
+      <div class="card-top">
+        <span class="wod-num">MOV #${String(w.id).padStart(2, "0")}</span>
+      </div>
+      <h2 class="wod-name">${escapeHtml(w.name)}</h2>
+      <div class="scheme-row">
+        <span class="scheme-badge">MOVILIDAD</span>
+        <span class="scheme-time">${escapeHtml(w.scheme)}</span>
+      </div>
+      <ul class="movements">${movementsHtml}</ul>
+      ${notesHtml}
+    </div>
+  `;
+}
+
+function renderMovNoMatch() {
+  const el = document.getElementById("movResult");
+  el.innerHTML = `<div class="no-match">No hay circuitos de movilidad cargados todavía con esta combinación de filtros.<br>Probá otra combinación.</div>`;
+}
+
+function handleMovRoll() {
+  const btn = document.getElementById("movRollBtn");
+  btn.classList.add("rolling");
+  btn.disabled = true;
+
+  setTimeout(() => {
+    const { picked } = pickRandomMov();
+    if (!picked) {
+      renderMovNoMatch();
+    } else {
+      renderMov(picked);
+    }
+    btn.classList.remove("rolling");
+    btn.disabled = false;
+  }, 260);
+}
+
+// ============================================================
+// Navegación entre pantallas
+// ============================================================
+
+function showScreen(id) {
+  ["screen-home", "screen-wods", "screen-mov"].forEach(s => {
+    document.getElementById(s).hidden = (s !== id);
+  });
+  window.scrollTo({ top: 0, behavior: "instant" });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initFilters();
+  initMovFilters();
+
   document.getElementById("rollBtn").addEventListener("click", handleRoll);
+  document.getElementById("movRollBtn").addEventListener("click", handleMovRoll);
+
+  document.getElementById("modeWodsBtn").addEventListener("click", () => showScreen("screen-wods"));
+  document.getElementById("modeMovBtn").addEventListener("click", () => {
+    resetMovWizard();
+    showScreen("screen-mov");
+  });
+  document.querySelectorAll("[data-back]").forEach(b => b.addEventListener("click", () => showScreen("screen-home")));
 });
 
 </script>
