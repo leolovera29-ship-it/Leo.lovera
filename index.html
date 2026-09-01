@@ -4757,10 +4757,32 @@ function movInicioCategoriaLabel(tipo, key) {
 // Ejemplo de entrada:
 // { id: 1, name: "CADERA 90/90", scheme: "Circuito x3", tipo: "estatico",
 //   articulaciones: ["cadera", "rodilla", "tobillo"],
-//   movements: ["90/90 hip switch x10 c/lado", "..."], notes: null }
+//   movements: [{ text: "90/90 hip switch 30\" c/lado", video: "https://..." }, "..."],
+//   notes: null }
 // ============================================================
 
 const MOVILIDAD_VUELTA = [
+  // ---- HOMBRO: estático ----
+  {
+    id: 1, name: "HOMBRO ESTÁTICO — PECTORAL Y ROTADORES", scheme: "Circuito x2",
+    tipo: "estatico", articulaciones: ["hombro"],
+    movements: [
+      { text: "Estiramiento de pectoral y hombro en marco de puerta 30\" c/lado", video: "https://www.youtube.com/watch?v=Dmm8_S23I74" },
+      { text: "Sleeper stretch (rotación interna) 30\" c/lado", video: "https://www.youtube.com/watch?v=9BN8bRVq3Xo" },
+      { text: "Cross body shoulder stretch (aducción horizontal) 30\" c/lado", video: "https://www.youtube.com/watch?v=swvXpKN832E" },
+    ],
+    notes: "Mantener cada posición sin rebotar, respirando profundo."
+  },
+  {
+    id: 2, name: "HOMBRO ESTÁTICO — TRÍCEPS Y EXTENSIÓN", scheme: "Circuito x2",
+    tipo: "estatico", articulaciones: ["hombro"],
+    movements: [
+      { text: "Overhead triceps stretch 30\" c/lado", video: "https://www.youtube.com/watch?v=qsyrvNY8uBA" },
+      { text: "Child's pose (apertura de hombro y dorsal) 45\"", video: "https://www.youtube.com/watch?v=rOymAu3AGsk" },
+      { text: "Cross body shoulder stretch (aducción horizontal) 30\" c/lado", video: "https://www.youtube.com/watch?v=swvXpKN832E" },
+    ],
+    notes: null
+  },
 ];
 
 const MOV_TIPOS_INICIO = [
@@ -4920,11 +4942,12 @@ function pickRandomMovVuelta() {
 function renderMov(w) {
   const el = document.getElementById("movResult");
   const movementsHtml = w.movements.map(m => {
-    const url = youtubeLink(m);
+    const text = typeof m === "string" ? m : m.text;
+    const url = typeof m === "string" ? youtubeLink(m) : m.video;
     const ytHtml = url
       ? ` <a class="ex-yt" href="${url}" target="_blank" rel="noopener noreferrer" title="Ver técnica en YouTube" onclick="event.stopPropagation()">▶</a>`
       : "";
-    return `<li><span class="mv-text">${escapeHtml(m)}</span>${ytHtml}</li>`;
+    return `<li><span class="mv-text">${escapeHtml(text)}</span>${ytHtml}</li>`;
   }).join("");
   const notesHtml = w.notes ? `<div class="notes"><b>Nota:</b> ${escapeHtml(w.notes)}</div>` : "";
 
