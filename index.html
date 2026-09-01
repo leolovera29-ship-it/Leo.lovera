@@ -4555,20 +4555,60 @@ function handleRoll() {
 }
 
 // ============================================================
-// Movilidad
-// momento: "inicio" | "vuelta_calma"
-// tipo (si momento === "inicio"): "sentadilla" | "peso_muerto" | "press_banca" | "dominadas"
-// tipo (si momento === "vuelta_calma"): "estatico" | "dinamico"
-// Ejemplo de entrada:
-// articulaciones (solo aplica si momento === "vuelta_calma"): array con
-// alguno de: "hombro","dorsal","cadera","lumbar","isquiosurales","rodilla","tobillo"
-// { id: 1, name: "CADERA 90/90", scheme: "Circuito x3",
-//   momento: "inicio", tipo: "sentadilla",
-//   movements: ["90/90 hip switch x10 c/lado", "..."],
-//   notes: null }
+// Movilidad - INICIO (entrada en calor)
+// Cada entrada es UN ejercicio individual, siempre 3x10.
+// tipo: "sentadilla" | "peso_muerto" | "press_banca" | "dominadas"
+// categoria: "dorsal_hombro" | "cadera" | "tobillo"
+// El generador elige al azar 1 ejercicio de cada categoría (según el tipo
+// elegido) y arma un circuito de 3 ejercicios, cada uno 3x10.
 // ============================================================
 
-const MOVILIDAD = [
+const MOVILIDAD_INICIO = [
+  // ---- SENTADILLA: dorsal / hombro (prioridad dorsal) ----
+  { id: 101, tipo: "sentadilla", categoria: "dorsal_hombro", name: "Open Book (rotación torácica)", video: "https://www.youtube.com/watch?v=rDviWORCWEw" },
+  { id: 102, tipo: "sentadilla", categoria: "dorsal_hombro", name: "Extensión torácica en foam roller", video: "https://www.youtube.com/watch?v=dBdlv1sv144" },
+  { id: 103, tipo: "sentadilla", categoria: "dorsal_hombro", name: "Thread the needle (rotación torácica en cuadrupedia)", video: "https://www.youtube.com/watch?v=4EPsl0epycc" },
+  { id: 104, tipo: "sentadilla", categoria: "dorsal_hombro", name: "Cat-Cow", video: "https://www.youtube.com/watch?v=Fa4ZMS5M7xA" },
+  { id: 105, tipo: "sentadilla", categoria: "dorsal_hombro", name: "Wall slides", video: "https://www.youtube.com/watch?v=Eaj_NG5_hIo" },
+  { id: 106, tipo: "sentadilla", categoria: "dorsal_hombro", name: "Dislocaciones de hombro con banda", video: "https://www.youtube.com/watch?v=E5edyocT9bo" },
+  { id: 107, tipo: "sentadilla", categoria: "dorsal_hombro", name: "Círculos de brazos", video: "https://www.youtube.com/watch?v=vPDvVzEjijQ" },
+
+  // ---- SENTADILLA: cadera en rotación externa ----
+  { id: 111, tipo: "sentadilla", categoria: "cadera", name: "90/90 hip switch", video: "https://www.youtube.com/watch?v=HUZimFZJZWU" },
+  { id: 112, tipo: "sentadilla", categoria: "cadera", name: "Cossack squat", video: "https://www.youtube.com/watch?v=JaCbmoDqUc4" },
+  { id: 113, tipo: "sentadilla", categoria: "cadera", name: "Frog stretch", video: "https://www.youtube.com/watch?v=mO8S7qOdcdU" },
+  { id: 114, tipo: "sentadilla", categoria: "cadera", name: "Pigeon pose (rotación externa)", video: "https://www.youtube.com/watch?v=46phRH_09yM" },
+  { id: 115, tipo: "sentadilla", categoria: "cadera", name: "Clamshell con banda", video: "https://www.youtube.com/watch?v=d89KBR80T8I" },
+  { id: 116, tipo: "sentadilla", categoria: "cadera", name: "Deep squat hold (hip opener)", video: "https://www.youtube.com/watch?v=dCV-TB8qw60" },
+  { id: 117, tipo: "sentadilla", categoria: "cadera", name: "Butterfly stretch", video: "https://www.youtube.com/watch?v=-E5hMMT5hyY" },
+
+  // ---- SENTADILLA: tobillo ----
+  { id: 121, tipo: "sentadilla", categoria: "tobillo", name: "Knee to wall (dorsiflexión)", video: "https://www.youtube.com/watch?v=pSMPd12mrg0" },
+  { id: 122, tipo: "sentadilla", categoria: "tobillo", name: "Ankle rocks", video: "https://www.youtube.com/watch?v=CbhPRzBZHgQ" },
+  { id: 123, tipo: "sentadilla", categoria: "tobillo", name: "Calf stretch con rodilla flexionada (sóleo)", video: "https://www.youtube.com/watch?v=SFHq1ygbmsA" },
+  { id: 124, tipo: "sentadilla", categoria: "tobillo", name: "Ankle circles", video: "https://www.youtube.com/watch?v=6XX3R9ibBfw" },
+  { id: 125, tipo: "sentadilla", categoria: "tobillo", name: "Ankle distraction con banda", video: "https://www.youtube.com/watch?v=ILSbK8RnGdI" },
+  { id: 126, tipo: "sentadilla", categoria: "tobillo", name: "Downward dog, pedaleo de talones", video: "https://www.youtube.com/watch?v=Zbm_GhYy7ck" },
+];
+
+const MOV_INICIO_CATEGORIAS = [
+  { key: "dorsal_hombro", label: "Dorsal / Hombro" },
+  { key: "cadera", label: "Cadera (rotación externa)" },
+  { key: "tobillo", label: "Tobillo" },
+];
+
+// ============================================================
+// Movilidad - VUELTA A LA CALMA
+// tipo: "estatico" | "dinamico"
+// articulaciones: array con alguno de: "hombro","dorsal","cadera","lumbar",
+//                 "isquiosurales","rodilla","tobillo"
+// Ejemplo de entrada:
+// { id: 1, name: "CADERA 90/90", scheme: "Circuito x3", tipo: "estatico",
+//   articulaciones: ["cadera", "rodilla", "tobillo"],
+//   movements: ["90/90 hip switch x10 c/lado", "..."], notes: null }
+// ============================================================
+
+const MOVILIDAD_VUELTA = [
 ];
 
 const MOV_TIPOS_INICIO = [
@@ -4649,19 +4689,65 @@ function initMovFilters() {
   document.getElementById("movBackToMomento").addEventListener("click", resetMovWizard);
 }
 
-function matchesMovFilters(w) {
-  if (movState.momento && w.momento !== movState.momento) return false;
+function pickRandomMovInicio() {
+  const pool = MOVILIDAD_INICIO.filter(e => movState.tipo === "ANY" || e.tipo === movState.tipo);
+  const picks = [];
+
+  for (const cat of MOV_INICIO_CATEGORIAS) {
+    const opts = pool.filter(e => e.categoria === cat.key);
+    if (opts.length === 0) return null;
+
+    const key = `inicio|${movState.tipo}|${cat.key}`;
+    if (!movUsedHistory[key]) movUsedHistory[key] = new Set();
+    let used = movUsedHistory[key];
+
+    let candidates = opts.filter(e => !used.has(e.id));
+    if (candidates.length === 0) {
+      used.clear();
+      candidates = opts;
+    }
+
+    const picked = candidates[Math.floor(Math.random() * candidates.length)];
+    used.add(picked.id);
+    picks.push({ ...picked, categoriaLabel: cat.label });
+  }
+
+  return picks;
+}
+
+function renderMovInicio(picks) {
+  const el = document.getElementById("movResult");
+  const movementsHtml = picks.map(p => {
+    return `<li><span class="mv-text"><b>${escapeHtml(p.categoriaLabel)}:</b> ${escapeHtml(p.name)} — 3x10</span> <a class="ex-yt" href="${p.video}" target="_blank" rel="noopener noreferrer" title="Ver técnica en YouTube" onclick="event.stopPropagation()">▶</a></li>`;
+  }).join("");
+
+  el.innerHTML = `
+    <div class="card">
+      <div class="card-top">
+        <span class="wod-num">MOVILIDAD</span>
+      </div>
+      <h2 class="wod-name">Entrada en calor</h2>
+      <div class="scheme-row">
+        <span class="scheme-badge">MOVILIDAD</span>
+        <span class="scheme-time">3 ejercicios, 3x10 c/u</span>
+      </div>
+      <ul class="movements">${movementsHtml}</ul>
+    </div>
+  `;
+}
+
+function matchesMovVueltaFilters(w) {
   if (movState.tipo !== "ANY" && w.tipo !== movState.tipo) return false;
-  if (movState.momento === "vuelta_calma" && movState.articulacion !== "ANY" && !(w.articulaciones || []).includes(movState.articulacion)) return false;
+  if (movState.articulacion !== "ANY" && !(w.articulaciones || []).includes(movState.articulacion)) return false;
   return true;
 }
 
 function movFilterKey() {
-  return `${movState.momento}|${movState.tipo}|${movState.articulacion}`;
+  return `vuelta|${movState.tipo}|${movState.articulacion}`;
 }
 
-function pickRandomMov() {
-  const pool = MOVILIDAD.filter(matchesMovFilters);
+function pickRandomMovVuelta() {
+  const pool = MOVILIDAD_VUELTA.filter(matchesMovVueltaFilters);
   if (pool.length === 0) return { pool, picked: null };
 
   const key = movFilterKey();
@@ -4717,11 +4803,20 @@ function handleMovRoll() {
   btn.disabled = true;
 
   setTimeout(() => {
-    const { picked } = pickRandomMov();
-    if (!picked) {
-      renderMovNoMatch();
+    if (movState.momento === "inicio") {
+      const picks = pickRandomMovInicio();
+      if (!picks) {
+        renderMovNoMatch();
+      } else {
+        renderMovInicio(picks);
+      }
     } else {
-      renderMov(picked);
+      const { picked } = pickRandomMovVuelta();
+      if (!picked) {
+        renderMovNoMatch();
+      } else {
+        renderMov(picked);
+      }
     }
     btn.classList.remove("rolling");
     btn.disabled = false;
