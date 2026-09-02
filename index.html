@@ -4755,12 +4755,11 @@ function movInicioCategoriaLabel(tipo, key) {
 // Cada entrada es UN estiramiento estático individual.
 // musculo: una de las keys de MOV_MUSCULOS (sin "ANY")
 // Ejemplo de entrada:
-// { id: 1, musculo: "cuello", name: "Estiramiento cervical...", video: "https://..." }
+// { id: 1, musculo: "cervical", name: "Estiramiento cervical...", video: "https://..." }
 // ============================================================
 
 const MOV_MUSCULOS = [
-  { key: "ANY", label: "Cualquiera" },
-  { key: "cuello", label: "Cuello" },
+  { key: "cervical", label: "Cervical" },
   { key: "trapecio", label: "Trapecio" },
   { key: "deltoide", label: "Deltoide" },
   { key: "pectoral", label: "Pectoral" },
@@ -4779,12 +4778,12 @@ const MOV_MUSCULOS = [
 ];
 
 const MOVILIDAD_VUELTA = [
-  // ---- CUELLO ----
-  { id: 1, musculo: "cuello", name: "Estiramiento cervical en rotación y flexión lateral (SCM) — 30\" c/lado", video: "https://www.youtube.com/watch?v=IKcKcXqu1cE" },
-  { id: 2, musculo: "cuello", name: "Estiramiento combinado flexión / flexión lateral / rotación de cuello — 30\" c/lado", video: "https://www.youtube.com/watch?v=GtpdI8bfnr8" },
-  { id: 3, musculo: "cuello", name: "Estiramiento de flexión de cuello — 30\"", video: "https://www.youtube.com/watch?v=uoMmeRubxwk" },
-  { id: 4, musculo: "cuello", name: "Estiramiento de flexión lateral cervical — 30\" c/lado", video: "https://www.youtube.com/watch?v=t_q9JQh_-7A" },
-  { id: 5, musculo: "cuello", name: "Flexión lateral de cuello con rotación — 30\" c/lado", video: "https://www.youtube.com/watch?v=iGgaLQRpQFY" },
+  // ---- CERVICAL ----
+  { id: 1, musculo: "cervical", name: "Estiramiento cervical en rotación y flexión lateral (SCM) — 30\" c/lado", video: "https://www.youtube.com/watch?v=IKcKcXqu1cE" },
+  { id: 2, musculo: "cervical", name: "Estiramiento combinado flexión / flexión lateral / rotación de cuello — 30\" c/lado", video: "https://www.youtube.com/watch?v=GtpdI8bfnr8" },
+  { id: 3, musculo: "cervical", name: "Estiramiento de flexión de cuello — 30\"", video: "https://www.youtube.com/watch?v=uoMmeRubxwk" },
+  { id: 4, musculo: "cervical", name: "Estiramiento de flexión lateral cervical — 30\" c/lado", video: "https://www.youtube.com/watch?v=t_q9JQh_-7A" },
+  { id: 5, musculo: "cervical", name: "Flexión lateral de cuello con rotación — 30\" c/lado", video: "https://www.youtube.com/watch?v=iGgaLQRpQFY" },
 
   // ---- TRAPECIO ----
   { id: 11, musculo: "trapecio", name: "Estiramiento de trapecio superior — 30\" c/lado", video: "https://www.youtube.com/watch?v=-r0eoFS7_5Q" },
@@ -4903,7 +4902,7 @@ const MOV_TIPOS_INICIO = [
 const movState = {
   momento: null,
   tipo: "ANY",
-  musculo: "ANY",
+  musculo: null,
 };
 
 const movUsedHistory = {};
@@ -4911,7 +4910,7 @@ const movUsedHistory = {};
 function setMovMomento(momento) {
   movState.momento = momento;
   movState.tipo = "ANY";
-  movState.musculo = "ANY";
+  movState.musculo = null;
 
   const title = document.getElementById("movTipoTitle");
   const row = document.getElementById("movTipoRow");
@@ -4934,7 +4933,7 @@ function setMovMomento(momento) {
 function resetMovWizard() {
   movState.momento = null;
   movState.tipo = "ANY";
-  movState.musculo = "ANY";
+  movState.musculo = null;
   document.getElementById("movMomentoSelect").hidden = false;
   document.getElementById("movStep2").hidden = true;
 }
@@ -4993,8 +4992,7 @@ function renderMovInicio(picks) {
 }
 
 function matchesMovVueltaFilters(w) {
-  if (movState.musculo !== "ANY" && w.musculo !== movState.musculo) return false;
-  return true;
+  return !!movState.musculo && w.musculo === movState.musculo;
 }
 
 function movFilterKey() {
