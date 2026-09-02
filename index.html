@@ -4751,38 +4751,145 @@ function movInicioCategoriaLabel(tipo, key) {
 
 // ============================================================
 // Movilidad - VUELTA A LA CALMA
-// tipo: "estatico" | "dinamico"
-// articulaciones: array con alguno de: "hombro","dorsal","cadera","lumbar",
-//                 "isquiosurales","rodilla","tobillo"
+// Organizado por grupo muscular (orden cabeza -> pies).
+// Cada entrada es UN estiramiento estático individual.
+// musculo: una de las keys de MOV_MUSCULOS (sin "ANY")
 // Ejemplo de entrada:
-// { id: 1, name: "CADERA 90/90", scheme: "Circuito x3", tipo: "estatico",
-//   articulaciones: ["cadera", "rodilla", "tobillo"],
-//   movements: [{ text: "90/90 hip switch 30\" c/lado", video: "https://..." }, "..."],
-//   notes: null }
+// { id: 1, musculo: "cuello", name: "Estiramiento cervical...", video: "https://..." }
 // ============================================================
 
+const MOV_MUSCULOS = [
+  { key: "ANY", label: "Cualquiera" },
+  { key: "cuello", label: "Cuello" },
+  { key: "trapecio", label: "Trapecio" },
+  { key: "deltoide", label: "Deltoide" },
+  { key: "pectoral", label: "Pectoral" },
+  { key: "dorsal", label: "Dorsal" },
+  { key: "biceps", label: "Bíceps" },
+  { key: "triceps", label: "Tríceps" },
+  { key: "abdominales", label: "Abdominales" },
+  { key: "lumbar", label: "Lumbar" },
+  { key: "psoas", label: "Psoas" },
+  { key: "gluteo", label: "Glúteo" },
+  { key: "piramidal", label: "Piramidal" },
+  { key: "aductor", label: "Aductor" },
+  { key: "cuadriceps", label: "Cuádriceps" },
+  { key: "isquiosurales", label: "Isquiosurales" },
+  { key: "gemelo", label: "Gemelo" },
+];
+
 const MOVILIDAD_VUELTA = [
-  // ---- HOMBRO: estático ----
-  {
-    id: 1, name: "HOMBRO ESTÁTICO — PECTORAL Y ROTADORES", scheme: "Circuito x2",
-    tipo: "estatico", articulaciones: ["hombro"],
-    movements: [
-      { text: "Estiramiento de pectoral y hombro en marco de puerta 30\" c/lado", video: "https://www.youtube.com/watch?v=Dmm8_S23I74" },
-      { text: "Sleeper stretch (rotación interna) 30\" c/lado", video: "https://www.youtube.com/watch?v=9BN8bRVq3Xo" },
-      { text: "Cross body shoulder stretch (aducción horizontal) 30\" c/lado", video: "https://www.youtube.com/watch?v=swvXpKN832E" },
-    ],
-    notes: "Mantener cada posición sin rebotar, respirando profundo."
-  },
-  {
-    id: 2, name: "HOMBRO ESTÁTICO — TRÍCEPS Y EXTENSIÓN", scheme: "Circuito x2",
-    tipo: "estatico", articulaciones: ["hombro"],
-    movements: [
-      { text: "Overhead triceps stretch 30\" c/lado", video: "https://www.youtube.com/watch?v=qsyrvNY8uBA" },
-      { text: "Child's pose (apertura de hombro y dorsal) 45\"", video: "https://www.youtube.com/watch?v=rOymAu3AGsk" },
-      { text: "Cross body shoulder stretch (aducción horizontal) 30\" c/lado", video: "https://www.youtube.com/watch?v=swvXpKN832E" },
-    ],
-    notes: null
-  },
+  // ---- CUELLO ----
+  { id: 1, musculo: "cuello", name: "Estiramiento cervical en rotación y flexión lateral (SCM) — 30\" c/lado", video: "https://www.youtube.com/watch?v=IKcKcXqu1cE" },
+  { id: 2, musculo: "cuello", name: "Estiramiento combinado flexión / flexión lateral / rotación de cuello — 30\" c/lado", video: "https://www.youtube.com/watch?v=GtpdI8bfnr8" },
+  { id: 3, musculo: "cuello", name: "Estiramiento de flexión de cuello — 30\"", video: "https://www.youtube.com/watch?v=uoMmeRubxwk" },
+  { id: 4, musculo: "cuello", name: "Estiramiento de flexión lateral cervical — 30\" c/lado", video: "https://www.youtube.com/watch?v=t_q9JQh_-7A" },
+  { id: 5, musculo: "cuello", name: "Flexión lateral de cuello con rotación — 30\" c/lado", video: "https://www.youtube.com/watch?v=iGgaLQRpQFY" },
+
+  // ---- TRAPECIO ----
+  { id: 11, musculo: "trapecio", name: "Estiramiento de trapecio superior — 30\" c/lado", video: "https://www.youtube.com/watch?v=-r0eoFS7_5Q" },
+  { id: 12, musculo: "trapecio", name: "Estiramiento de trapecio y espalda alta — 30\"", video: "https://www.youtube.com/watch?v=fp-EDHuc9dg" },
+  { id: 13, musculo: "trapecio", name: "Estiramiento de trapecio superior de pie — 30\" c/lado", video: "https://www.youtube.com/watch?v=WCXpAaJ7RyE" },
+  { id: 14, musculo: "trapecio", name: "Estiramiento de trapecio inferior — 30\"", video: "https://www.youtube.com/watch?v=V_MIKFxddQM" },
+  { id: 15, musculo: "trapecio", name: "Estiramiento de trapecio — 30\" c/lado", video: "https://www.youtube.com/watch?v=7Ns7Y1vQsxo" },
+
+  // ---- DELTOIDE ----
+  { id: 21, musculo: "deltoide", name: "Estiramiento de deltoides (3 variantes) — 30\" c/lado", video: "https://www.youtube.com/watch?v=dSLmaVvXRBA" },
+  { id: 22, musculo: "deltoide", name: "Estiramiento de deltoides — 30\" c/lado", video: "https://www.youtube.com/watch?v=i6kEeoABt3A" },
+  { id: 23, musculo: "deltoide", name: "Estiramiento de deltoide anterior — 30\" c/lado", video: "https://www.youtube.com/watch?v=UjAewv_9TGI" },
+  { id: 24, musculo: "deltoide", name: "Estiramiento de deltoide posterior — 30\" c/lado", video: "https://www.youtube.com/watch?v=0pXr3CbjgzY" },
+  { id: 25, musculo: "deltoide", name: "Estiramiento de tríceps / dorsal / deltoide — 30\" c/lado", video: "https://www.youtube.com/watch?v=sw_EtkaF5Vk" },
+
+  // ---- PECTORAL ----
+  { id: 31, musculo: "pectoral", name: "El mejor estiramiento de pecho y pectorales — 30\" c/lado", video: "https://www.youtube.com/watch?v=XdsRWiMPmfA" },
+  { id: 32, musculo: "pectoral", name: "Estiramiento de pectorales — 30\" c/lado", video: "https://www.youtube.com/watch?v=SV7l1sfEmO0" },
+  { id: 33, musculo: "pectoral", name: "Estiramiento de pectoral (fisioterapia) — 30\" c/lado", video: "https://www.youtube.com/watch?v=HJFlfcl6GLw" },
+  { id: 34, musculo: "pectoral", name: "Estiramiento de pectoral — 30\" c/lado", video: "https://www.youtube.com/watch?v=U97ktFbE_ZM" },
+  { id: 35, musculo: "pectoral", name: "Estiramiento de pectoral en marco de puerta (90°) — 30\" c/lado", video: "https://www.youtube.com/watch?v=M850sCj9LHQ" },
+
+  // ---- DORSAL ----
+  { id: 41, musculo: "dorsal", name: "Estiramiento de dorsal ancho — 30\" c/lado", video: "https://www.youtube.com/watch?v=x1SdnOkQoo0" },
+  { id: 42, musculo: "dorsal", name: "Estiramiento de dorsal en marco de puerta — 30\" c/lado", video: "https://www.youtube.com/watch?v=x97hAScVHHc" },
+  { id: 43, musculo: "dorsal", name: "Los 3 mejores estiramientos de dorsal ancho — 30\" c/lado", video: "https://www.youtube.com/watch?v=RDnDU4cbRjU" },
+  { id: 44, musculo: "dorsal", name: "Estiramiento de dorsal ancho con pelota — 30\" c/lado", video: "https://www.youtube.com/watch?v=kEH6jatSVSw" },
+  { id: 45, musculo: "dorsal", name: "Estiramiento óptimo de dorsal ancho — 30\" c/lado", video: "https://www.youtube.com/watch?v=sGTNJhzRAJ8" },
+
+  // ---- BÍCEPS ----
+  { id: 51, musculo: "biceps", name: "Estiramiento de bíceps — 30\" c/lado", video: "https://www.youtube.com/watch?v=QY4gCIYbGQk" },
+  { id: 52, musculo: "biceps", name: "Cómo estirar el bíceps — 30\" c/lado", video: "https://www.youtube.com/watch?v=_e1hQUxTAHc" },
+  { id: 53, musculo: "biceps", name: "El mejor estiramiento para bíceps tensos — 30\" c/lado", video: "https://www.youtube.com/watch?v=jgX7pZ9e0S4" },
+  { id: 54, musculo: "biceps", name: "Forma fácil de estirar el bíceps en casa — 30\" c/lado", video: "https://www.youtube.com/watch?v=gFV1tSjJgyU" },
+  { id: 55, musculo: "biceps", name: "El mejor estiramiento de bíceps — 30\" c/lado", video: "https://www.youtube.com/watch?v=uqO6GGebKXA" },
+
+  // ---- TRÍCEPS ----
+  { id: 61, musculo: "triceps", name: "Estiramiento de tríceps — 30\" c/lado", video: "https://www.youtube.com/watch?v=Uvk1Y8O1_yM" },
+  { id: 62, musculo: "triceps", name: "Estiramiento de tríceps — 30\" c/lado", video: "https://www.youtube.com/watch?v=zzvDO56B0HE" },
+  { id: 63, musculo: "triceps", name: "Cómo estirar el tríceps — 30\" c/lado", video: "https://www.youtube.com/watch?v=yAvpW_zKJmI" },
+  { id: 64, musculo: "triceps", name: "Estiramientos básicos de tríceps — 30\" c/lado", video: "https://www.youtube.com/watch?v=xxWuioswXn0" },
+  { id: 65, musculo: "triceps", name: "Estiramiento de tríceps — 30\" c/lado", video: "https://www.youtube.com/watch?v=NUmJkdFMRho" },
+
+  // ---- ABDOMINALES ----
+  { id: 71, musculo: "abdominales", name: "Estiramientos abdominales — 30\"", video: "https://www.youtube.com/watch?v=D1tzvP8dGR4" },
+  { id: 72, musculo: "abdominales", name: "Estiramiento de fascia abdominal — 30\"", video: "https://www.youtube.com/watch?v=W3WxCWlYl1A" },
+  { id: 73, musculo: "abdominales", name: "Estiramiento rotacional de abdomen — 30\" c/lado", video: "https://www.youtube.com/watch?v=Q-_MxG1cGUU" },
+  { id: 74, musculo: "abdominales", name: "Estiramiento abdominal — 30\"", video: "https://www.youtube.com/watch?v=92TzKYdAZqQ" },
+  { id: 75, musculo: "abdominales", name: "Estiramiento de abdominales bajos — 30\"", video: "https://www.youtube.com/watch?v=v0ELTWpEGSk" },
+
+  // ---- LUMBAR ----
+  { id: 81, musculo: "lumbar", name: "Extensión lumbar de pie — 30\"", video: "https://www.youtube.com/watch?v=B2JbQVc7yOA" },
+  { id: 82, musculo: "lumbar", name: "Rodilla al pecho individual — 30\" c/lado", video: "https://www.youtube.com/watch?v=HzkE6QlaDe0" },
+  { id: 83, musculo: "lumbar", name: "Torsión espinal sentado — 30\" c/lado", video: "https://www.youtube.com/watch?v=4faLXO2bLFU" },
+  { id: 84, musculo: "lumbar", name: "Doble rodilla al pecho — 30\"", video: "https://www.youtube.com/watch?v=LugNxxfIdvo" },
+  { id: 85, musculo: "lumbar", name: "Rodilla al pecho — 30\" c/lado", video: "https://www.youtube.com/watch?v=n6_Z3I0zBcI" },
+
+  // ---- PSOAS ----
+  { id: 91, musculo: "psoas", name: "Estiramiento de psoas — 30\" c/lado", video: "https://www.youtube.com/watch?v=3SVJvstoBR0" },
+  { id: 92, musculo: "psoas", name: "Estiramiento de psoas/flexor de cadera (isolado activo) — 30\" c/lado", video: "https://www.youtube.com/watch?v=yfswfLuW_tI" },
+  { id: 93, musculo: "psoas", name: "Estiramiento de psoas — 30\" c/lado", video: "https://www.youtube.com/watch?v=fAHKg_Fah88" },
+  { id: 94, musculo: "psoas", name: "Los 3 mejores estiramientos de psoas — 30\" c/lado", video: "https://www.youtube.com/watch?v=REjMEenojI4" },
+  { id: 95, musculo: "psoas", name: "Cómo liberar el psoas tenso rápido — 30\" c/lado", video: "https://www.youtube.com/watch?v=D8_teUeUDj0" },
+
+  // ---- GLÚTEO ----
+  { id: 101, musculo: "gluteo", name: "Estiramiento de glúteo mayor — 30\" c/lado", video: "https://www.youtube.com/watch?v=Y3T4IedBd4o" },
+  { id: 102, musculo: "gluteo", name: "El mejor estiramiento de glúteo (cadera tensa) — 30\" c/lado", video: "https://www.youtube.com/watch?v=ycPX5baFFe4" },
+  { id: 103, musculo: "gluteo", name: "Estiramiento de glúteo para reducir dolor — 30\" c/lado", video: "https://www.youtube.com/watch?v=qEhEKOW_aVQ" },
+  { id: 104, musculo: "gluteo", name: "Estiramiento de glúteo (liberar tensión) — 30\" c/lado", video: "https://www.youtube.com/watch?v=xSuvEdVxcMQ" },
+  { id: 105, musculo: "gluteo", name: "Figura 4 sentado (glúteo/piramidal) — 30\" c/lado", video: "https://www.youtube.com/watch?v=eMASqw2qUgc" },
+
+  // ---- PIRAMIDAL ----
+  { id: 111, musculo: "piramidal", name: "Estiramiento figura 4 (piramidal) — 30\" c/lado", video: "https://www.youtube.com/watch?v=E6sqUHFt6Ng" },
+  { id: 112, musculo: "piramidal", name: "Estiramiento piramidal figura 4 — 30\" c/lado", video: "https://www.youtube.com/watch?v=-g0nuyTHMrI" },
+  { id: 113, musculo: "piramidal", name: "Figura 4 sentado para piramidal — 30\" c/lado", video: "https://www.youtube.com/watch?v=2E8WWX4cOc4" },
+  { id: 114, musculo: "piramidal", name: "Cómo hacer el estiramiento figura 4 — 30\" c/lado", video: "https://www.youtube.com/watch?v=VgjgTGnBkx0" },
+  { id: 115, musculo: "piramidal", name: "Estiramiento figura 4 / pretzel supino — 30\" c/lado", video: "https://www.youtube.com/watch?v=_bmuT1qE9vI" },
+
+  // ---- ADUCTOR ----
+  { id: 121, musculo: "aductor", name: "Los 3 mejores estiramientos de aductor — 30\" c/lado", video: "https://www.youtube.com/watch?v=CezwKdoa9Es" },
+  { id: 122, musculo: "aductor", name: "Estiramiento de aductor (tirón de ingle) — 30\" c/lado", video: "https://www.youtube.com/watch?v=SG_Bmzf3nt4" },
+  { id: 123, musculo: "aductor", name: "Cómo liberar los aductores — 30\" c/lado", video: "https://www.youtube.com/watch?v=WbJXFmPlB7I" },
+  { id: 124, musculo: "aductor", name: "Cómo estirar correctamente los aductores — 30\" c/lado", video: "https://www.youtube.com/watch?v=BzAVOa8sEPc" },
+  { id: 125, musculo: "aductor", name: "Estiramiento de aductor en semi-arrodillado — 30\" c/lado", video: "https://www.youtube.com/watch?v=YwvKxGalWL0" },
+
+  // ---- CUÁDRICEPS ----
+  { id: 131, musculo: "cuadriceps", name: "Estiramiento de cuádriceps de pie — 30\" c/lado", video: "https://www.youtube.com/watch?v=Td-9CSgSFhs" },
+  { id: 132, musculo: "cuadriceps", name: "Estiramiento de cuádriceps acostado — 30\" c/lado", video: "https://www.youtube.com/watch?v=5hiV6zJgQa0" },
+  { id: 133, musculo: "cuadriceps", name: "3 formas de estirar el cuádriceps en casa — 30\" c/lado", video: "https://www.youtube.com/watch?v=ah5JagXl4C0" },
+  { id: 134, musculo: "cuadriceps", name: "Estiramiento de cuádriceps — 30\" c/lado", video: "https://www.youtube.com/watch?v=BhQimqvU1tM" },
+  { id: 135, musculo: "cuadriceps", name: "Cómo estirar el cuádriceps — 30\" c/lado", video: "https://www.youtube.com/watch?v=DhzLymZiflI" },
+
+  // ---- ISQUIOSURALES ----
+  { id: 141, musculo: "isquiosurales", name: "Estiramiento de isquiosurales (activo) — 30\" c/lado", video: "https://www.youtube.com/watch?v=Nzy6_F9s6QI" },
+  { id: 142, musculo: "isquiosurales", name: "Estiramiento de isquiosurales — 30\" c/lado", video: "https://www.youtube.com/watch?v=7AaUjwdBwaM" },
+  { id: 143, musculo: "isquiosurales", name: "El único estiramiento de isquiosurales que necesitás — 30\" c/lado", video: "https://www.youtube.com/watch?v=uZ7AbE5KF1s" },
+  { id: 144, musculo: "isquiosurales", name: "Cómo estirar isquiosurales tensos correctamente — 30\" c/lado", video: "https://www.youtube.com/watch?v=2SdMmx_sLNc" },
+  { id: 145, musculo: "isquiosurales", name: "Estiramientos para isquiosurales tensos — 30\" c/lado", video: "https://www.youtube.com/watch?v=OpsztYFNuwk" },
+
+  // ---- GEMELO ----
+  { id: 151, musculo: "gemelo", name: "Estiramiento de gemelo — 30\" c/lado", video: "https://www.youtube.com/watch?v=trC42QD0wQI" },
+  { id: 152, musculo: "gemelo", name: "Estiramiento de gemelo de pie, pierna recta — 30\" c/lado", video: "https://www.youtube.com/watch?v=bi_6uKDxDNU" },
+  { id: 153, musculo: "gemelo", name: "Estiramiento de gemelo sentado (silla) — 30\" c/lado", video: "https://www.youtube.com/watch?v=JydX2WK2kOI" },
+  { id: 154, musculo: "gemelo", name: "Estiramiento de gemelo \"beso a la pared\" — 30\" c/lado", video: "https://www.youtube.com/watch?v=OLM6KmOunKU" },
+  { id: 155, musculo: "gemelo", name: "Estiramiento de gemelo — 30\" c/lado", video: "https://www.youtube.com/watch?v=2N-iWX9RIqE" },
 ];
 
 const MOV_TIPOS_INICIO = [
@@ -4793,27 +4900,10 @@ const MOV_TIPOS_INICIO = [
   { key: "dominadas", label: "Dominadas/Remo" },
 ];
 
-const MOV_TIPOS_VUELTA = [
-  { key: "ANY", label: "Cualquiera" },
-  { key: "estatico", label: "Estáticos" },
-  { key: "dinamico", label: "Dinámicos" },
-];
-
-const MOV_ARTICULACIONES = [
-  { key: "ANY", label: "Cualquiera" },
-  { key: "hombro", label: "Hombro" },
-  { key: "dorsal", label: "Dorsal" },
-  { key: "cadera", label: "Cadera" },
-  { key: "lumbar", label: "Lumbar" },
-  { key: "isquiosurales", label: "Isquiosurales" },
-  { key: "rodilla", label: "Rodilla" },
-  { key: "tobillo", label: "Tobillo" },
-];
-
 const movState = {
   momento: null,
   tipo: "ANY",
-  articulacion: "ANY",
+  musculo: "ANY",
 };
 
 const movUsedHistory = {};
@@ -4821,7 +4911,7 @@ const movUsedHistory = {};
 function setMovMomento(momento) {
   movState.momento = momento;
   movState.tipo = "ANY";
-  movState.articulacion = "ANY";
+  movState.musculo = "ANY";
 
   const title = document.getElementById("movTipoTitle");
   const row = document.getElementById("movTipoRow");
@@ -4830,19 +4920,11 @@ function setMovMomento(momento) {
   if (momento === "inicio") {
     title.textContent = "¿Cuál es el ejercicio principal de tu sesión?";
     buildChipRow(row, MOV_TIPOS_INICIO, movState, "tipo", o => o.label);
-    artWrap.hidden = true;
   } else {
-    title.textContent = "Tipo";
-    buildChipRow(row, MOV_TIPOS_VUELTA, movState, "tipo", o => o.label);
-    artWrap.hidden = false;
-    buildChipRow(
-      document.getElementById("movArticulacionRow"),
-      MOV_ARTICULACIONES,
-      movState,
-      "articulacion",
-      o => o.label
-    );
+    title.textContent = "¿Qué músculo querés trabajar?";
+    buildChipRow(row, MOV_MUSCULOS, movState, "musculo", o => o.label);
   }
+  artWrap.hidden = true;
 
   document.getElementById("movMomentoSelect").hidden = true;
   document.getElementById("movStep2").hidden = false;
@@ -4852,7 +4934,7 @@ function setMovMomento(momento) {
 function resetMovWizard() {
   movState.momento = null;
   movState.tipo = "ANY";
-  movState.articulacion = "ANY";
+  movState.musculo = "ANY";
   document.getElementById("movMomentoSelect").hidden = false;
   document.getElementById("movStep2").hidden = true;
 }
@@ -4911,13 +4993,12 @@ function renderMovInicio(picks) {
 }
 
 function matchesMovVueltaFilters(w) {
-  if (movState.tipo !== "ANY" && w.tipo !== movState.tipo) return false;
-  if (movState.articulacion !== "ANY" && !(w.articulaciones || []).includes(movState.articulacion)) return false;
+  if (movState.musculo !== "ANY" && w.musculo !== movState.musculo) return false;
   return true;
 }
 
 function movFilterKey() {
-  return `vuelta|${movState.tipo}|${movState.articulacion}`;
+  return `vuelta|${movState.musculo}`;
 }
 
 function pickRandomMovVuelta() {
@@ -4939,30 +5020,26 @@ function pickRandomMovVuelta() {
   return { pool, picked };
 }
 
+const MOV_MUSCULO_LABELS = Object.fromEntries(MOV_MUSCULOS.map(m => [m.key, m.label]));
+
 function renderMov(w) {
   const el = document.getElementById("movResult");
-  const movementsHtml = w.movements.map(m => {
-    const text = typeof m === "string" ? m : m.text;
-    const url = typeof m === "string" ? youtubeLink(m) : m.video;
-    const ytHtml = url
-      ? ` <a class="ex-yt" href="${url}" target="_blank" rel="noopener noreferrer" title="Ver técnica en YouTube" onclick="event.stopPropagation()">▶</a>`
-      : "";
-    return `<li><span class="mv-text">${escapeHtml(text)}</span>${ytHtml}</li>`;
-  }).join("");
-  const notesHtml = w.notes ? `<div class="notes"><b>Nota:</b> ${escapeHtml(w.notes)}</div>` : "";
+  const ytHtml = w.video
+    ? ` <a class="ex-yt" href="${w.video}" target="_blank" rel="noopener noreferrer" title="Ver técnica en YouTube" onclick="event.stopPropagation()">▶</a>`
+    : "";
 
   el.innerHTML = `
     <div class="card">
       <div class="card-top">
         <span class="wod-num">MOV #${String(w.id).padStart(2, "0")}</span>
+        <span class="diff-tag diff-facil">${escapeHtml(MOV_MUSCULO_LABELS[w.musculo] || "")}</span>
       </div>
       <h2 class="wod-name">${escapeHtml(w.name)}</h2>
       <div class="scheme-row">
         <span class="scheme-badge">MOVILIDAD</span>
-        <span class="scheme-time">${escapeHtml(w.scheme)}</span>
+        <span class="scheme-time">Estático</span>
       </div>
-      <ul class="movements">${movementsHtml}</ul>
-      ${notesHtml}
+      <ul class="movements"><li><span class="mv-text">Mantener la posición sin rebotar, respirando profundo.</span>${ytHtml}</li></ul>
     </div>
   `;
 }
