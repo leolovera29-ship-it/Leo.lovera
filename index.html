@@ -4965,7 +4965,7 @@ function pickRandomMovInicio() {
 
     const picked = candidates[Math.floor(Math.random() * candidates.length)];
     used.add(picked.id);
-    picks.push({ ...picked, categoriaLabel: movInicioCategoriaLabel(movState.tipo, catKey) });
+    picks.push({ ...picked, categoriaLabel: movInicioCategoriaLabel(picked.tipo, catKey) });
   }
 
   return picks;
