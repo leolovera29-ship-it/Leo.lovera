@@ -5339,8 +5339,12 @@ async function handleAuthSubmit() {
       localStorage.setItem(REMEMBER_EMAIL_KEY, email);
     }
     if (data.approved) {
-      showAuthSuccess("Este mail ya está registrado y aprobado. ¡Bienvenido de nuevo!");
-      setTimeout(() => routeByStatus(true), 1400);
+      if (authMode === "signup") {
+        showAuthSuccess("Este mail ya está registrado y aprobado. ¡Bienvenido de nuevo!");
+        setTimeout(() => routeByStatus(true), 1400);
+      } else {
+        routeByStatus(true);
+      }
     } else {
       routeByStatus(false);
     }
