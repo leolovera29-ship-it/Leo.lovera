@@ -207,6 +207,26 @@
     letter-spacing:0.3px;
     margin-top:14px;
   }
+  .auth-toggle{
+    text-align:center;
+    margin-top:18px;
+    font-family:'Archivo', sans-serif;
+    font-size:13px;
+    color:var(--paper-dim);
+  }
+  .auth-link{
+    appearance:none;
+    background:none;
+    border:none;
+    color:var(--orange-2);
+    font-weight:700;
+    cursor:pointer;
+    text-decoration:underline;
+    font-family:inherit;
+    font-size:inherit;
+    padding:0;
+    margin-left:4px;
+  }
   .logout-btn{
     display:block;
     margin:0 auto 20px;
@@ -544,6 +564,11 @@
     </div>
 
     <button class="roll-btn" id="authSubmitBtn">Ingresar</button>
+
+    <p class="auth-toggle">
+      ¿No tenés cuenta?
+      <button type="button" class="auth-link" id="authToggleBtn">Registrate</button>
+    </p>
   </div>
 
   <!-- SCREEN: Cuenta pendiente de aprobación -->
@@ -5245,6 +5270,9 @@ function handleLogout() {
 
 function initAuth() {
   document.getElementById("authSubmitBtn").addEventListener("click", handleAuthSubmit);
+  document.getElementById("authToggleBtn").addEventListener("click", () => {
+    document.getElementById("authEmail").focus();
+  });
   document.querySelectorAll(".logout-btn").forEach(b => b.addEventListener("click", handleLogout));
 
   checkApprovalAndRoute();
