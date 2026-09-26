@@ -207,22 +207,43 @@
     letter-spacing:0.3px;
     margin-top:14px;
   }
-  .remember-btn{
-    display:block;
+  .remember-check{
+    display:flex;
+    align-items:center;
+    gap:9px;
     margin:0 0 16px;
-    background:none;
-    border:1px solid var(--line);
-    color:var(--paper-dim);
-    font-family:'Oswald', sans-serif;
-    font-weight:600;
-    font-size:12px;
-    letter-spacing:1px;
-    text-transform:uppercase;
-    padding:8px 16px;
     cursor:pointer;
+    user-select:none;
   }
-  .remember-btn:hover{border-color:var(--orange-2); color:var(--orange-2);}
-  .remember-btn.active{background:var(--orange); border-color:var(--orange); color:var(--black);}
+  .remember-check input[type="checkbox"]{
+    appearance:none;
+    width:18px;height:18px;
+    flex:none;
+    background:var(--black-3);
+    border:1px solid var(--line);
+    cursor:pointer;
+    position:relative;
+  }
+  .remember-check input[type="checkbox"]:checked{
+    background:var(--orange);
+    border-color:var(--orange);
+  }
+  .remember-check input[type="checkbox"]:checked::after{
+    content:'';
+    position:absolute;
+    left:5px; top:1px;
+    width:5px; height:10px;
+    border:solid var(--black);
+    border-width:0 2px 2px 0;
+    transform:rotate(45deg);
+  }
+  .remember-check span{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    color:var(--paper-dim);
+  }
   .auth-toggle{
     text-align:center;
     margin-top:18px;
@@ -576,7 +597,10 @@
         <input type="email" class="text-input" id="authEmail" placeholder="tu@email.com" autocomplete="email">
       </div>
 
-      <button type="button" class="remember-btn" id="rememberEmailBtn">Recordar mail</button>
+      <label class="remember-check">
+        <input type="checkbox" id="rememberEmailCheck">
+        <span>Recordar mail</span>
+      </label>
 
       <div class="auth-error" id="authError" hidden></div>
     </div>
@@ -5209,30 +5233,28 @@ const REMEMBER_EMAIL_KEY = "circuitos_remember_email";
 
 function applyRememberedEmail() {
   const remembered = localStorage.getItem(REMEMBER_EMAIL_KEY);
-  const btn = document.getElementById("rememberEmailBtn");
+  const checkbox = document.getElementById("rememberEmailCheck");
   if (remembered) {
     document.getElementById("authEmail").value = remembered;
-    btn.classList.add("active");
-    btn.textContent = "Mail recordado ✓";
+    checkbox.checked = true;
   } else {
-    btn.classList.remove("active");
-    btn.textContent = "Recordar mail";
+    checkbox.checked = false;
   }
 }
 
 function toggleRememberEmail() {
-  const btn = document.getElementById("rememberEmailBtn");
-  if (localStorage.getItem(REMEMBER_EMAIL_KEY)) {
+  const checkbox = document.getElementById("rememberEmailCheck");
+  if (!checkbox.checked) {
     localStorage.removeItem(REMEMBER_EMAIL_KEY);
-  } else {
-    const email = document.getElementById("authEmail").value.trim();
-    if (!email) {
-      showAuthError("Escribí tu email antes de recordarlo.");
-      return;
-    }
-    localStorage.setItem(REMEMBER_EMAIL_KEY, email);
+    return;
   }
-  applyRememberedEmail();
+  const email = document.getElementById("authEmail").value.trim();
+  if (!email) {
+    showAuthError("Escribí tu email antes de recordarlo.");
+    checkbox.checked = false;
+    return;
+  }
+  localStorage.setItem(REMEMBER_EMAIL_KEY, email);
 }
 
 function showAuthError(msg) {
@@ -5293,6 +5315,9 @@ async function handleAuthSubmit() {
   try {
     const data = await checkEmailStatus(email);
     localStorage.setItem(AUTH_EMAIL_KEY, email);
+    if (document.getElementById("rememberEmailCheck").checked) {
+      localStorage.setItem(REMEMBER_EMAIL_KEY, email);
+    }
     routeByStatus(data.approved);
   } catch (err) {
     showAuthError(err.message || "Ocurrió un error. Probá de nuevo.");
@@ -5330,7 +5355,7 @@ function handleLogout() {
 function initAuth() {
   applyRememberedEmail();
   document.getElementById("authSubmitBtn").addEventListener("click", handleAuthSubmit);
-  document.getElementById("rememberEmailBtn").addEventListener("click", toggleRememberEmail);
+  document.getElementById("rememberEmailCheck").addEventListener("change", toggleRememberEmail);
   document.getElementById("authToggleBtn").addEventListener("click", () => {
     setAuthMode(authMode === "login" ? "signup" : "login");
     document.getElementById("authEmail").focus();
