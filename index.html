@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
     --black:#0c0b0a;
@@ -186,6 +187,71 @@
     margin-bottom:20px;
   }
   .mode-select[hidden]{display:none;}
+
+  /* ---------- auth ---------- */
+  .text-input{
+    width:100%;
+    background:var(--black-3);
+    border:1px solid var(--line);
+    color:var(--paper);
+    font-family:'Archivo', sans-serif;
+    font-size:15px;
+    padding:12px 14px;
+    outline:none;
+  }
+  .text-input:focus{border-color:var(--orange-2);}
+  .text-input::placeholder{color:var(--paper-dim);}
+  .auth-error{
+    color:var(--red);
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.3px;
+    margin-top:14px;
+  }
+  .auth-toggle{
+    text-align:center;
+    margin-top:18px;
+    font-family:'Archivo', sans-serif;
+    font-size:13px;
+    color:var(--paper-dim);
+  }
+  .auth-link{
+    appearance:none;
+    background:none;
+    border:none;
+    color:var(--orange-2);
+    font-weight:700;
+    cursor:pointer;
+    text-decoration:underline;
+    font-family:inherit;
+    font-size:inherit;
+    padding:0;
+    margin-left:4px;
+  }
+  .logout-btn{
+    display:block;
+    margin:0 auto 20px;
+    background:none;
+    border:1px solid var(--line);
+    color:var(--paper-dim);
+    font-family:'Oswald', sans-serif;
+    font-weight:600;
+    font-size:12px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    padding:8px 16px;
+    cursor:pointer;
+  }
+  .logout-btn:hover{border-color:var(--orange-2); color:var(--orange-2);}
+  .logout-btn[hidden]{display:none;}
+  .pending-box{text-align:center;}
+  .pending-box p{
+    color:var(--paper-dim);
+    font-family:'Archivo', sans-serif;
+    font-size:14px;
+    line-height:1.6;
+    margin:10px 0 0;
+  }
   .mode-btn{
     appearance:none;
     background:var(--black-2);
@@ -483,8 +549,45 @@
 
   <p class="disclaimer">Esta app se creó con el fin de dar variabilidad a los trabajos finalizadores y de entrada en calor/vuelta a la calma. No reemplazan tu entrenamiento.<br>Creada por <b>@leo.lovera</b> y <b>@bumper.fit</b></p>
 
+  <button class="logout-btn" id="logoutBtn" hidden>&larr; Cerrar sesión</button>
+
+  <!-- SCREEN: Login / Registro -->
+  <div id="screen-auth" class="screen">
+    <div class="panel">
+      <p class="panel-title" id="authTitle">Iniciar sesión</p>
+
+      <div class="field">
+        <label>Email</label>
+        <input type="email" class="text-input" id="authEmail" placeholder="tu@email.com" autocomplete="email">
+      </div>
+
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" class="text-input" id="authPassword" placeholder="••••••••" autocomplete="current-password">
+      </div>
+
+      <div class="auth-error" id="authError" hidden></div>
+    </div>
+
+    <button class="roll-btn" id="authSubmitBtn">Iniciar sesión</button>
+
+    <p class="auth-toggle">
+      <span id="authToggleText">¿No tenés cuenta?</span>
+      <button type="button" class="auth-link" id="authToggleBtn">Registrate</button>
+    </p>
+  </div>
+
+  <!-- SCREEN: Cuenta pendiente de aprobación -->
+  <div id="screen-pending" class="screen" hidden>
+    <div class="panel pending-box">
+      <p class="panel-title" style="justify-content:center;">Cuenta pendiente</p>
+      <p>Tu registro está esperando aprobación.<br>Te vamos a avisar apenas puedas entrar a la app.</p>
+    </div>
+    <button class="logout-btn" style="margin-top:20px;" id="logoutFromPendingBtn">&larr; Cerrar sesión</button>
+  </div>
+
   <!-- HOME: selector de modo -->
-  <div id="screen-home" class="mode-select">
+  <div id="screen-home" class="mode-select" hidden>
     <button class="mode-btn" id="modeWodsBtn">
       <span class="mode-btn-emoji">🔥</span>
       <span class="mode-btn-label">Circuitos</span>
@@ -5078,15 +5181,137 @@ function handleMovRoll() {
 // ============================================================
 
 function showScreen(id) {
-  ["screen-home", "screen-wods", "screen-mov"].forEach(s => {
+  ["screen-auth", "screen-pending", "screen-home", "screen-wods", "screen-mov"].forEach(s => {
     document.getElementById(s).hidden = (s !== id);
   });
   window.scrollTo({ top: 0, behavior: "instant" });
 }
 
+// ============================================================
+// Autenticación (Supabase) — login/registro + gate de aprobación
+// ============================================================
+
+const SUPABASE_URL = "https://dbitifknkwupwprneccv.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_NJMNRH_LcSdvR2H_09evIQ_J9TOtf8Z";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+let authMode = "login"; // "login" | "signup"
+
+function setAuthMode(mode) {
+  authMode = mode;
+  document.getElementById("authTitle").textContent = mode === "login" ? "Iniciar sesión" : "Crear cuenta";
+  document.getElementById("authSubmitBtn").textContent = mode === "login" ? "Iniciar sesión" : "Crear cuenta";
+  document.getElementById("authToggleText").textContent = mode === "login" ? "¿No tenés cuenta?" : "¿Ya tenés cuenta?";
+  document.getElementById("authToggleBtn").textContent = mode === "login" ? "Registrate" : "Iniciar sesión";
+  hideAuthError();
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById("authError");
+  el.textContent = msg;
+  el.hidden = false;
+}
+
+function hideAuthError() {
+  document.getElementById("authError").hidden = true;
+}
+
+async function handleAuthSubmit() {
+  const email = document.getElementById("authEmail").value.trim();
+  const password = document.getElementById("authPassword").value;
+  hideAuthError();
+
+  if (!email || !password) {
+    showAuthError("Completá email y contraseña.");
+    return;
+  }
+
+  const btn = document.getElementById("authSubmitBtn");
+  btn.disabled = true;
+
+  try {
+    if (authMode === "signup") {
+      const { data, error } = await supabaseClient.auth.signUp({ email, password });
+      if (error) throw error;
+      const userId = data.user && data.user.id;
+      if (userId) {
+        fetch("/api/notify-signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, uid: userId })
+        }).catch(() => {});
+      }
+      await checkApprovalAndRoute();
+    } else {
+      const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      await checkApprovalAndRoute();
+    }
+  } catch (err) {
+    showAuthError(
+      err.message === "Invalid login credentials"
+        ? "Email o contraseña incorrectos."
+        : (err.message || "Ocurrió un error. Probá de nuevo.")
+    );
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function checkApprovalAndRoute() {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+
+  if (!session) {
+    document.querySelectorAll(".logout-btn").forEach(b => b.hidden = true);
+    showScreen("screen-auth");
+    return;
+  }
+
+  const { data: profile, error } = await supabaseClient
+    .from("profiles")
+    .select("approved")
+    .eq("id", session.user.id)
+    .single();
+
+  if (error || !profile) {
+    document.querySelectorAll(".logout-btn").forEach(b => b.hidden = false);
+    showScreen("screen-pending");
+    return;
+  }
+
+  if (profile.approved) {
+    document.getElementById("logoutBtn").hidden = false;
+    document.getElementById("logoutFromPendingBtn").hidden = true;
+    showScreen("screen-home");
+  } else {
+    document.querySelectorAll(".logout-btn").forEach(b => b.hidden = false);
+    showScreen("screen-pending");
+  }
+}
+
+async function handleLogout() {
+  await supabaseClient.auth.signOut();
+  setAuthMode("login");
+  document.getElementById("authEmail").value = "";
+  document.getElementById("authPassword").value = "";
+  document.querySelectorAll(".logout-btn").forEach(b => b.hidden = true);
+  showScreen("screen-auth");
+}
+
+function initAuth() {
+  document.getElementById("authSubmitBtn").addEventListener("click", handleAuthSubmit);
+  document.getElementById("authToggleBtn").addEventListener("click", () => {
+    setAuthMode(authMode === "login" ? "signup" : "login");
+  });
+  document.querySelectorAll(".logout-btn").forEach(b => b.addEventListener("click", handleLogout));
+
+  checkApprovalAndRoute();
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initFilters();
   initMovFilters();
+  initAuth();
 
   document.getElementById("rollBtn").addEventListener("click", handleRoll);
   document.getElementById("movRollBtn").addEventListener("click", handleMovRoll);

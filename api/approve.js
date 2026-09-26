@@ -1,0 +1,78 @@
+const crypto = require("crypto");
+
+function signToken(uid, secret) {
+  return crypto.createHmac("sha256", secret).update(uid).digest("hex");
+}
+
+function timingSafeEqual(a, b) {
+  const bufA = Buffer.from(a || "", "utf8");
+  const bufB = Buffer.from(b || "", "utf8");
+  if (bufA.length !== bufB.length) return false;
+  return crypto.timingSafeEqual(bufA, bufB);
+}
+
+function page(title, message, ok) {
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>${title}</title>
+<style>
+  body{background:#0c0b0a;color:#f3ede0;font-family:Arial,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;}
+  .box{text-align:center;padding:40px;border:1px solid #3a332c;max-width:420px;}
+  h1{color:${ok ? "#7fae52" : "#c9482f"};font-size:22px;}
+  p{color:#c9c0ac;}
+</style>
+</head>
+<body>
+  <div class="box">
+    <h1>${title}</h1>
+    <p>${message}</p>
+  </div>
+</body>
+</html>`;
+}
+
+module.exports = async (req, res) => {
+  try {
+    const { uid, token } = req.query || {};
+    const { APPROVE_SECRET, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } = process.env;
+
+    if (!uid || !token) {
+      res.status(400).setHeader("Content-Type", "text/html").send(page("Falta información", "El link no incluye los datos necesarios.", false));
+      return;
+    }
+
+    if (!APPROVE_SECRET || !SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+      res.status(500).setHeader("Content-Type", "text/html").send(page("Error de configuración", "El servidor no tiene las variables de entorno configuradas.", false));
+      return;
+    }
+
+    const expected = signToken(uid, APPROVE_SECRET);
+    if (!timingSafeEqual(token, expected)) {
+      res.status(403).setHeader("Content-Type", "text/html").send(page("Link inválido", "Este link de aprobación no es válido.", false));
+      return;
+    }
+
+    const updateResp = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(uid)}`, {
+      method: "PATCH",
+      headers: {
+        apikey: SUPABASE_SERVICE_ROLE_KEY,
+        Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify({ approved: true }),
+    });
+
+    if (!updateResp.ok) {
+      const errText = await updateResp.text();
+      res.status(502).setHeader("Content-Type", "text/html").send(page("Error al aprobar", `No se pudo actualizar el usuario: ${errText}`, false));
+      return;
+    }
+
+    res.status(200).setHeader("Content-Type", "text/html").send(page("Usuario aprobado ✅", "Ya puede iniciar sesión en Circuitos con normalidad.", true));
+  } catch (err) {
+    res.status(500).setHeader("Content-Type", "text/html").send(page("Error", err.message || "Ocurrió un error inesperado.", false));
+  }
+};
