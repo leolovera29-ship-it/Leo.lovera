@@ -4,6 +4,39 @@ function signToken(email, secret) {
   return crypto.createHmac("sha256", secret).update(email).digest("hex");
 }
 
+async function sendApprovalEmail({ email, req, env }) {
+  const { RESEND_API_KEY, APPROVE_SECRET, ADMIN_EMAIL, APP_URL } = env;
+  const token = signToken(email, APPROVE_SECRET);
+  const baseUrl = APP_URL || `https://${req.headers.host}`;
+  const approveUrl = `${baseUrl}/api/approve?email=${encodeURIComponent(email)}&token=${token}`;
+  const adminEmail = ADMIN_EMAIL || "leolovera29@gmail.com";
+
+  return fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${RESEND_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: "Circuitos <onboarding@resend.dev>",
+      to: adminEmail,
+      subject: `Nuevo registro en Circuitos: ${email}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px;">
+          <h2>Nuevo registro en Circuitos</h2>
+          <p>Se registró: <b>${email}</b></p>
+          <p>
+            <a href="${approveUrl}" style="background:#ff5a1f; color:#0c0b0a; padding:14px 24px; text-decoration:none; font-weight:bold; display:inline-block; border-radius:4px;">
+              Aprobar usuario
+            </a>
+          </p>
+          <p style="color:#888; font-size:12px;">Si no reconocés este registro, ignorá este mail.</p>
+        </div>
+      `,
+    }),
+  });
+}
+
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
     res.status(405).json({ error: "Method not allowed" });
@@ -11,13 +44,13 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { email } = req.body || {};
+    const { email, resend } = req.body || {};
     if (!email) {
       res.status(400).json({ error: "Missing email" });
       return;
     }
 
-    const { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY, APPROVE_SECRET, ADMIN_EMAIL, APP_URL } = process.env;
+    const { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY, APPROVE_SECRET } = process.env;
     if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY || !RESEND_API_KEY || !APPROVE_SECRET) {
       res.status(500).json({ error: "Server not configured" });
       return;
@@ -41,7 +74,20 @@ module.exports = async (req, res) => {
     const rows = await lookupResp.json();
 
     if (rows.length > 0) {
-      res.status(200).json({ approved: !!rows[0].approved });
+      const approved = !!rows[0].approved;
+
+      if (resend && !approved) {
+        const emailResp = await sendApprovalEmail({ email, req, env: process.env });
+        if (!emailResp.ok) {
+          const errText = await emailResp.text();
+          res.status(502).json({ error: "Failed to resend email", detail: errText });
+          return;
+        }
+        res.status(200).json({ approved: false, resent: true });
+        return;
+      }
+
+      res.status(200).json({ approved });
       return;
     }
 
@@ -56,36 +102,7 @@ module.exports = async (req, res) => {
       return;
     }
 
-    const token = signToken(email, APPROVE_SECRET);
-    const baseUrl = APP_URL || `https://${req.headers.host}`;
-    const approveUrl = `${baseUrl}/api/approve?email=${encodeURIComponent(email)}&token=${token}`;
-    const adminEmail = ADMIN_EMAIL || "leolovera29@gmail.com";
-
-    const emailResp = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${RESEND_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: "Circuitos <onboarding@resend.dev>",
-        to: adminEmail,
-        subject: `Nuevo registro en Circuitos: ${email}`,
-        html: `
-          <div style="font-family: Arial, sans-serif; padding: 20px;">
-            <h2>Nuevo registro en Circuitos</h2>
-            <p>Se registró: <b>${email}</b></p>
-            <p>
-              <a href="${approveUrl}" style="background:#ff5a1f; color:#0c0b0a; padding:14px 24px; text-decoration:none; font-weight:bold; display:inline-block; border-radius:4px;">
-                Aprobar usuario
-              </a>
-            </p>
-            <p style="color:#888; font-size:12px;">Si no reconocés este registro, ignorá este mail.</p>
-          </div>
-        `,
-      }),
-    });
-
+    const emailResp = await sendApprovalEmail({ email, req, env: process.env });
     if (!emailResp.ok) {
       const errText = await emailResp.text();
       res.status(502).json({ error: "Failed to send email", detail: errText });

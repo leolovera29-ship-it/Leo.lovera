@@ -627,6 +627,10 @@
     <div class="panel pending-box">
       <p class="panel-title" style="justify-content:center;">Cuenta pendiente</p>
       <p>Tu registro está esperando aprobación.<br>Te vamos a avisar apenas puedas entrar a la app.</p>
+      <p style="margin-top:18px;">¿No te llegó el mail?</p>
+      <button type="button" class="auth-link" id="resendApprovalBtn">Tocá acá para reenviarlo</button>
+      <div class="auth-success" id="resendSuccess" hidden style="text-align:center;"></div>
+      <div class="auth-error" id="resendError" hidden style="text-align:center;"></div>
     </div>
     <button class="logout-btn" style="margin-top:20px;" id="logoutFromPendingBtn">&larr; Cerrar sesión</button>
   </div>
@@ -5373,6 +5377,42 @@ async function checkApprovalAndRoute() {
   }
 }
 
+async function handleResendApproval() {
+  const email = localStorage.getItem(AUTH_EMAIL_KEY);
+  const successEl = document.getElementById("resendSuccess");
+  const errorEl = document.getElementById("resendError");
+  successEl.hidden = true;
+  errorEl.hidden = true;
+
+  if (!email) return;
+
+  const btn = document.getElementById("resendApprovalBtn");
+  btn.disabled = true;
+
+  try {
+    const resp = await fetch("/api/auth-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, resend: true })
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "No se pudo reenviar el mail.");
+
+    if (data.approved) {
+      routeByStatus(true);
+      return;
+    }
+
+    successEl.textContent = "Listo, volvimos a mandar el mail de aprobación.";
+    successEl.hidden = false;
+  } catch (err) {
+    errorEl.textContent = err.message || "No se pudo reenviar el mail. Probá de nuevo.";
+    errorEl.hidden = false;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
 function handleLogout() {
   localStorage.removeItem(AUTH_EMAIL_KEY);
   setAuthMode("login");
@@ -5390,6 +5430,7 @@ function initAuth() {
     document.getElementById("authEmail").focus();
   });
   document.querySelectorAll(".logout-btn").forEach(b => b.addEventListener("click", handleLogout));
+  document.getElementById("resendApprovalBtn").addEventListener("click", handleResendApproval);
 
   checkApprovalAndRoute();
 }
