@@ -566,7 +566,7 @@
     <button class="roll-btn" id="authSubmitBtn">Ingresar</button>
 
     <p class="auth-toggle">
-      ¿No tenés cuenta?
+      <span id="authToggleText">¿No tenés cuenta?</span>
       <button type="button" class="auth-link" id="authToggleBtn">Registrate</button>
     </p>
   </div>
@@ -5197,6 +5197,17 @@ function hideAuthError() {
   document.getElementById("authError").hidden = true;
 }
 
+let authMode = "login"; // "login" | "signup"
+
+function setAuthMode(mode) {
+  authMode = mode;
+  document.getElementById("authTitle").textContent = mode === "login" ? "Ingresá tu email" : "Registrate con tu email";
+  document.getElementById("authSubmitBtn").textContent = mode === "login" ? "Ingresar" : "Registrarte";
+  document.getElementById("authToggleText").textContent = mode === "login" ? "¿No tenés cuenta?" : "¿Ya tenés cuenta?";
+  document.getElementById("authToggleBtn").textContent = mode === "login" ? "Registrate" : "Iniciar sesión";
+  hideAuthError();
+}
+
 async function checkEmailStatus(email) {
   const resp = await fetch("/api/auth-email", {
     method: "POST",
@@ -5263,7 +5274,7 @@ async function checkApprovalAndRoute() {
 function handleLogout() {
   localStorage.removeItem(AUTH_EMAIL_KEY);
   document.getElementById("authEmail").value = "";
-  hideAuthError();
+  setAuthMode("login");
   document.querySelectorAll(".logout-btn").forEach(b => b.hidden = true);
   showScreen("screen-auth");
 }
@@ -5271,6 +5282,7 @@ function handleLogout() {
 function initAuth() {
   document.getElementById("authSubmitBtn").addEventListener("click", handleAuthSubmit);
   document.getElementById("authToggleBtn").addEventListener("click", () => {
+    setAuthMode(authMode === "login" ? "signup" : "login");
     document.getElementById("authEmail").focus();
   });
   document.querySelectorAll(".logout-btn").forEach(b => b.addEventListener("click", handleLogout));
