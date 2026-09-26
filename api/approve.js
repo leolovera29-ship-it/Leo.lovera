@@ -1,7 +1,7 @@
 const crypto = require("crypto");
 
-function signToken(uid, secret) {
-  return crypto.createHmac("sha256", secret).update(uid).digest("hex");
+function signToken(email, secret) {
+  return crypto.createHmac("sha256", secret).update(email).digest("hex");
 }
 
 function timingSafeEqual(a, b) {
@@ -35,10 +35,10 @@ function page(title, message, ok) {
 
 module.exports = async (req, res) => {
   try {
-    const { uid, token } = req.query || {};
+    const { email, token } = req.query || {};
     const { APPROVE_SECRET, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } = process.env;
 
-    if (!uid || !token) {
+    if (!email || !token) {
       res.status(400).setHeader("Content-Type", "text/html").send(page("Falta información", "El link no incluye los datos necesarios.", false));
       return;
     }
@@ -48,13 +48,13 @@ module.exports = async (req, res) => {
       return;
     }
 
-    const expected = signToken(uid, APPROVE_SECRET);
+    const expected = signToken(email, APPROVE_SECRET);
     if (!timingSafeEqual(token, expected)) {
       res.status(403).setHeader("Content-Type", "text/html").send(page("Link inválido", "Este link de aprobación no es válido.", false));
       return;
     }
 
-    const updateResp = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(uid)}`, {
+    const updateResp = await fetch(`${SUPABASE_URL}/rest/v1/profiles?email=eq.${encodeURIComponent(email)}`, {
       method: "PATCH",
       headers: {
         apikey: SUPABASE_SERVICE_ROLE_KEY,

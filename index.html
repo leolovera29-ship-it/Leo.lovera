@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
     --black:#0c0b0a;
@@ -207,26 +206,6 @@
     font-size:12px;
     letter-spacing:0.3px;
     margin-top:14px;
-  }
-  .auth-toggle{
-    text-align:center;
-    margin-top:18px;
-    font-family:'Archivo', sans-serif;
-    font-size:13px;
-    color:var(--paper-dim);
-  }
-  .auth-link{
-    appearance:none;
-    background:none;
-    border:none;
-    color:var(--orange-2);
-    font-weight:700;
-    cursor:pointer;
-    text-decoration:underline;
-    font-family:inherit;
-    font-size:inherit;
-    padding:0;
-    margin-left:4px;
   }
   .logout-btn{
     display:block;
@@ -551,30 +530,20 @@
 
   <button class="logout-btn" id="logoutBtn" hidden>&larr; Cerrar sesión</button>
 
-  <!-- SCREEN: Login / Registro -->
+  <!-- SCREEN: Ingreso por email -->
   <div id="screen-auth" class="screen">
     <div class="panel">
-      <p class="panel-title" id="authTitle">Iniciar sesión</p>
+      <p class="panel-title" id="authTitle">Ingresá tu email</p>
 
       <div class="field">
         <label>Email</label>
         <input type="email" class="text-input" id="authEmail" placeholder="tu@email.com" autocomplete="email">
       </div>
 
-      <div class="field">
-        <label>Contraseña</label>
-        <input type="password" class="text-input" id="authPassword" placeholder="••••••••" autocomplete="current-password">
-      </div>
-
       <div class="auth-error" id="authError" hidden></div>
     </div>
 
-    <button class="roll-btn" id="authSubmitBtn">Iniciar sesión</button>
-
-    <p class="auth-toggle">
-      <span id="authToggleText">¿No tenés cuenta?</span>
-      <button type="button" class="auth-link" id="authToggleBtn">Registrate</button>
-    </p>
+    <button class="roll-btn" id="authSubmitBtn">Ingresar</button>
   </div>
 
   <!-- SCREEN: Cuenta pendiente de aprobación -->
@@ -5188,23 +5157,10 @@ function showScreen(id) {
 }
 
 // ============================================================
-// Autenticación (Supabase) — login/registro + gate de aprobación
+// Autenticación por email — gate de aprobación manual (sin contraseña)
 // ============================================================
 
-const SUPABASE_URL = "https://dbitifknkwupwprneccv.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_NJMNRH_LcSdvR2H_09evIQ_J9TOtf8Z";
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-
-let authMode = "login"; // "login" | "signup"
-
-function setAuthMode(mode) {
-  authMode = mode;
-  document.getElementById("authTitle").textContent = mode === "login" ? "Iniciar sesión" : "Crear cuenta";
-  document.getElementById("authSubmitBtn").textContent = mode === "login" ? "Iniciar sesión" : "Crear cuenta";
-  document.getElementById("authToggleText").textContent = mode === "login" ? "¿No tenés cuenta?" : "¿Ya tenés cuenta?";
-  document.getElementById("authToggleBtn").textContent = mode === "login" ? "Registrate" : "Iniciar sesión";
-  hideAuthError();
-}
+const AUTH_EMAIL_KEY = "circuitos_user_email";
 
 function showAuthError(msg) {
   const el = document.getElementById("authError");
@@ -5216,70 +5172,19 @@ function hideAuthError() {
   document.getElementById("authError").hidden = true;
 }
 
-async function handleAuthSubmit() {
-  const email = document.getElementById("authEmail").value.trim();
-  const password = document.getElementById("authPassword").value;
-  hideAuthError();
-
-  if (!email || !password) {
-    showAuthError("Completá email y contraseña.");
-    return;
-  }
-
-  const btn = document.getElementById("authSubmitBtn");
-  btn.disabled = true;
-
-  try {
-    if (authMode === "signup") {
-      const { data, error } = await supabaseClient.auth.signUp({ email, password });
-      if (error) throw error;
-      const userId = data.user && data.user.id;
-      if (userId) {
-        fetch("/api/notify-signup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, uid: userId })
-        }).catch(() => {});
-      }
-      await checkApprovalAndRoute();
-    } else {
-      const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-      if (error) throw error;
-      await checkApprovalAndRoute();
-    }
-  } catch (err) {
-    showAuthError(
-      err.message === "Invalid login credentials"
-        ? "Email o contraseña incorrectos."
-        : (err.message || "Ocurrió un error. Probá de nuevo.")
-    );
-  } finally {
-    btn.disabled = false;
-  }
+async function checkEmailStatus(email) {
+  const resp = await fetch("/api/auth-email", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email })
+  });
+  const data = await resp.json();
+  if (!resp.ok) throw new Error(data.error || "Ocurrió un error. Probá de nuevo.");
+  return data;
 }
 
-async function checkApprovalAndRoute() {
-  const { data: { session } } = await supabaseClient.auth.getSession();
-
-  if (!session) {
-    document.querySelectorAll(".logout-btn").forEach(b => b.hidden = true);
-    showScreen("screen-auth");
-    return;
-  }
-
-  const { data: profile, error } = await supabaseClient
-    .from("profiles")
-    .select("approved")
-    .eq("id", session.user.id)
-    .single();
-
-  if (error || !profile) {
-    document.querySelectorAll(".logout-btn").forEach(b => b.hidden = false);
-    showScreen("screen-pending");
-    return;
-  }
-
-  if (profile.approved) {
+function routeByStatus(approved) {
+  if (approved) {
     document.getElementById("logoutBtn").hidden = false;
     document.getElementById("logoutFromPendingBtn").hidden = true;
     showScreen("screen-home");
@@ -5289,20 +5194,57 @@ async function checkApprovalAndRoute() {
   }
 }
 
-async function handleLogout() {
-  await supabaseClient.auth.signOut();
-  setAuthMode("login");
+async function handleAuthSubmit() {
+  const email = document.getElementById("authEmail").value.trim();
+  hideAuthError();
+
+  if (!email) {
+    showAuthError("Ingresá tu email.");
+    return;
+  }
+
+  const btn = document.getElementById("authSubmitBtn");
+  btn.disabled = true;
+
+  try {
+    const data = await checkEmailStatus(email);
+    localStorage.setItem(AUTH_EMAIL_KEY, email);
+    routeByStatus(data.approved);
+  } catch (err) {
+    showAuthError(err.message || "Ocurrió un error. Probá de nuevo.");
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function checkApprovalAndRoute() {
+  const email = localStorage.getItem(AUTH_EMAIL_KEY);
+
+  if (!email) {
+    document.querySelectorAll(".logout-btn").forEach(b => b.hidden = true);
+    showScreen("screen-auth");
+    return;
+  }
+
+  try {
+    const data = await checkEmailStatus(email);
+    routeByStatus(data.approved);
+  } catch (err) {
+    document.querySelectorAll(".logout-btn").forEach(b => b.hidden = true);
+    showScreen("screen-auth");
+  }
+}
+
+function handleLogout() {
+  localStorage.removeItem(AUTH_EMAIL_KEY);
   document.getElementById("authEmail").value = "";
-  document.getElementById("authPassword").value = "";
+  hideAuthError();
   document.querySelectorAll(".logout-btn").forEach(b => b.hidden = true);
   showScreen("screen-auth");
 }
 
 function initAuth() {
   document.getElementById("authSubmitBtn").addEventListener("click", handleAuthSubmit);
-  document.getElementById("authToggleBtn").addEventListener("click", () => {
-    setAuthMode(authMode === "login" ? "signup" : "login");
-  });
   document.querySelectorAll(".logout-btn").forEach(b => b.addEventListener("click", handleLogout));
 
   checkApprovalAndRoute();
