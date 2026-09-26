@@ -207,6 +207,22 @@
     letter-spacing:0.3px;
     margin-top:14px;
   }
+  .remember-btn{
+    display:block;
+    margin:0 0 16px;
+    background:none;
+    border:1px solid var(--line);
+    color:var(--paper-dim);
+    font-family:'Oswald', sans-serif;
+    font-weight:600;
+    font-size:12px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    padding:8px 16px;
+    cursor:pointer;
+  }
+  .remember-btn:hover{border-color:var(--orange-2); color:var(--orange-2);}
+  .remember-btn.active{background:var(--orange); border-color:var(--orange); color:var(--black);}
   .auth-toggle{
     text-align:center;
     margin-top:18px;
@@ -560,6 +576,8 @@
         <input type="email" class="text-input" id="authEmail" placeholder="tu@email.com" autocomplete="email">
       </div>
 
+      <button type="button" class="remember-btn" id="rememberEmailBtn">Recordar mail</button>
+
       <div class="auth-error" id="authError" hidden></div>
     </div>
 
@@ -569,6 +587,7 @@
       <span id="authToggleText">¿No tenés cuenta?</span>
       <button type="button" class="auth-link" id="authToggleBtn">Registrate</button>
     </p>
+    <p class="disclaimer" style="margin-top:14px;">Una vez registrado debés esperar que el administrador apruebe tu acceso.</p>
   </div>
 
   <!-- SCREEN: Cuenta pendiente de aprobación -->
@@ -5186,6 +5205,35 @@ function showScreen(id) {
 // ============================================================
 
 const AUTH_EMAIL_KEY = "circuitos_user_email";
+const REMEMBER_EMAIL_KEY = "circuitos_remember_email";
+
+function applyRememberedEmail() {
+  const remembered = localStorage.getItem(REMEMBER_EMAIL_KEY);
+  const btn = document.getElementById("rememberEmailBtn");
+  if (remembered) {
+    document.getElementById("authEmail").value = remembered;
+    btn.classList.add("active");
+    btn.textContent = "Mail recordado ✓";
+  } else {
+    btn.classList.remove("active");
+    btn.textContent = "Recordar mail";
+  }
+}
+
+function toggleRememberEmail() {
+  const btn = document.getElementById("rememberEmailBtn");
+  if (localStorage.getItem(REMEMBER_EMAIL_KEY)) {
+    localStorage.removeItem(REMEMBER_EMAIL_KEY);
+  } else {
+    const email = document.getElementById("authEmail").value.trim();
+    if (!email) {
+      showAuthError("Escribí tu email antes de recordarlo.");
+      return;
+    }
+    localStorage.setItem(REMEMBER_EMAIL_KEY, email);
+  }
+  applyRememberedEmail();
+}
 
 function showAuthError(msg) {
   const el = document.getElementById("authError");
@@ -5273,14 +5321,16 @@ async function checkApprovalAndRoute() {
 
 function handleLogout() {
   localStorage.removeItem(AUTH_EMAIL_KEY);
-  document.getElementById("authEmail").value = "";
   setAuthMode("login");
+  applyRememberedEmail();
   document.querySelectorAll(".logout-btn").forEach(b => b.hidden = true);
   showScreen("screen-auth");
 }
 
 function initAuth() {
+  applyRememberedEmail();
   document.getElementById("authSubmitBtn").addEventListener("click", handleAuthSubmit);
+  document.getElementById("rememberEmailBtn").addEventListener("click", toggleRememberEmail);
   document.getElementById("authToggleBtn").addEventListener("click", () => {
     setAuthMode(authMode === "login" ? "signup" : "login");
     document.getElementById("authEmail").focus();
