@@ -207,6 +207,13 @@
     letter-spacing:0.3px;
     margin-top:14px;
   }
+  .auth-success{
+    color:var(--green);
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.3px;
+    margin-top:14px;
+  }
   .remember-check{
     display:flex;
     align-items:center;
@@ -603,6 +610,7 @@
       </label>
 
       <div class="auth-error" id="authError" hidden></div>
+      <div class="auth-success" id="authSuccess" hidden></div>
     </div>
 
     <button class="roll-btn" id="authSubmitBtn">Ingresar</button>
@@ -5267,6 +5275,16 @@ function hideAuthError() {
   document.getElementById("authError").hidden = true;
 }
 
+function showAuthSuccess(msg) {
+  const el = document.getElementById("authSuccess");
+  el.textContent = msg;
+  el.hidden = false;
+}
+
+function hideAuthSuccess() {
+  document.getElementById("authSuccess").hidden = true;
+}
+
 let authMode = "login"; // "login" | "signup"
 
 function setAuthMode(mode) {
@@ -5276,6 +5294,7 @@ function setAuthMode(mode) {
   document.getElementById("authToggleText").textContent = mode === "login" ? "¿No tenés cuenta?" : "¿Ya tenés cuenta?";
   document.getElementById("authToggleBtn").textContent = mode === "login" ? "Registrate" : "Iniciar sesión";
   hideAuthError();
+  hideAuthSuccess();
 }
 
 async function checkEmailStatus(email) {
@@ -5303,6 +5322,7 @@ function routeByStatus(approved) {
 async function handleAuthSubmit() {
   const email = document.getElementById("authEmail").value.trim();
   hideAuthError();
+  hideAuthSuccess();
 
   if (!email) {
     showAuthError("Ingresá tu email.");
@@ -5318,7 +5338,12 @@ async function handleAuthSubmit() {
     if (document.getElementById("rememberEmailCheck").checked) {
       localStorage.setItem(REMEMBER_EMAIL_KEY, email);
     }
-    routeByStatus(data.approved);
+    if (data.approved) {
+      showAuthSuccess("Este mail ya está registrado y aprobado. ¡Bienvenido de nuevo!");
+      setTimeout(() => routeByStatus(true), 1400);
+    } else {
+      routeByStatus(false);
+    }
   } catch (err) {
     showAuthError(err.message || "Ocurrió un error. Probá de nuevo.");
   } finally {

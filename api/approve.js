@@ -36,7 +36,7 @@ function page(title, message, ok) {
 module.exports = async (req, res) => {
   try {
     const { email, token } = req.query || {};
-    const { APPROVE_SECRET, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } = process.env;
+    const { APPROVE_SECRET, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY, APP_URL } = process.env;
 
     if (!email || !token) {
       res.status(400).setHeader("Content-Type", "text/html").send(page("Falta información", "El link no incluye los datos necesarios.", false));
@@ -69,6 +69,37 @@ module.exports = async (req, res) => {
       const errText = await updateResp.text();
       res.status(502).setHeader("Content-Type", "text/html").send(page("Error al aprobar", `No se pudo actualizar el usuario: ${errText}`, false));
       return;
+    }
+
+    if (RESEND_API_KEY) {
+      const baseUrl = APP_URL || `https://${req.headers.host}`;
+      try {
+        await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${RESEND_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from: "Circuitos <onboarding@resend.dev>",
+            to: email,
+            subject: "Tu cuenta en Circuitos ya fue aprobada",
+            html: `
+              <div style="font-family: Arial, sans-serif; padding: 20px;">
+                <h2>¡Tu cuenta ya está aprobada!</h2>
+                <p>Ya podés entrar a Circuitos con tu email <b>${email}</b>.</p>
+                <p>
+                  <a href="${baseUrl}" style="background:#ff5a1f; color:#0c0b0a; padding:14px 24px; text-decoration:none; font-weight:bold; display:inline-block; border-radius:4px;">
+                    Entrar a Circuitos
+                  </a>
+                </p>
+              </div>
+            `,
+          }),
+        });
+      } catch (emailErr) {
+        console.error("No se pudo notificar al usuario aprobado:", emailErr);
+      }
     }
 
     res.status(200).setHeader("Content-Type", "text/html").send(page("Usuario aprobado ✅", "Ya puede iniciar sesión en Circuitos con normalidad.", true));
